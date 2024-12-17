@@ -3,25 +3,36 @@ import random
 
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode((1280, 720))
+screen = pygame.display.set_mode((720, 720))
 clock = pygame.time.Clock()
 running = True
 dt = 0
 
+origin_offset = pygame.Vector2(50, 50)
+play_area = pygame.Vector2(600, 600)
+
 player_pos = pygame.Vector2(60, 60)
-target_pos = pygame.Vector2(1240, 680)
+player_pos+= origin_offset
+player_theoretical_radius = 20
+
+target_pos = pygame.Vector2(440, 440)
+target_pos+= origin_offset
+target_theoretical_radius = 20
 
 no_obstacles = 5
 obstacle_positions = []
+obstacle_theoretical_radius = 20
 
 
 def setup():
     # create obstacles
+    # For now, uniformly distribute obstacles in the play area
     for i in range(no_obstacles):
         obstacle_positions.append(pygame.Vector2(
-            random.randint(40, 1240), random.randint(40, 680)
+            random.uniform(origin_offset.x, origin_offset.x+play_area.x),
+            random.uniform(origin_offset.y, origin_offset.y+play_area.y)
         ))
-
+    # create play area
 
 def handle_movement():
     keys = pygame.key.get_pressed()
@@ -33,23 +44,22 @@ def handle_movement():
         player_pos.x -= 300 * dt
     if keys[pygame.K_d]:
         player_pos.x += 300 * dt
-
-    # clamp player position to screen
-    player_pos.x = max(40, min(player_pos.x, 1240))
-    player_pos.y = max(40, min(player_pos.y, 680))
     handle_collisions()
-
+    # clamp player position to play ares
+    player_pos.x = max(origin_offset.x, min(player_pos.x, origin_offset.x+play_area.x))
+    player_pos.y = max(origin_offset.y, min(player_pos.y, origin_offset.y+play_area.y))
+    print(player_pos)
 
 def handle_collisions():
     # check if player has reached target
-    if player_pos.distance_to(target_pos) < 40:
+    if player_pos.distance_to(target_pos) < target_theoretical_radius:
         print("You win!")
         player_pos.x = 60
         player_pos.y = 60
 
     # check if player has hit any obstacles
     for obstacle in obstacle_positions:
-        if player_pos.distance_to(obstacle) < 80:
+        if player_pos.distance_to(obstacle) < obstacle_theoretical_radius + player_theoretical_radius:
             player_to_obstacle = player_pos - obstacle
             player_to_obstacle.normalize_ip()
             player_to_obstacle *= (300*dt)
@@ -58,14 +68,18 @@ def handle_collisions():
 
 def draw_objectives():
     # draw player
-    pygame.draw.circle(screen, "blue", player_pos, 40)
+    pygame.draw.circle(screen, "blue", player_pos, player_theoretical_radius)
     # draw target
-    pygame.draw.circle(screen, "red", target_pos, 40)
+    pygame.draw.circle(screen, "red", target_pos, target_theoretical_radius)
 
 
 def draw_obstacles():
+    # draw play area bounds
+    pygame.draw.rect(screen, "white", pygame.Rect(origin_offset, play_area), 1)
+
+    # draw obstacles
     for obstacle in obstacle_positions:
-        pygame.draw.circle(screen, "green", obstacle, 40)
+        pygame.draw.circle(screen, "green", obstacle, obstacle_theoretical_radius)
 
 if __name__ == "__main__":
 
