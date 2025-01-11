@@ -48,7 +48,7 @@ def handle_movement():
     # clamp player position to play ares
     player_pos.x = max(origin_offset.x, min(player_pos.x, origin_offset.x+play_area.x))
     player_pos.y = max(origin_offset.y, min(player_pos.y, origin_offset.y+play_area.y))
-    print(player_pos)
+    #print(player_pos)
 
 def handle_collisions():
     # check if player has reached target
