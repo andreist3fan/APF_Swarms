@@ -1,0 +1,19 @@
+main.py: 
+Set the parameters of the setup and run the simulation 
+Creates the environment and agents based on Setup and also runs the evaluation 
+
+Setup.py: 
+Class for all the meta variables for the simulation 
+
+Agent.py: 
+Class for agents that uses the files in the agent_algorithms folder 
+
+Agent_algorithms: 
+Folder that includes a file for each algorithm (we could also include these functions in the Agent class but it 
+might be easier like this for testing purposes)
+
+Environment: 
+Class for Enviornment 
+
+Evaluation: 
+Class for Evaluation 
