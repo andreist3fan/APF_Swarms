@@ -5,9 +5,8 @@ class Environment:
         #Target
         self.target_x = setup.target_x
         self.target_y = setup.target_y
+        self.target_radius = setup.target_radius
         
         #Obstacles 
-        self.obst_x = []
-        self.obst_y = []
-        self.obst_radius = 2 #Could be made a list if all the obstacles have a different radius of influence
+        self.obstacles = [(2, 4), (5, 1), (8, 8), (7, 10)] # (x, y) for each obstacle
         print("Environment created")

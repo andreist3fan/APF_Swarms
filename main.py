@@ -7,7 +7,7 @@ setup = Setup()
 
 #---------Change setup settings if not standard settings----------
 
-setup.nr_agents = 3
+setup.nr_agents = 1
 
 #-----------------------------------------------------------------
 
@@ -25,12 +25,13 @@ while not setup.target:
     for i in agents: 
 
         #Update position 
-        i.update_position(env)
+        i.update_position(env, setup)
 
         #Check whether agent has reached target
+        i.target_check(env)
         if i.target: 
             setup.target = True 
 
 
     # For now only one loop for testing purposes 
-    setup.target = True 
+    #setup.target = True 

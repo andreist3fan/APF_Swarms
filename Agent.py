@@ -22,19 +22,23 @@ class Agent:
 
 
     #Update position based on position 
-    def update_position(self, environment): 
+    def update_position(self, environment, setup): 
         if self.algorithm == 0: 
-            self.x, self.y = capf.pos_update(self, environment)
+            self.x, self.y = capf.pos_update(self, environment, setup)
         if self.algorithm == 1: 
-            self.x, self.y = bapf.pos_update(self, environment)
+            self.x, self.y = bapf.pos_update(self, environment, setup)
         if self.algorithm == 2: 
-            self.x, self.y = cr_bapf.pos_update(self, environment)
+            self.x, self.y = cr_bapf.pos_update(self, environment, setup)
         if self.algorithm == 3: 
-            self.x, self.y = rapf.pos_update(self, environment)
+            self.x, self.y = rapf.pos_update(self, environment, setup)
         if self.algorithm == 4: 
-            self.x, self.y = a_star.pos_update(self, environment)
+            self.x, self.y = a_star.pos_update(self, environment, setup)
         
         #Append new location to the history list 
         self.x_lst.append(self.x)
         self.y_lst.append(self.y)
 
+    def target_check(self, environment):
+        # Returns true if target is reached
+        distance_to_target = ((environment.target_x - self.x)**2 + (environment.target_y - self.y)**2)**0.5
+        self.target = distance_to_target < environment.target_radius  
