@@ -2,6 +2,10 @@ import heapq
 import numpy as np
 from agent_algorithms.grid_node import Node
 
+## TODO: ISSUE WITH ITERATIVE FUNCTION:
+# A* assumes full knowledge of the grid so it returns the optimal path.
+# The iterative method is prone to get stuck in local minima, so it needs to be reworked.
+
 def pos_update(agent, environment, setup):
 
     # define useful functions
