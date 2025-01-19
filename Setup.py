@@ -11,7 +11,7 @@ class Setup:
 
         #Agents 
         self.nr_agents = 1
-        self.algorithm = 0 
+        self.algorithm = 4
 
         #Point around which agents are initially scattered 
         self.agents_start_x = 3
@@ -41,7 +41,7 @@ class Setup:
         #-------------Agents-----------------------------------
 
         # Movement
-        self.step_size = 0.4
+        self.step_size = 0.1
         self.step_variance = 0.01
 
         #--------------Hyperparameter from paper----------------
@@ -55,7 +55,13 @@ class Setup:
         self.obst_radius_inner = 0.4
         self.obst_radius_outer = 4.5
 
-        #--------------Performance matrix----------------------------- 
+
+        # Some A* specific parameters
+
+        self.grid_fineness = 20 # Number of grid points per meter (i.e, 1m x 1m space has 100 grid cells
+                                # with grid_fineness = 10)
+
+        #--------------Performance metrics-----------------------------
 
         self.target = False #True as soon as one agent reaches target 
         # Note by Rens: I feel like this variable belongs in main.py, since it is constantly switched between False and True between runs (and setup should contain constants right?)
