@@ -23,7 +23,6 @@ no_obstacles = 5
 obstacle_positions = []
 obstacle_theoretical_radius = 20
 
-
 def setup():
     # create obstacles
     # For now, uniformly distribute obstacles in the play area
