@@ -29,6 +29,9 @@ class Agent:
         #True if target is reached 
         self.target = False 
 
+        #True if in local minimum
+        self.local_minimum = False
+
 
     #Update position based on position 
     def update_position(self, environment, setup): 
@@ -47,6 +50,6 @@ class Agent:
         self.pos_lst.append((self.x, self.y))
 
     def target_check(self, environment):
-        # Returns true if target is reached
+        # Set to True if target is reached
         distance_to_target = ((environment.target_x - self.x)**2 + (environment.target_y - self.y)**2)**0.5
         self.target = distance_to_target < environment.target_radius 

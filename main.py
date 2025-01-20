@@ -82,6 +82,14 @@ while not setup.target and running:
                 print("Warning: The computational complexity is influenced by visualising the run.")
             setup.path_length = ev.evaluate_path_length(i)
 
+        # Check whether agent has reached a local minimum
+        if i.local_minimum:
+            print("Agent is stuck in a local minimum")
+            # Stop iterating over that agent (so remove agent from agents)
+            # If all agents are stuck, reachability is 0 for that run....
+        
+    # Check if the time limit is reached, if so, reachability is 0 for that run....
+
     if setup.visual: 
         pg.display.flip()
 

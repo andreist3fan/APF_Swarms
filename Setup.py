@@ -20,6 +20,7 @@ class Setup:
 
         #0: CAPF 
         #1: BAPF
+        self.N_bacteria = 60
         #2: CR-BAPF
         #3: RAPF 
         #4: A*
@@ -48,12 +49,27 @@ class Setup:
 
         # Simulation Hyperparameter values (from https://ieeexplore-ieee-org.tudelft.idm.oclc.org/document/10115857)
         self.range = 8
-        self.alpha_t = 10000
-        self.mu_t = 1 * 0.001
-        self.alpha_o = 300 #was 1, changed it (no specific reason why this value) to see the influence of obstacles in the simulation
-        self.mu_o = 1000 * 0.001
         self.obst_radius_inner = 0.4
         self.obst_radius_outer = 4.5
+
+        # Unfortunately, these parameters are highly dependent on the APF algorithm to work.
+       
+        if self.algorithm == 0:
+            self.alpha_t = 10000 * 1
+            self.mu_t = 1 * 0.001
+            self.alpha_o = 1 * 300 #was 1, changed it (no specific reason why this value) to see the influence of obstacles in the simulation
+            self.mu_o = 1000 * 0.001
+        elif self.algorithm == 1:
+            self.alpha_t = 10000
+            self.mu_t = 1
+            self.alpha_o = 1 * 40   # Still trying to find the optimum
+            self.mu_o = 1000 * 0.2  # Still trying to find the optimum
+        else:
+            self.alpha_t = 10000
+            self.mu_t = 1
+            self.alpha_o = 1
+            self.mu_o = 1000
+        
 
         #--------------Performance matrix----------------------------- 
 
