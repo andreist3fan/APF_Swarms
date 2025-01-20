@@ -11,7 +11,7 @@ class Setup:
 
         #Agents 
         self.nr_agents = 1
-        self.algorithm = 0 
+        self.algorithm = 3
 
         #Point around which agents are initially scattered 
         self.agents_start_x = 3
@@ -22,7 +22,8 @@ class Setup:
         #1: BAPF
         self.N_bacteria = 60
         #2: CR-BAPF
-        #3: RAPF 
+        #3: RAPF
+        self.N_bacteria_RAPF = 8
         #4: A*
 
         #------------Environment--------------------------

@@ -32,6 +32,9 @@ class Agent:
         #True if in local minimum
         self.local_minimum = False
 
+        #List of all artificial obstacles locations
+        self.artificial_obstacles = []
+
 
     #Update position based on position 
     def update_position(self, environment, setup): 
