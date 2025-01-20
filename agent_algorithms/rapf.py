@@ -42,6 +42,7 @@ def pos_update(agent, environment, setup):
     # Step 5: If no better point was found, the agent is stuck in a local minimum, so an artifical obstacle is placed
     agent.artificial_obstacles.append((agent.x, agent.y))
     print("Artificial obstacle placed")
+    print(agent.artificial_obstacles)
     agent.local_minimum = True
     return agent.x, agent.y # Return current location to avoid errors
 

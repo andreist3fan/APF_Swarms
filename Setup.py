@@ -1,3 +1,9 @@
+
+#!!!
+#Please dont change the values of the parameters in this file since multiple main functions assume these default values 
+#To run a setup with a different setting, change the values in an object, not the class itself 
+#!!!
+
 class Setup: 
 
     def __init__(self):
@@ -7,16 +13,17 @@ class Setup:
         #Visualise run in pygame (! Influences speed of simulation)
         self.visual = False 
 
-        #------Fill in----------------------------- 
 
-        #Agents 
-        self.nr_agents = 1
-        self.algorithm = 3
+        #------Fill in----------------------------- 
 
         #Point around which agents are initially scattered 
         self.agents_start_x = 3
         self.agents_start_y = 3
         self.start_radius = 3 #Radius of circle that represents area where agents start
+
+        #Agents 
+        self.nr_agents = 1
+        self.algorithm = 1
 
         #0: CAPF 
         #1: BAPF
@@ -26,6 +33,10 @@ class Setup:
         self.N_bacteria_RAPF = 8
         #4: A*
 
+        #Reachability/Stuck agents 
+        self.time_limit = 10 #If simulation takes longer, reachability is set to 0
+        self.delete_stuck = True #If an agent gets stuck, ignore it in the further process (assumes that there is no way to unstuck it)
+        self.nr_stuck_agents = 0 
         #------------Environment--------------------------
 
         #Sqaured total size in m 

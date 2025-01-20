@@ -10,6 +10,7 @@ setup = Setup()
 #---------Change setup settings if not standard settings----------
 
 setup.nr_agents = 3
+setup.algorithm = 1
 setup.visual = True 
 
 #--------------Pygame settings------------------------------------
@@ -49,8 +50,14 @@ while not setup.target and running:
 
         #screen.fill("black")
         
-        #Draw agents 
+        #Draw agents and their artificial objects 
         for a in agents: 
+            for obs in a.artificial_obstacles:
+                print("Trying to draw artificial obstacle")
+                pos = pg.Vector2((obs[0]*scale), (obs[1]*scale))
+                pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_inner*scale))
+                if draw_influence: 
+                    pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_outer*scale), 2)
             pg.draw.circle(screen, "blue", pg.Vector2((a.x*scale), (a.y*scale)), agent_radius)
         
         #Draw target 
@@ -64,6 +71,8 @@ while not setup.target and running:
                 pg.draw.circle(screen, "white", pos, round(setup.obst_radius_outer*scale), 2)
 
         time.sleep(wait_time)
+
+    ind = 0
 
     #Update posiiton of agents and check for target
     for i in agents: 
@@ -80,15 +89,26 @@ while not setup.target and running:
             setup.computational_complexity = round((end_time - start_time), 5)
             if setup.visual: 
                 print("Warning: The computational complexity is influenced by visualising the run.")
-            setup.path_length = ev.evaluate_path_length(i)
+            setup.path_length = len(i.pos_lst)
 
         # Check whether agent has reached a local minimum
         if i.local_minimum:
             print("Agent is stuck in a local minimum")
-            # Stop iterating over that agent (so remove agent from agents)
-            # If all agents are stuck, reachability is 0 for that run....
-        
-    # Check if the time limit is reached, if so, reachability is 0 for that run....
+            #delete stuck agent
+            if setup.delete_stuck:
+                del agents[ind]
+            setup.nr_stuck_agents += 1 
+
+        ind += 1 
+
+    #If time limit is reached, run failed 
+    if (time.time()-start_time) >= setup.time_limit: 
+        running = False
+        print("Run took to long and was stopped.")
+
+    #If all agents are stuck, run failed 
+    if ind == 0: 
+        running = False 
 
     if setup.visual: 
         pg.display.flip()
@@ -97,6 +117,8 @@ if setup.visual:
     pg.quit()
 
 print("Path length:")
-print(str(setup.path_length) + "m")
+print(str(setup.path_length) + " steps")
 print("Computational complexity:")
 print(str(setup.computational_complexity) + "s")
+print("Number of stuck agents:")
+print(str(setup.nr_stuck_agents)+" out of "+str(setup.nr_agents))
