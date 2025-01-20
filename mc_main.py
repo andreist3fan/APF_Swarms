@@ -12,7 +12,7 @@ import os
 mc_runs = 5 #Runs per setting
 mc_nr_agents = [1, 2, 3, 5, 10, 20] #Different settings 
 
-mc_name = "Number_of_agents"
+mc_name = "Number_of_agents_new"
 
 #Store results of each run for final analysis 
 res_reachability = []               #stores value per setting 
