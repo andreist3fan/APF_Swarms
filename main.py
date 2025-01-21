@@ -10,7 +10,7 @@ setup = Setup()
 #---------Change setup settings if not standard settings----------
 
 setup.nr_agents = 3
-setup.algorithm = 1
+setup.algorithm = 0
 setup.visual = True 
 
 #--------------Pygame settings------------------------------------
@@ -90,6 +90,7 @@ while not setup.target and running:
             if setup.visual: 
                 print("Warning: The computational complexity is influenced by visualising the run.")
             setup.path_length = len(i.pos_lst)
+            print("Minimum clearance: "+ str(ev.safety(i, env)))
 
         # Check whether agent has reached a local minimum
         if i.local_minimum:
@@ -105,6 +106,8 @@ while not setup.target and running:
     if (time.time()-start_time) >= setup.time_limit: 
         running = False
         print("Run took to long and was stopped.")
+        # Note by Rens: I would prefer using a maximum allowed number of steps instead of time limit, because a time limit is hard to determine for
+        # running the Monte Carlo simulations (it wil be less then a second). The time limit will also have to be way higher when visualizing a run.
 
     #If all agents are stuck, run failed 
     if ind == 0: 

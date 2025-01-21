@@ -25,4 +25,4 @@ class Environment:
                     close_to_target = False 
             self.obstacles.append((obst_x, obst_y))
         
-        print("Environment created")
+        #print("Environment created")

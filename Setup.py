@@ -23,7 +23,7 @@ class Setup:
 
         #Agents 
         self.nr_agents = 1
-        self.algorithm = 1
+        self.algorithm = 0
 
         #0: CAPF 
         #1: BAPF
@@ -68,14 +68,14 @@ class Setup:
        
         if self.algorithm == 0:
             self.alpha_t = 10000 * 1
-            self.mu_t = 1 * 0.001
-            self.alpha_o = 1 * 300 #was 1, changed it (no specific reason why this value) to see the influence of obstacles in the simulation
-            self.mu_o = 1000 * 0.001
+            self.mu_t = 1 * 0.0017
+            self.alpha_o = 1 * 430 #was 1, changed it (no specific reason why this value) to see the influence of obstacles in the simulation
+            self.mu_o = 1000 * 0.0036
         elif self.algorithm == 1:
             self.alpha_t = 10000
-            self.mu_t = 1
-            self.alpha_o = 1 * 40   # Still trying to find the optimum
-            self.mu_o = 1000 * 0.2  # Still trying to find the optimum
+            self.mu_t = 0.8
+            self.alpha_o = 600
+            self.mu_o = 50
         else:
             self.alpha_t = 10000
             self.mu_t = 1

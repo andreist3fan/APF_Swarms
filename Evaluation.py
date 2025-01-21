@@ -17,6 +17,15 @@ def evaluate_multiple(setups):
     reachability = target/(target+not_target)
     return round(path_length, 3), round(computational_complexity, 5), reachability
 
+def safety(agent, env):
+    min_distance = float('inf')
+    for obst_x, obst_y in env.obstacles:
+        for agent_x, agent_y in agent.pos_lst:
+            distance = ((obst_x - agent_x)**2 + (obst_y - agent_y)**2)**0.5
+            if distance < min_distance:
+                min_distance = distance
+    return min_distance
+
 #Function that draws a run if wanted 
 
 #def draw_run(setup, environment, agents): 
