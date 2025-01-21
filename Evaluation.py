@@ -1,4 +1,5 @@
-import math 
+import pygame as pg 
+import os 
 
 def evaluate_multiple(setups): 
     path_length = 0
@@ -12,8 +13,12 @@ def evaluate_multiple(setups):
             computational_complexity += s.computational_complexity 
         else: 
             not_target += 1 
-    path_length = path_length/target 
-    computational_complexity = computational_complexity/target 
+    if target != 0: 
+        path_length = path_length/target 
+        computational_complexity = computational_complexity/target 
+    else: 
+        path_length = 0
+        computational_complexity = 0
     reachability = target/(target+not_target)
     return round(path_length, 3), round(computational_complexity, 5), reachability
 
@@ -28,5 +33,36 @@ def safety(agent, env):
 
 #Function that draws a run if wanted 
 
-#def draw_run(setup, environment, agents): 
+def draw_run(setup, env, agents, folder_path, file_name): 
+
+    agent_radius = 5
+    scale = 600/30 #pixel/m 
+
+    pg.init()
+    screen = pg.display.set_mode((600, 600))
+
+    #Draw target 
+    pg.draw.circle(screen, "red", pg.Vector2((setup.target_x*scale), (setup.target_y*scale)), (setup.target_radius*scale))
+
+    # draw obstacles
+    for obstacle in env.obstacles:
+        pos = pg.Vector2((obstacle[0]*scale), (obstacle[1]*scale))
+        pg.draw.circle(screen, "white", pos, round(setup.obst_radius_inner*scale))
+    
+    #Draw agents and their artificial objects 
+    for a in agents: 
+        for obs in a.artificial_obstacles:
+            print("Trying to draw artificial obstacle")
+            pos = pg.Vector2((obs[0]*scale), (obs[1]*scale))
+            pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_inner*scale))
+        for pos in a.pos_lst: 
+            pg.draw.circle(screen, "blue", pg.Vector2((pos[0]*scale), (pos[1]*scale)), agent_radius)
+    
+    pg.display.flip()
+    file_path = os.path.join(folder_path, file_name)
+    pg.image.save(screen, file_path)
+    print(f"Simulation image saved.")
+    pg.quit()
+
+
 

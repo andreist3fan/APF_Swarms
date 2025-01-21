@@ -4,14 +4,18 @@ import Agent as a
 import Evaluation as ev
 import pygame as pg 
 import time 
+import os 
 
-setup = Setup() 
 
 #---------Change setup settings if not standard settings----------
 
+algorithm = 0
+
+setup = Setup(algorithm) 
+
 setup.nr_agents = 3
-setup.algorithm = 0
 setup.visual = True 
+name = "main" #Name of the image of the simulation screenchot that is stored at the end 
 
 #--------------Pygame settings------------------------------------
 
@@ -31,6 +35,7 @@ if setup.visual:
 
 #Create agent according to setup
 agents = [] 
+agents_stuck = []
 for i in range(setup.nr_agents): 
     agents.append(a.Agent(setup))
 
@@ -48,7 +53,15 @@ while not setup.target and running:
             if event.type == pg.QUIT:
                 running = False
 
-        #screen.fill("black")
+        #Draw target 
+        pg.draw.circle(screen, "red", pg.Vector2((setup.target_x*scale), (setup.target_y*scale)), (setup.target_radius*scale))
+
+        # draw obstacles
+        for obstacle in env.obstacles:
+            pos = pg.Vector2((obstacle[0]*scale), (obstacle[1]*scale))
+            pg.draw.circle(screen, "white", pos, round(setup.obst_radius_inner*scale))
+            if draw_influence: 
+                pg.draw.circle(screen, "white", pos, round(setup.obst_radius_outer*scale), 2)
         
         #Draw agents and their artificial objects 
         for a in agents: 
@@ -59,16 +72,14 @@ while not setup.target and running:
                 if draw_influence: 
                     pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_outer*scale), 2)
             pg.draw.circle(screen, "blue", pg.Vector2((a.x*scale), (a.y*scale)), agent_radius)
-        
-        #Draw target 
-        pg.draw.circle(screen, "red", pg.Vector2((setup.target_x*scale), (setup.target_y*scale)), (setup.target_radius*scale))
 
-        # draw obstacles
-        for obstacle in env.obstacles:
-            pos = pg.Vector2((obstacle[0]*scale), (obstacle[1]*scale))
-            pg.draw.circle(screen, "white", pos, round(setup.obst_radius_inner*scale))
-            if draw_influence: 
-                pg.draw.circle(screen, "white", pos, round(setup.obst_radius_outer*scale), 2)
+        for a in agents_stuck: 
+            for obs in a.artificial_obstacles:
+                print("Trying to draw artificial obstacle")
+                pos = pg.Vector2((obs[0]*scale), (obs[1]*scale))
+                pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_inner*scale))
+                if draw_influence: 
+                    pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_outer*scale), 2)
 
         time.sleep(wait_time)
 
@@ -95,8 +106,11 @@ while not setup.target and running:
         # Check whether agent has reached a local minimum
         if i.local_minimum:
             print("Agent is stuck in a local minimum")
+            if setup.smart_swarm: 
+                env.artificial_obstacles.append((i.x, i.y))
             #delete stuck agent
             if setup.delete_stuck:
+                agents_stuck.append(agents[ind])
                 del agents[ind]
             setup.nr_stuck_agents += 1 
 
@@ -117,6 +131,10 @@ while not setup.target and running:
         pg.display.flip()
 
 if setup.visual: 
+    simulation_path = "simulation_main(algorithm "+str(algorithm)+").png"
+    #current_dir = os.path.dirname(os.path.abspath(__file__))
+    pg.image.save(screen, simulation_path)
+    print(f"Simulation image saved.")
     pg.quit()
 
 print("Path length:")

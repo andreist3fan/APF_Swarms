@@ -9,6 +9,7 @@ class Environment:
         self.target_y = setup.target_y
         self.target_radius = setup.target_radius
         self.obstacles = [] # (x, y) for each obstacle
+        self.artificial_obstacles = []
 
         #Create obstacles 
 

@@ -6,7 +6,7 @@
 
 class Setup: 
 
-    def __init__(self):
+    def __init__(self, algorithm):
 
         self.name = "Run_1"
 
@@ -21,9 +21,11 @@ class Setup:
         self.agents_start_y = 3
         self.start_radius = 3 #Radius of circle that represents area where agents start
 
+        self.smart_swarm = False #If one agent reaches a local minimum, that point is added to the obstacle list of the environment
+
         #Agents 
         self.nr_agents = 1
-        self.algorithm = 0
+        self.algorithm = algorithm
 
         #0: CAPF 
         #1: BAPF

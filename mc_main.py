@@ -9,10 +9,13 @@ import os
 
 #---------------Monte Carlo settings---------------------------------
 
-mc_runs = 5 #Runs per setting
+mc_runs = 10 #Runs per setting
 mc_nr_agents = [1, 2, 3, 5, 10, 20] #Different settings 
+smart = True
 
-mc_name = "Number_of_agents_new"
+mc_name = "Number_of_agents (BAPF) Smart Swarm"
+
+algorithm = 1
 
 #Store results of each run for final analysis 
 res_reachability = []               #stores value per setting 
@@ -54,16 +57,18 @@ for na in mc_nr_agents:
 
     for m in range(mc_runs): 
 
-        setup = Setup() 
+        setup = Setup(algorithm) 
 
         #---------Adjust Setup according to MC Settings----------------
 
         setup.nr_agents = na 
+        setup.smart_swarm = smart 
 
         #--------------------------------------------------------------
 
         #Create agents
         agents = [] 
+        agents_stuck = []
         for i in range(setup.nr_agents): 
             agents.append(a.Agent(setup))
 
@@ -102,6 +107,7 @@ for na in mc_nr_agents:
                     print("Agent is stuck in a local minimum")
                     #delete stuck agent
                     if setup.delete_stuck:
+                        agents_stuck.append(agents[ind])
                         del agents[ind]
                     setup.nr_stuck_agents += 1 
 
@@ -119,17 +125,24 @@ for na in mc_nr_agents:
         setups_lst.append(setup)
         print("Run " + str(m) + " completed")
 
+        #Draw run if all agents got stuck 
+
+        if setup.nr_stuck_agents == setup.nr_agents: 
+            file_name = "All agents stuck ("+str(setup.nr_stuck_agents)+")("+str(m)+").png"
+            ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
+
     #---------------Final evaluation for one setting------------------------
 
     pl, cc, r = ev.evaluate_multiple(setups_lst)
 
-    res_path_length.append(pl)
-    res_computational_complexity.append(cc)
-    res_reachability.append(r)
-
     stuck = []
     for s in setups_lst: 
         stuck.append(s.nr_stuck_agents)
+
+    res_path_length.append(pl)
+    res_computational_complexity.append(cc)
+    res_reachability.append(r)
+    res_stuck_agents.append(stuck)
 
     print("Setting "+str(na)+" completed.")
 
@@ -173,6 +186,38 @@ plot_path = os.path.join(folder_path, "PathLengthSwarmSize")
 plt.savefig(plot_path)
 
 #Save nr. stuck agents and other results in a text file 
+
+file_name = "Analysis.txt"
+file_path = os.path.join(folder_path, file_name)
+
+try:
+    # Check if directory exists
+    os.makedirs(folder_path, exist_ok=True)
+    
+    # Create the file and fill it with most important information
+    with open(file_path, "w") as file:
+        file.write("Testing different swarm sizes")
+        file.write("\n\n Runs per setting: "+str(mc_runs))
+        file.write("\n\n Settings (swarm size): "+str(mc_nr_agents))
+        file.write("\n\n Algorithm used: "+str(algorithm))
+        if algorithm == 0: 
+            file.write(" (CAPF)")
+        if algorithm == 1: 
+            file.write(" (BAPF)")
+        if algorithm == 2: 
+            file.write(" (CR-BAPF)")
+        if algorithm == 3: 
+            file.write(" (RAPF)")
+        if algorithm == 4: 
+            file.write(" (A*)")
+        file.write("\n\n Number of stuck agents: "+str(res_stuck_agents))
+        file.write("\n\n Path length: "+str(res_path_length))
+        file.write("\n\n Computational complexity: "+str(res_computational_complexity))
+        file.write("\n\n Reachability: "+str(res_reachability))
+    print("File has been created.")
+
+except Exception as e:
+    print(f"An error occurred during creating the file: {e}")
 
 
 
