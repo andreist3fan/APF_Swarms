@@ -9,11 +9,14 @@ step_limit = 500
 safety_goal = 0.5 #Goals for smallest distance to target in a set of 100 succesful runs (meter)
 
 # Hyperparameters
-alpha_t = 10000  # This one is kept constant, because it is all relative
+algorithm = 1
+alpha_t = 10000
+mu_t = 0.0017
+alpha_o = 430
+mu_o = 3.6
 
-def simulate(params):
-    setup = Setup() 
-    setup.algorithm = 0
+def simulate():
+    setup = Setup(algorithm) 
 
     #Create agent
     agent = a.Agent(setup)
@@ -22,10 +25,10 @@ def simulate(params):
     env = e.Environment(setup)
 
     # Set hyperparameters
-    setup.alpha_t = alpha_t # This one is kept constant, because it is all relative
-    setup.mu_t = params[0]
-    setup.alpha_o = params[1]
-    setup.mu_o = params[2]
+    setup.alpha_t = alpha_t
+    setup.mu_t = mu_t
+    setup.alpha_o = alpha_o
+    setup.mu_o = mu_o
 
     running = True 
 
@@ -60,29 +63,16 @@ def simulate(params):
     else:
         return False
 
-def objective_function(params):
-    num_samples = 100 # Run the simulation multiple times to average out randomness
-    results = []
-    while len(results) < num_samples:
-        try:
-            min_distance = simulate(params)
-        except:
-            min_distance = False
-        if min_distance: # If the run was succesful and an actual value was presented
-            results.append(min_distance)
-    min_result = min(results)
-    difference = abs(min_result - safety_goal)
-    print("Tested some parameters with " + str(round(min_result, 2)) + " meter minimum clearance")
-    if min_result > 0.1:
-        print(params)
-        print(oiujhgfdfghjkloiuygfghjklkjhgfdgielgiel)
-    return difference
-
-bounds = [(0.001, 1), (1, 1000), (1, 1000)]
-bounds = [(0.0001, 0.01), (100, 500), (0.1, 10)]
-
-# Perform optimization
-result = differential_evolution(objective_function, bounds, tol=0.05)
-
-print("Optimized parameters:", result.x)
-print("Achieved average:", np.mean([simulate(result.x) for _ in range(100)]))
+num_samples = 1000 # Run the simulation multiple times to average out randomness
+results = []
+while len(results) < num_samples:
+    try:
+        min_distance = simulate()
+    except:
+        min_distance = False
+    if min_distance: # If the run was succesful and an actual value was presented
+        results.append(min_distance)
+min_result = min(results)
+avg_result = sum(results) / len(results)
+print("Minimum clearance: " + str(round(min_result, 3)))
+print("Average clearance: " + str(round(avg_result, 3)))

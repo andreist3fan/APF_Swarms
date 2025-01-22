@@ -20,22 +20,19 @@ def pos_update(agent, environment, setup):
                 obstacle_potential += setup.alpha_o * np.exp(-setup.mu_o * distance_squared)
         return target_potential + obstacle_potential
 
-    # Step 3: Set bacteria points, sorted by distance to target
+    # Step 3: Set bacteria points, find the minimum potential
     bacteria_points = [(agent.x + setup.step_size * np.cos(2* np.pi * k / setup.N_bacteria), agent.y + setup.step_size * np.sin(2* np.pi * k / setup.N_bacteria)) for k in range(setup.N_bacteria)]
-    def distance_to_target(point):
-        return ((point[0] - setup.target_x)**2 + (point[1] - setup.target_y)**2) **0.5
-    sorted_bacteria_points = sorted(bacteria_points, key=distance_to_target)
+    bacteria_potentials = [potential_field(x, y) for (x, y) in bacteria_points]
+    min_potential = min(bacteria_potentials)
 
-    # Step 4: Find the first bacteria point that has a lower potential and make a step (including random position errors)
-    J_agent = potential_field(agent.x, agent.y)
-    for (x, y) in sorted_bacteria_points:
-        if potential_field(x, y) <= J_agent:
-            new_x = np.random.normal(x, setup.step_variance)
-            new_y = np.random.normal(y, setup.step_variance)
-            return new_x, new_y
-        
-    # Step 5: If no better point was found, the agent is stuck in a local minimum
-    agent.local_minimum = True
-    return agent.x, agent.y # Return current location to avoid errors
+    # Step 4: Step to the best bacteria point (with random error), or stuck in local minimum
+    if min_potential < potential_field(agent.x, agent.y):
+        selected_point = bacteria_points[bacteria_potentials.index(min_potential)]
+        new_x = np.random.normal(selected_point[0], setup.step_variance)
+        new_y = np.random.normal(selected_point[1], setup.step_variance)
+        return new_x, new_y
+    else: # Local minimum
+        agent.local_minimum = True
+        return agent.x, agent.y
 
     
