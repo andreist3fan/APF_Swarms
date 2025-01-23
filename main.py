@@ -4,6 +4,7 @@ import Agent as a
 import Evaluation as ev
 import pygame as pg 
 import time 
+import math 
 import os 
 
 
@@ -50,6 +51,30 @@ for i in range(setup.nr_agents):
     agents.append(a.Agent(setup, env, pos_agents))
     pos_agents.append((agents[-1].x, agents[-1].y))
 
+#Move swarm such that closest agent at predetermined point 
+
+#Find closest agent 
+min_dist = math.sqrt((agents[0].x-setup.agents_start_x)**2+(agents[1].y-setup.agents_start_y)**2)
+closest_agent = agents[0]
+for ag in agents: 
+    distance = math.sqrt((ag.x-setup.agents_start_x)**2+(ag.y-setup.agents_start_y)**2)
+    if distance < min_dist: 
+        min_dist = distance 
+        closest_agent = ag 
+
+#Determine shift 
+shift_x = setup.agents_start_x - closest_agent.x
+shift_y = setup.agents_start_y - closest_agent.y
+
+#Shift agents 
+for ag in agents: 
+    ag.x = ag.x + shift_x 
+    ag.y = ag.y + shift_y 
+    ag.pos_lst.append((ag.x, ag.y))
+    print(str(ag.x)+", "+str(ag.y))
+
+#self.pos_lst
+
 
 start_time = time.time()
 steps = 0 
@@ -62,6 +87,11 @@ while not setup.target and running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+
+        #Draw spawning area agents 
+        center_x = (setup.agents_start_x - setup.start_radius)*scale 
+        center_y = (setup.agents_start_y - setup.start_radius)*scale
+        pg.draw.circle(screen, "red", (center_x, center_y), (setup.start_radius*scale), 2)
 
         #Draw target 
         pg.draw.circle(screen, "red", pg.Vector2((setup.target_x*scale), (setup.target_y*scale)), (setup.target_radius*scale))

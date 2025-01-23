@@ -21,8 +21,10 @@ algorithm = 0
 #Store results of each run for final analysis 
 res_reachability = []               #stores value per setting 
 res_path_length = []                #stores value per setting 
-res_computational_complexity = []   #stores value per setting  
+res_computational_complexity = []   #stores value per setting 
+res_min_dist = []                   #stores value per setting  
 res_stuck_agents = []               #stores tupel per setting 
+
 
 #---------------Folder logistics-------------------------------------- 
 
@@ -155,6 +157,7 @@ for sc in mc_scattering:
     res_path_length.append(pl)
     res_computational_complexity.append(cc)
     res_reachability.append(r)
+    res_min_dist.append(min_dist)
     res_stuck_agents.append(stuck)
 
     print("Setting "+str(sc)+" completed.")
@@ -228,6 +231,7 @@ try:
         file.write("\n\n Path length: "+str(res_path_length))
         file.write("\n\n Computational complexity: "+str(res_computational_complexity))
         file.write("\n\n Reachability: "+str(res_reachability))
+        file.write("\n\n Safety distance (Closest distance to obstacle)"+str(res_min_dist))
     print("File has been created.")
 
 except Exception as e:

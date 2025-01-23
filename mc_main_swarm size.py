@@ -9,7 +9,7 @@ import os
 
 #---------------Monte Carlo settings---------------------------------
 
-mc_runs = 1 #Runs per setting
+mc_runs = 10 #Runs per setting
 mc_nr_agents = [1, 2, 3, 5, 10, 15, 20, 25] #Different settings 
 smart = True
 
@@ -21,6 +21,7 @@ algorithm = 0
 res_reachability = []               #stores value per setting 
 res_path_length = []                #stores value per setting 
 res_computational_complexity = []   #stores value per setting  
+res_min_dist = []                   #stores value per setting  
 res_stuck_agents = []               #stores tupel per setting 
 
 #---------------Folder logistics-------------------------------------- 
@@ -153,6 +154,7 @@ for na in mc_nr_agents:
     res_path_length.append(pl)
     res_computational_complexity.append(cc)
     res_reachability.append(r)
+    res_min_dist.append(min_dist)
     res_stuck_agents.append(stuck)
 
     print("Setting "+str(na)+" completed.")
@@ -225,6 +227,7 @@ try:
         file.write("\n\n Path length: "+str(res_path_length))
         file.write("\n\n Computational complexity: "+str(res_computational_complexity))
         file.write("\n\n Reachability: "+str(res_reachability))
+        file.write("\n\n Safety distance (Closest distance to obstacle)"+str(res_min_dist))
     print("File has been created.")
 
 except Exception as e:

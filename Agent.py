@@ -5,6 +5,7 @@ from agent_algorithms import rapf
 from agent_algorithms import a_star 
 import random 
 import math 
+from scipy.stats import truncnorm
 
 class Agent: 
     def __init__(self, setup, environment, pos_other_agents):
@@ -19,7 +20,10 @@ class Agent:
         if setup.nr_agents == 1: 
             self.x = setup.agents_start_x 
             self.y = setup.agents_start_y
-        else:          
+        else:    
+            center_x = setup.agents_start_x - setup.start_radius
+            center_y = setup.agents_start_y - setup.start_radius
+
             close_to_obstacle = True 
             close_to_other_agent = True 
 
@@ -27,8 +31,13 @@ class Agent:
 
                 #Create new position until one with distance to other objects is found 
                 angle = random.uniform(0, 2 * math.pi) #for random distribution 
-                new_x = setup.agents_start_x + setup.start_radius * math.cos(angle)
-                new_y = setup.agents_start_y + setup.start_radius * math.sin(angle)
+
+                std_dev = (setup.start_radius) / 2
+                a, b = (-setup.start_radius) / std_dev, (setup.start_radius) / std_dev
+                dist_center = truncnorm.rvs(a, b, loc=0, scale=std_dev)
+
+                new_x = center_x + dist_center * math.cos(angle)
+                new_y = center_y + dist_center * math.sin(angle)
                 close_to_obstacle = True 
                 close_to_other_agent = True 
 
@@ -50,10 +59,10 @@ class Agent:
                 #Add condition to notice when circle is full because circle too small or swarm too big 
             self.x = new_x
             self.y = new_y
-            #'''
+
 
         #List representing path of agent 
-        self.pos_lst = [(self.x, self.y)]
+        self.pos_lst = []
 
         #True if target is reached 
         self.target = False 

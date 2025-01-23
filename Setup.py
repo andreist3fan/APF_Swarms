@@ -19,7 +19,7 @@ class Setup:
         #Point around which agents are initially scattered 
         self.agents_start_x = 5
         self.agents_start_y = 5
-        self.start_radius = 3 #Radius of circle that represents area where agents start
+        self.start_radius = 2 #Radius of circle that represents area where agents start
 
         self.smart_swarm = False #If one agent reaches a local minimum, that point is added to the obstacle list of the environment
 
