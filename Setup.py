@@ -94,4 +94,5 @@ class Setup:
 
         self.path_length = 0 
         self.computational_complexity = 0 
+        self.min_distance_target = 0 
 

@@ -9,7 +9,7 @@ import os
 
 #---------------Monte Carlo settings---------------------------------
 
-mc_runs = 50 #Runs per setting
+mc_runs = 1 #Runs per setting
 mc_scattering = [1, 1.5, 2, 2.5, 3] 
 nr_agents = 15 #Different settings 
 smart = True
@@ -107,6 +107,7 @@ for sc in mc_scattering:
                     #print(setup.computational_complexity)
                     setup.path_length = len(i.pos_lst)
                     #print(setup.path_length)
+                    setup.min_distance_target = ev.safety(i, env)
 
                 # Check whether agent has reached a local minimum
                 if i.local_minimum:
@@ -145,7 +146,7 @@ for sc in mc_scattering:
 
     #---------------Final evaluation for one setting------------------------
 
-    pl, cc, r = ev.evaluate_multiple(setups_lst)
+    pl, cc, r, min_dist = ev.evaluate_multiple(setups_lst)
 
     stuck = []
     for s in setups_lst: 

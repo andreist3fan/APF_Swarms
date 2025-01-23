@@ -111,6 +111,7 @@ while not setup.target and running:
             if setup.visual: 
                 print("Warning: The computational complexity is influenced by visualising the run.")
             setup.path_length = len(i.pos_lst)
+            setup.min_distance_target = ev.safety(i, env)
             print("Minimum clearance: "+ str(ev.safety(i, env)))
 
         # Check whether agent has reached a local minimum

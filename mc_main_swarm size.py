@@ -105,6 +105,7 @@ for na in mc_nr_agents:
                     #print(setup.computational_complexity)
                     setup.path_length = len(i.pos_lst)
                     #print(setup.path_length)
+                    setup.min_distance_target = ev.safety(i, env)
 
                 # Check whether agent has reached a local minimum
                 if i.local_minimum:
@@ -143,7 +144,7 @@ for na in mc_nr_agents:
 
     #---------------Final evaluation for one setting------------------------
 
-    pl, cc, r = ev.evaluate_multiple(setups_lst)
+    pl, cc, r, min_dist = ev.evaluate_multiple(setups_lst)
 
     stuck = []
     for s in setups_lst: 
