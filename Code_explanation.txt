@@ -4,6 +4,8 @@ Creates the environment and agents based on Setup and also runs the evaluation
 
 Setup.py: 
 Class for all the meta variables for the simulation 
+If you want to change the value of a parameter (e.g. use a different algorithm), please change that in the main functions
+in an object of the class and not in the class itself (the Setup file)
 
 Agent.py: 
 Class for agents that uses the files in the agent_algorithms folder 

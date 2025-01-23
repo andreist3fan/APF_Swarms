@@ -4,18 +4,33 @@ import Agent as a
 import Evaluation as ev
 import pygame as pg 
 import time 
+import os
 
-setup = Setup() 
 
 #---------Change setup settings if not standard settings----------
+# A* setup
+# setup = Setup(4)
+# setup.nr_agents = 1
+# setup.visual = True
+# setup.obst_radius_inner = 0.8
+# setup.grid_fineness = 5
+# setup.step_size = 0.2
+# setup.obst_N_lower = 180
+# setup.obst_N_upper = 200
 
-setup.nr_agents = 1
-setup.visual = True
-setup.obst_radius_inner = 0.8
-setup.grid_fineness = 5
-setup.step_size = 0.2
-setup.obst_N_lower = 180
+# setup on `main`
+algorithm = 1
+setup = Setup(algorithm)
+setup.alpha_t = 10000 * 1
+setup.mu_t = 1 * 0.0017
+setup.alpha_o = 1 * 430
+setup.mu_o = 1000 * 0.0036
+setup.obst_N_lower = 100 #influenced by values in paper
 setup.obst_N_upper = 200
+
+setup.nr_agents = 3
+setup.visual = True
+name = "main" #Name of the image of the simulation screenchot that is stored at the end
 
 #--------------Pygame settings------------------------------------
 
@@ -33,15 +48,21 @@ if setup.visual:
 
 #-----------------------------------------------------------------
 
-#Create agent according to setup
-agents = [] 
-for i in range(setup.nr_agents): 
-    agents.append(a.Agent(setup))
 
 #Create environment according to setup
 env = e.Environment(setup)
 
+#Create agent according to setup
+agents = [] 
+pos_agents = []
+agents_stuck = []
+for i in range(setup.nr_agents):
+    agents.append(a.Agent(setup, env, pos_agents))
+    pos_agents.append((agents[-1].x, agents[-1].y))
+
+
 start_time = time.time()
+steps = 0
 
 while not setup.target and running: 
 
@@ -52,12 +73,6 @@ while not setup.target and running:
             if event.type == pg.QUIT:
                 running = False
 
-        #screen.fill("black")
-        
-        #Draw agents 
-        for a in agents: 
-            pg.draw.circle(screen, "blue", pg.Vector2((a.x*scale), (a.y*scale)), agent_radius)
-        
         #Draw target 
         pg.draw.circle(screen, "red", pg.Vector2((setup.target_x*scale), (setup.target_y*scale)), (setup.target_radius*scale))
 
@@ -68,7 +83,27 @@ while not setup.target and running:
             if draw_influence: 
                 pg.draw.circle(screen, "white", pos, round(setup.obst_radius_outer*scale), 2)
 
+        #Draw agents and their artificial objects
+        for a in agents:
+            for obs in a.artificial_obstacles:
+                print("Trying to draw artificial obstacle")
+                pos = pg.Vector2((obs[0]*scale), (obs[1]*scale))
+                pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_inner*scale))
+                if draw_influence:
+                    pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_outer*scale), 2)
+            pg.draw.circle(screen, "blue", pg.Vector2((a.x*scale), (a.y*scale)), agent_radius)
+
+        for a in agents_stuck:
+            for obs in a.artificial_obstacles:
+                print("Trying to draw artificial obstacle")
+                pos = pg.Vector2((obs[0]*scale), (obs[1]*scale))
+                pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_inner*scale))
+                if draw_influence:
+                    pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_outer*scale), 2)
+
         time.sleep(wait_time)
+
+    ind = 0
 
     #Update posiiton of agents and check for target
     for i in agents: 
@@ -85,15 +120,56 @@ while not setup.target and running:
             setup.computational_complexity = round((end_time - start_time), 5)
             if setup.visual: 
                 print("Warning: The computational complexity is influenced by visualising the run.")
-            setup.path_length = ev.evaluate_path_length(i)
+            setup.path_length = len(i.pos_lst)
+            setup.min_distance_target = ev.safety(i, env)
+            print("Minimum clearance: "+ str(ev.safety(i, env)))
+
+        # Check whether agent has reached a local minimum
+        if i.local_minimum:
+            print("Agent is stuck in a local minimum")
+            if setup.smart_swarm:
+                env.artificial_obstacles.append((i.x, i.y))
+            #delete stuck agent
+            if setup.delete_stuck:
+                agents_stuck.append(agents[ind])
+                del agents[ind]
+            setup.nr_stuck_agents += 1
+
+        ind += 1
+
+    steps += 1
+
+    #If too many steps required, run ends
+    if steps > 500:
+        running = False
+        print("Run took to long and was stopped.")
+
+    '''
+    #If time limit is reached, run failed 
+    if (time.time()-start_time) >= setup.time_limit: 
+        running = False
+        print("Run took to long and was stopped.")
+        # Note by Rens: I would prefer using a maximum allowed number of steps instead of time limit, because a time limit is hard to determine for
+        # running the Monte Carlo simulations (it wil be less then a second). The time limit will also have to be way higher when visualizing a run.
+    '''
+
+    #If all agents are stuck, run failed
+    if ind == 0:
+        running = False
 
     if setup.visual: 
         pg.display.flip()
 
 if setup.visual: 
+    simulation_path = "simulation_main(algorithm "+str(algorithm)+").png"
+    #current_dir = os.path.dirname(os.path.abspath(__file__))
+    pg.image.save(screen, simulation_path)
+    print(f"Simulation image saved.")
     pg.quit()
 
 print("Path length:")
-print(str(setup.path_length) + "m")
+print(str(setup.path_length) + " steps")
 print("Computational complexity:")
 print(str(setup.computational_complexity) + "s")
+print("Number of stuck agents:")
+print(str(setup.nr_stuck_agents)+" out of "+str(setup.nr_agents))

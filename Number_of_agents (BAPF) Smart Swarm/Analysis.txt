@@ -1,0 +1,15 @@
+Testing different swarm sizes
+
+ Runs per setting: 10
+
+ Settings (swarm size): [1, 2, 3, 5, 10, 20]
+
+ Algorithm used: 1 (BAPF)
+
+ Number of stuck agents: [[0, 0, 1, 1, 1, 1, 1, 1, 1, 1], [2, 2, 2, 0, 2, 2, 2, 2, 2, 0], [3, 2, 2, 3, 3, 3, 3, 2, 2, 0], [3, 0, 5, 5, 5, 5, 5, 5, 5, 4], [9, 10, 10, 9, 1, 9, 7, 10, 5, 9], [20, 12, 20, 10, 20, 20, 20, 3, 15, 4]]
+
+ Path length: [72.0, 70.5, 70.25, 63.0, 70.167, 62.75]
+
+ Computational complexity: [0.01489, 0.02918, 0.05616, 0.06728, 0.09891, 0.27035]
+
+ Reachability: [0.2, 0.2, 0.4, 0.2, 0.6, 0.4]

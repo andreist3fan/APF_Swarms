@@ -1,37 +1,52 @@
-class Setup: 
 
-    def __init__(self):
+#!!!
+#Please dont change the values of the parameters in this file since multiple main functions assume these default values
+#To run a setup with a different setting, change the values in an object, not the class itself
+#!!!
+
+class Setup:
+
+    def __init__(self, algorithm):
 
         self.name = "Run_1"
 
         #Visualise run in pygame (! Influences speed of simulation)
         self.visual = False 
 
-        #------Fill in----------------------------- 
 
-        #Agents 
-        self.nr_agents = 1
-        self.algorithm = 4
+        #------Fill in-----------------------------
 
         #Point around which agents are initially scattered 
-        self.agents_start_x = 3
-        self.agents_start_y = 3
+        self.agents_start_x = 5
+        self.agents_start_y = 5
         self.start_radius = 3 #Radius of circle that represents area where agents start
 
-        #0: CAPF 
+        self.smart_swarm = False #If one agent reaches a local minimum, that point is added to the obstacle list of the environment
+
+        #Agents
+        self.nr_agents = 1
+        self.algorithm = algorithm
+
+        #0: CAPF
         #1: BAPF
+        self.N_bacteria = 60
         #2: CR-BAPF
-        #3: RAPF 
+        #3: RAPF
+        self.N_bacteria_RAPF = 8
         #4: A*
 
+        #Reachability/Stuck agents
+        self.time_limit = 10 #If simulation takes longer, reachability is set to 0
+        self.delete_stuck = True #If an agent gets stuck, ignore it in the further process (assumes that there is no way to unstuck it)
+        self.nr_stuck_agents = 0
         #------------Environment--------------------------
 
         #Sqaured total size in m 
         self.area_size = 30
 
         #Target
-        self.target_x = 22
-        self.target_y = 22
+        self.target_x = 25
+        self.target_y = 25
         self.target_radius = 0.5
 
         #lower and upper bound for number of obstacles 
@@ -48,13 +63,29 @@ class Setup:
 
         # Simulation Hyperparameter values (from https://ieeexplore-ieee-org.tudelft.idm.oclc.org/document/10115857)
         self.range = 8
-        self.alpha_t = 10000
-        self.mu_t = 1 * 0.001
-        self.alpha_o = 300 #was 1, changed it (no specific reason why this value) to see the influence of obstacles in the simulation
-        self.mu_o = 1000 * 0.001
-        self.obst_radius_inner = 0.5
+        self.obst_radius_inner = 0.4
         self.obst_radius_outer = 4.5
 
+        # Unfortunately, these parameters are highly dependent on the APF algorithm to work.
+
+        if self.algorithm == 0:
+            self.alpha_t = 10000 * 1
+            self.mu_t = 1 * 0.0017
+            self.alpha_o = 1 * 430 #was 1, changed it (no specific reason why this value) to see the influence of obstacles in the simulation
+            self.mu_o = 1000 * 0.0036
+        elif self.algorithm == 1:
+            self.alpha_t = 10000
+            self.mu_t = 0.8
+            self.alpha_o = 600
+            self.mu_o = 50
+        else:
+            self.alpha_t = 10000
+            self.mu_t = 1
+            self.alpha_o = 1
+            self.mu_o = 1000
+
+
+        #--------------Performance matrix-----------------------------
 
         # Some A* specific parameters
 
@@ -70,4 +101,5 @@ class Setup:
 
         self.path_length = 0 
         self.computational_complexity = 0 
+        self.min_distance_target = 0
 
