@@ -19,12 +19,7 @@ class Agent:
         if setup.nr_agents == 1: 
             self.x = setup.agents_start_x 
             self.y = setup.agents_start_y
-        else: 
-            '''
-            angle = random.uniform(0, 2 * math.pi) #for random distribution 
-            self.x = setup.agents_start_x + setup.start_radius * math.cos(angle)
-            self.y = setup.agents_start_y + setup.start_radius * math.sin(angle)
-            '''            
+        else:          
             close_to_obstacle = True 
             close_to_other_agent = True 
 
