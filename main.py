@@ -9,14 +9,14 @@ import os
 
 #---------Change setup settings if not standard settings----------
 
-algorithm = 0
+algorithm = 1
 setup = Setup(algorithm)
 setup.alpha_t = 10000 * 1
 setup.mu_t = 1 * 0.0017
 setup.alpha_o = 1 * 430
 setup.mu_o = 1000 * 0.0036 
-setup.obst_N_lower = 60 #influenced by values in paper 
-setup.obst_N_upper = 80
+setup.obst_N_lower = 100 #influenced by values in paper 
+setup.obst_N_upper = 200
 
 setup.nr_agents = 3
 setup.visual = True 
