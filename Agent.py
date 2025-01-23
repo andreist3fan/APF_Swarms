@@ -8,9 +8,12 @@ import math
 
 class Agent: 
     def __init__(self, setup):
-        
-        self.algorithm = setup.algorithm  
 
+        self.algorithm = setup.algorithm
+
+        # For A* algorithm, since we precompute the path
+        self.step_no = None
+        self.path = None
         #Current position
         self.x = 0
         self.y = 0 
@@ -26,7 +29,8 @@ class Agent:
         #List representing path of agent 
         self.pos_lst = [(self.x, self.y)]
 
-        #True if target is reached 
+        self.astar_init = False # for A*, if the grid was initialized or not
+        #True if target is reached
         self.target = False 
 
 
@@ -40,7 +44,10 @@ class Agent:
             self.x, self.y = cr_bapf.pos_update(self, environment, setup)
         if self.algorithm == 3: 
             self.x, self.y = rapf.pos_update(self, environment, setup)
-        if self.algorithm == 4: 
+        if self.algorithm == 4:
+            if not self.astar_init:
+                a_star.initialize_path(self, environment, setup)
+                self.astar_init = True
             self.x, self.y = a_star.pos_update(self, environment, setup)
         
         #Append new location to the history list 
@@ -50,3 +57,9 @@ class Agent:
         # Returns true if target is reached
         distance_to_target = ((environment.target_x - self.x)**2 + (environment.target_y - self.y)**2)**0.5
         self.target = distance_to_target < environment.target_radius 
+
+
+    # sets path for the A* algorithm, once computed
+    def set_path(self, path):
+        self.path = path
+        self.step_no = 0

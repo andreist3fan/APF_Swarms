@@ -52,7 +52,7 @@ class Setup:
         self.mu_t = 1 * 0.001
         self.alpha_o = 300 #was 1, changed it (no specific reason why this value) to see the influence of obstacles in the simulation
         self.mu_o = 1000 * 0.001
-        self.obst_radius_inner = 0.4
+        self.obst_radius_inner = 0.5
         self.obst_radius_outer = 4.5
 
 

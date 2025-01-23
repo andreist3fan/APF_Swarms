@@ -9,8 +9,13 @@ setup = Setup()
 
 #---------Change setup settings if not standard settings----------
 
-setup.nr_agents = 3
-setup.visual = True 
+setup.nr_agents = 1
+setup.visual = True
+setup.obst_radius_inner = 0.8
+setup.grid_fineness = 5
+setup.step_size = 0.2
+setup.obst_N_lower = 180
+setup.obst_N_upper = 200
 
 #--------------Pygame settings------------------------------------
 

@@ -37,7 +37,7 @@ class Environment:
                                 ** 2 + (j/setup.grid_fineness - obstacle[1]) ** 2) ** 0.5
                     # Mark the cell as occupied if it is within the inner radius of an obstacle
                     if distance < setup.obst_radius_inner:
-                        self.grid[i][j] = 1
+                        self.grid[i][j] = -1
                         break
 
         print("Environment created")
