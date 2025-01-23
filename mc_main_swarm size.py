@@ -9,13 +9,13 @@ import os
 
 #---------------Monte Carlo settings---------------------------------
 
-mc_runs = 10 #Runs per setting
-mc_nr_agents = [1, 2, 3, 5, 10, 20] #Different settings 
+mc_runs = 1 #Runs per setting
+mc_nr_agents = [1, 2, 3, 5, 10, 15, 20, 25] #Different settings 
 smart = True
 
-mc_name = "Number_of_agents (BAPF) Smart Swarm"
+mc_name = "New swarm size test"
 
-algorithm = 1
+algorithm = 0
 
 #Store results of each run for final analysis 
 res_reachability = []               #stores value per setting 
@@ -66,20 +66,24 @@ for na in mc_nr_agents:
 
         #--------------------------------------------------------------
 
-        #Create agents
-        agents = [] 
-        agents_stuck = []
-        for i in range(setup.nr_agents): 
-            agents.append(a.Agent(setup))
-
         #Create environment according to setup
         env = e.Environment(setup)
+
+        #Create agent according to setup
+        agents = [] 
+        pos_agents = []
+        agents_stuck = []
+        for i in range(setup.nr_agents): 
+            agents.append(a.Agent(setup, env, pos_agents))
+            pos_agents.append((agents[-1].x, agents[-1].y))
 
         running = True 
 
         start_time = time.time()
 
         #The while loop has to be updated according to the normal main function 
+
+        steps = 0 
 
         while not setup.target and running: 
 
@@ -101,6 +105,7 @@ for na in mc_nr_agents:
                     #print(setup.computational_complexity)
                     setup.path_length = len(i.pos_lst)
                     #print(setup.path_length)
+                    setup.min_distance_target = ev.safety(i, env)
 
                 # Check whether agent has reached a local minimum
                 if i.local_minimum:
@@ -113,8 +118,10 @@ for na in mc_nr_agents:
 
                 ind += 1
 
-            #If time limit is reached, run failed 
-            if (time.time()-start_time) >= setup.time_limit: 
+            steps += 1 
+
+            #If too many steps required, run ends 
+            if steps > 500: 
                 running = False
                 print("Run took to long and was stopped.")
 
@@ -130,10 +137,14 @@ for na in mc_nr_agents:
         if setup.nr_stuck_agents == setup.nr_agents: 
             file_name = "All agents stuck ("+str(setup.nr_stuck_agents)+")("+str(m)+").png"
             ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
+        elif m == 0: 
+            file_name = "Number of agents ("+str(setup.nr_agents)+").png"
+            ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
+
 
     #---------------Final evaluation for one setting------------------------
 
-    pl, cc, r = ev.evaluate_multiple(setups_lst)
+    pl, cc, r, min_dist = ev.evaluate_multiple(setups_lst)
 
     stuck = []
     for s in setups_lst: 

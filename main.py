@@ -38,16 +38,21 @@ if setup.visual:
 
 #-----------------------------------------------------------------
 
-#Create agent according to setup
-agents = [] 
-agents_stuck = []
-for i in range(setup.nr_agents): 
-    agents.append(a.Agent(setup))
 
 #Create environment according to setup
 env = e.Environment(setup)
 
+#Create agent according to setup
+agents = [] 
+pos_agents = []
+agents_stuck = []
+for i in range(setup.nr_agents): 
+    agents.append(a.Agent(setup, env, pos_agents))
+    pos_agents.append((agents[-1].x, agents[-1].y))
+
+
 start_time = time.time()
+steps = 0 
 
 while not setup.target and running: 
 
@@ -106,6 +111,7 @@ while not setup.target and running:
             if setup.visual: 
                 print("Warning: The computational complexity is influenced by visualising the run.")
             setup.path_length = len(i.pos_lst)
+            setup.min_distance_target = ev.safety(i, env)
             print("Minimum clearance: "+ str(ev.safety(i, env)))
 
         # Check whether agent has reached a local minimum
@@ -121,12 +127,21 @@ while not setup.target and running:
 
         ind += 1 
 
+    steps += 1
+
+    #If too many steps required, run ends 
+    if steps > 500: 
+        running = False
+        print("Run took to long and was stopped.")
+
+    '''
     #If time limit is reached, run failed 
     if (time.time()-start_time) >= setup.time_limit: 
         running = False
         print("Run took to long and was stopped.")
         # Note by Rens: I would prefer using a maximum allowed number of steps instead of time limit, because a time limit is hard to determine for
         # running the Monte Carlo simulations (it wil be less then a second). The time limit will also have to be way higher when visualizing a run.
+    '''
 
     #If all agents are stuck, run failed 
     if ind == 0: 

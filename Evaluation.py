@@ -4,6 +4,7 @@ import os
 def evaluate_multiple(setups): 
     path_length = 0
     computational_complexity = 0 
+    avg_min_distance_obs = 0
     target = 0 
     not_target = 0 
     for s in setups: 
@@ -11,16 +12,19 @@ def evaluate_multiple(setups):
             target += 1     
             path_length += s.path_length 
             computational_complexity += s.computational_complexity 
+            avg_min_distance_obs += s.min_distance_target
         else: 
             not_target += 1 
     if target != 0: 
         path_length = path_length/target 
         computational_complexity = computational_complexity/target 
+        avg_min_distance_obs = avg_min_distance_obs/target 
     else: 
         path_length = 0
         computational_complexity = 0
+        avg_min_distance_obs = 0
     reachability = target/(target+not_target)
-    return round(path_length, 3), round(computational_complexity, 5), reachability
+    return round(path_length, 3), round(computational_complexity, 5), reachability, round(avg_min_distance_obs, 3)
 
 def safety(agent, env):
     min_distance = float('inf')
