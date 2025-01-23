@@ -48,3 +48,26 @@ class Environment:
             self.obstacles.append((new_x, new_y))
         
         print("Environment created")
+
+    def adjust_initial_swarm_position(self, setup, agents): 
+        #Move swarm such that closest agent at predetermined point 
+
+        #Find closest agent 
+        min_dist = math.sqrt((agents[0].x-setup.agents_start_x)**2+(agents[1].y-setup.agents_start_y)**2)
+        closest_agent = agents[0]
+        for ag in agents: 
+            distance = math.sqrt((ag.x-setup.agents_start_x)**2+(ag.y-setup.agents_start_y)**2)
+            if distance < min_dist: 
+                min_dist = distance 
+                closest_agent = ag 
+
+        #Determine shift 
+        shift_x = setup.agents_start_x - closest_agent.x
+        shift_y = setup.agents_start_y - closest_agent.y
+
+        #Shift agents 
+        for ag in agents: 
+            ag.x = ag.x + shift_x 
+            ag.y = ag.y + shift_y 
+            ag.pos_lst.append((ag.x, ag.y))
+            print(str(ag.x)+", "+str(ag.y))

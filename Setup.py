@@ -17,8 +17,8 @@ class Setup:
         #------Fill in----------------------------- 
 
         #Point around which agents are initially scattered 
-        self.agents_start_x = 5
-        self.agents_start_y = 5
+        self.agents_start_x = 20
+        self.agents_start_y = 20
         self.start_radius = 2 #Radius of circle that represents area where agents start
 
         self.smart_swarm = False #If one agent reaches a local minimum, that point is added to the obstacle list of the environment
@@ -42,11 +42,11 @@ class Setup:
         #------------Environment--------------------------
 
         #Sqaured total size in m 
-        self.area_size = 30
+        self.area_size = 50
 
         #Target
-        self.target_x = 25
-        self.target_y = 25
+        self.target_x = 40
+        self.target_y = 40
         self.target_radius = 0.5
 
         #lower and upper bound for number of obstacles 

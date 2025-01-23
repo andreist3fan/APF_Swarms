@@ -26,7 +26,7 @@ name = "main" #Name of the image of the simulation screenchot that is stored at 
 #--------------Pygame settings------------------------------------
 
 agent_radius = 5
-scale = 600/30 #pixel/m 
+scale = 15 #pixel/m 
 running = True
 wait_time = 0.1 #Determines speed of simulation
 draw_influence = False #Draws outer radius of obstacles 
@@ -34,11 +34,10 @@ draw_influence = False #Draws outer radius of obstacles
 #Create pygame 
 if setup.visual: 
     pg.init()
-    screen = pg.display.set_mode((600, 600))
+    screen = pg.display.set_mode(((scale*setup.area_size), (scale*setup.area_size)))
     running = True
 
 #-----------------------------------------------------------------
-
 
 #Create environment according to setup
 env = e.Environment(setup)
@@ -51,30 +50,8 @@ for i in range(setup.nr_agents):
     agents.append(a.Agent(setup, env, pos_agents))
     pos_agents.append((agents[-1].x, agents[-1].y))
 
-#Move swarm such that closest agent at predetermined point 
-
-#Find closest agent 
-min_dist = math.sqrt((agents[0].x-setup.agents_start_x)**2+(agents[1].y-setup.agents_start_y)**2)
-closest_agent = agents[0]
-for ag in agents: 
-    distance = math.sqrt((ag.x-setup.agents_start_x)**2+(ag.y-setup.agents_start_y)**2)
-    if distance < min_dist: 
-        min_dist = distance 
-        closest_agent = ag 
-
-#Determine shift 
-shift_x = setup.agents_start_x - closest_agent.x
-shift_y = setup.agents_start_y - closest_agent.y
-
-#Shift agents 
-for ag in agents: 
-    ag.x = ag.x + shift_x 
-    ag.y = ag.y + shift_y 
-    ag.pos_lst.append((ag.x, ag.y))
-    print(str(ag.x)+", "+str(ag.y))
-
-#self.pos_lst
-
+#Move swarm such that closest agent is on fixed point 
+#env.adjust_initial_swarm_position(setup, agents)
 
 start_time = time.time()
 steps = 0 
