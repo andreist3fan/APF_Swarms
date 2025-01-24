@@ -4,6 +4,7 @@ import Agent as a
 import Evaluation as ev
 import pygame as pg 
 import time 
+import math 
 import os 
 
 
@@ -25,7 +26,7 @@ name = "main" #Name of the image of the simulation screenchot that is stored at 
 #--------------Pygame settings------------------------------------
 
 agent_radius = 5
-scale = 600/30 #pixel/m 
+scale = 15 #pixel/m 
 running = True
 wait_time = 0.1 #Determines speed of simulation
 draw_influence = False #Draws outer radius of obstacles 
@@ -33,11 +34,10 @@ draw_influence = False #Draws outer radius of obstacles
 #Create pygame 
 if setup.visual: 
     pg.init()
-    screen = pg.display.set_mode((600, 600))
+    screen = pg.display.set_mode(((scale*setup.area_size), (scale*setup.area_size)))
     running = True
 
 #-----------------------------------------------------------------
-
 
 #Create environment according to setup
 env = e.Environment(setup)
@@ -50,6 +50,8 @@ for i in range(setup.nr_agents):
     agents.append(a.Agent(setup, env, pos_agents))
     pos_agents.append((agents[-1].x, agents[-1].y))
 
+#Move swarm such that closest agent is on fixed point 
+#env.adjust_initial_swarm_position(setup, agents)
 
 start_time = time.time()
 steps = 0 
@@ -62,6 +64,11 @@ while not setup.target and running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+
+        #Draw spawning area agents 
+        center_x = (setup.agents_start_x - setup.start_radius)*scale 
+        center_y = (setup.agents_start_y - setup.start_radius)*scale
+        pg.draw.circle(screen, "red", (center_x, center_y), (setup.start_radius*scale), 2)
 
         #Draw target 
         pg.draw.circle(screen, "red", pg.Vector2((setup.target_x*scale), (setup.target_y*scale)), (setup.target_radius*scale))
