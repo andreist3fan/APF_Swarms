@@ -19,17 +19,16 @@ setup.mu_o = 1000 * 0.0036
 setup.obst_N_lower = 100 #influenced by values in paper 
 setup.obst_N_upper = 200
 
-setup.nr_agents = 3
+setup.nr_agents = 20
 setup.visual = True 
 name = "main" #Name of the image of the simulation screenchot that is stored at the end 
 
 #--------------Pygame settings------------------------------------
 
-agent_radius = 5
+#agent_radius = 5
 scale = 15 #pixel/m 
 running = True
 wait_time = 0.1 #Determines speed of simulation
-draw_influence = False #Draws outer radius of obstacles 
 
 #Create pygame 
 if setup.visual: 
@@ -39,19 +38,27 @@ if setup.visual:
 
 #-----------------------------------------------------------------
 
-#Create environment according to setup
+#Create environment and obstacles according to setup
 env = e.Environment(setup)
+print("Environment created")
 
 #Create agent according to setup
 agents = [] 
 pos_agents = []
 agents_stuck = []
-for i in range(setup.nr_agents): 
-    agents.append(a.Agent(setup, env, pos_agents))
-    pos_agents.append((agents[-1].x, agents[-1].y))
 
-#Move swarm such that closest agent is on fixed point 
-#env.adjust_initial_swarm_position(setup, agents)
+#Create closest agent 
+agent_closest = a.Agent(setup, pos_agents, env.obstacles)
+agent_closest.x = setup.agents_start_x
+agent_closest.y = setup.agents_start_y
+agents.append(agent_closest)
+pos_agents.append((agent_closest.x, agent_closest.y))
+
+if setup.nr_agents > 1: 
+    for i in range((setup.nr_agents)-1): 
+        agents.append(a.Agent(setup, pos_agents, env.obstacles))
+        pos_agents.append((agents[-1].x, agents[-1].y))
+print("Agents created")
 
 start_time = time.time()
 steps = 0 
@@ -66,9 +73,8 @@ while not setup.target and running:
                 running = False
 
         #Draw spawning area agents 
-        center_x = (setup.agents_start_x - setup.start_radius)*scale 
-        center_y = (setup.agents_start_y - setup.start_radius)*scale
-        pg.draw.circle(screen, "red", (center_x, center_y), (setup.start_radius*scale), 2)
+        min_dist = math.sqrt((setup.target_x-setup.agents_start_x)**2+(setup.target_y-setup.agents_start_y)**2)
+        pg.draw.circle(screen, "red", ((setup.target_x*scale), (setup.target_y*scale)), (min_dist*scale+1), 2)
 
         #Draw target 
         pg.draw.circle(screen, "red", pg.Vector2((setup.target_x*scale), (setup.target_y*scale)), (setup.target_radius*scale))
@@ -76,27 +82,27 @@ while not setup.target and running:
         # draw obstacles
         for obstacle in env.obstacles:
             pos = pg.Vector2((obstacle[0]*scale), (obstacle[1]*scale))
-            pg.draw.circle(screen, "white", pos, round(setup.obst_radius_inner*scale))
-            if draw_influence: 
-                pg.draw.circle(screen, "white", pos, round(setup.obst_radius_outer*scale), 2)
+            pg.draw.circle(screen, "white", pos, round(setup.obst_radius*scale))
         
         #Draw agents and their artificial objects 
         for a in agents: 
+            #Artificial position of agents 
             for obs in a.artificial_obstacles:
                 print("Trying to draw artificial obstacle")
                 pos = pg.Vector2((obs[0]*scale), (obs[1]*scale))
-                pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_inner*scale))
-                if draw_influence: 
-                    pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_outer*scale), 2)
-            pg.draw.circle(screen, "blue", pg.Vector2((a.x*scale), (a.y*scale)), agent_radius)
+                pg.draw.circle(screen, "yellow", pos, round(setup.agent_radius*scale))
+            #Current position agent 
+            pg.draw.circle(screen, "blue", pg.Vector2((a.x*scale), (a.y*scale)), (a.radius*scale))
+
+        #Draw initial position of agents 
+        for pos in pos_agents: 
+            pg.draw.circle(screen, "green", pg.Vector2((pos[0]*scale), (pos[1]*scale)), 2)
 
         for a in agents_stuck: 
             for obs in a.artificial_obstacles:
                 print("Trying to draw artificial obstacle")
                 pos = pg.Vector2((obs[0]*scale), (obs[1]*scale))
                 pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_inner*scale))
-                if draw_influence: 
-                    pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_outer*scale), 2)
 
         time.sleep(wait_time)
 
@@ -110,6 +116,11 @@ while not setup.target and running:
 
         #Check whether agent has reached target
         i.target_check(env)
+
+        #Check whether agent hit an obstacle 
+        i.obs_check(env)
+
+        # Consequences if agent reached target
         if i.target: 
             setup.target = True 
             end_time = time.time()
@@ -120,9 +131,14 @@ while not setup.target and running:
             setup.path_length = len(i.pos_lst)
             setup.min_distance_target = ev.safety(i, env)
             print("Minimum clearance: "+ str(ev.safety(i, env)))
+ 
 
-        # Check whether agent has reached a local minimum
-        if i.local_minimum:
+        # Consequences if agent in trouble (hit obstacle, local minimum)
+        if i.hit: 
+            print("Agent hit an obstacle :(")
+            del agents[ind]
+            setup.nr_hit_agents += 1 
+        elif i.local_minimum:# Check whether agent has reached a local minimum
             print("Agent is stuck in a local minimum")
             if setup.smart_swarm: 
                 env.artificial_obstacles.append((i.x, i.y))
@@ -130,7 +146,8 @@ while not setup.target and running:
             if setup.delete_stuck:
                 agents_stuck.append(agents[ind])
                 del agents[ind]
-            setup.nr_stuck_agents += 1 
+            setup.nr_stuck_agents += 1
+
 
         ind += 1 
 
@@ -170,3 +187,7 @@ print("Computational complexity:")
 print(str(setup.computational_complexity) + "s")
 print("Number of stuck agents:")
 print(str(setup.nr_stuck_agents)+" out of "+str(setup.nr_agents))
+print("Number of agents that hit an obstacle: ")
+print(str(setup.nr_hit_agents)+" out of "+str(setup.nr_agents))
+print("Number of left agents: ")
+print(len(agents))

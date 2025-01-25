@@ -17,9 +17,10 @@ class Setup:
         #------Fill in----------------------------- 
 
         #Point around which agents are initially scattered 
-        self.agents_start_x = 20
-        self.agents_start_y = 20
-        self.start_radius = 2 #Radius of circle that represents area where agents start
+        self.agents_start_x = 10
+        self.agents_start_y = 10
+        self.start_radius = 10 #Radius of circle that represents area where agents start
+        self.agent_radius = 0.2
 
         self.smart_swarm = False #If one agent reaches a local minimum, that point is added to the obstacle list of the environment
 
@@ -39,14 +40,15 @@ class Setup:
         self.time_limit = 10 #If simulation takes longer, reachability is set to 0
         self.delete_stuck = True #If an agent gets stuck, ignore it in the further process (assumes that there is no way to unstuck it)
         self.nr_stuck_agents = 0 
+        self.nr_hit_agents = 0
         #------------Environment--------------------------
 
         #Sqaured total size in m 
-        self.area_size = 50
+        self.area_size = 35
 
         #Target
-        self.target_x = 40
-        self.target_y = 40
+        self.target_x = 30
+        self.target_y = 30
         self.target_radius = 0.5
 
         #lower and upper bound for number of obstacles 
@@ -63,6 +65,7 @@ class Setup:
 
         # Simulation Hyperparameter values (from https://ieeexplore-ieee-org.tudelft.idm.oclc.org/document/10115857)
         self.range = 8
+        self.obst_radius = 0.6
         self.obst_radius_inner = 0.6
         self.obst_radius_outer = 4.5
         self.alpha_t = 100
@@ -81,4 +84,5 @@ class Setup:
         self.path_length = 0 
         self.computational_complexity = 0 
         self.min_distance_target = 0 
+
 
