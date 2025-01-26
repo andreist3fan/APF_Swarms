@@ -2,6 +2,12 @@ main.py:
 Set the parameters of the setup and run the simulation 
 Creates the environment and agents based on Setup and also runs the evaluation 
 
+mc_main_scattering.py: 
+Monte Carlo Simulation for analysiing effect of scattering 
+
+mc_main_swarm size.py: 
+Monte Carlo Simulation for analysiing effect of swarm size 
+
 Setup.py: 
 Class for all the meta variables for the simulation 
 If you want to change the value of a parameter (e.g. use a different algorithm), please change that in the main functions
@@ -14,8 +20,11 @@ Agent_algorithms:
 Folder that includes a file for each algorithm (we could also include these functions in the Agent class but it 
 might be easier like this for testing purposes)
 
-Environment: 
+Environment.py: 
 Class for Enviornment 
 
-Evaluation: 
+Evaluation.py: 
 Class for Evaluation 
+
+Hyperparameter_tuner.py: 
+Code used to find correct hyperparameters for algorithms 

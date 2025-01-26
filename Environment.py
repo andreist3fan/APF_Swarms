@@ -4,14 +4,16 @@ import math
 class Environment: 
     def __init__(self, setup):
         
-        #Target
+        #------------------Target-------------------------------------
+
         self.target_x = setup.target_x
         self.target_y = setup.target_y
         self.target_radius = setup.target_radius
 
-        #Obstacles 
-        self.obstacles = [] # (x, y) for each obstacle
-        self.artificial_obstacles = []
+        #-----------------Obstacles-----------------------------------
+
+        self.obstacles = []                     # (x, y) for each obstacle
+        self.artificial_obstacles = []          # found by agents 
         self.obs_radius = setup.obst_radius
 
         #Determine number of obstacles 

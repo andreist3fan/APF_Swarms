@@ -10,13 +10,23 @@ from scipy.stats import truncnorm
 class Agent: 
     def __init__(self, setup, pos_other_agents, obstacles):
         
+        #------------Characteristics------------------------------
+         
         self.algorithm = setup.algorithm  
 
-        #Current position
-        self.x = 0
+        self.x = 0                          #Current position
         self.y = 0 
-        self.radius = setup.agent_radius #Agents cant spawn closer to each other than twice the radius 
+        self.pos_lst = []                   #List representing path 
+        
+        self.target = False 
+        self.hit = False                    #True if hit obstacle ("dead") 
+        self.local_minimum = False          #True if in local minimum
 
+        self.artificial_obstacles = []      #List of all artificial obstacles locations
+        self.radius = setup.agent_radius 
+
+        #--------Determine initial agent position-----------------
+         
         if setup.nr_agents == 1: 
             self.x = setup.agents_start_x 
             self.y = setup.agents_start_y
@@ -67,28 +77,16 @@ class Agent:
                             close_to_obstacle = True  
 
                 #Add condition to notice when circle is full because circle too small or swarm too big 
+            
             self.x = new_x
             self.y = new_y
 
-
-        #List representing path of agent 
-        self.pos_lst = []
         self.pos_lst.append((self.x, self.y))
 
-        #True if target is reached 
-        self.target = False 
+    #------------------Functions-------------------------------------------
 
-        #True if hit obstacle ("dead")
-        self.hit = False 
+    # Update position based on position and algorithm
 
-        #True if in local minimum
-        self.local_minimum = False
-
-        #List of all artificial obstacles locations
-        self.artificial_obstacles = []
-
-
-    #Update position based on position 
     def update_position(self, environment, setup): 
         if self.algorithm == 0: 
             self.x, self.y = capf.pos_update(self, environment, setup)
@@ -104,41 +102,20 @@ class Agent:
         #Append new location to the history list 
         self.pos_lst.append((self.x, self.y))
 
+    # Check if target is reached
+
     def target_check(self, environment):
         # Set to True if target is reached
         distance_to_target = ((environment.target_x - self.x)**2 + (environment.target_y - self.y)**2)**0.5
         self.target = distance_to_target < environment.target_radius 
+    
+    #Check if obstacle is hit 
 
     def obs_check(self, environment): 
         for obs in environment.obstacles: 
             distance_to_obstacle = math.sqrt((obs[0]-self.x)**2+(obs[1]-self.y)**2)
             if distance_to_obstacle < (self.radius + environment.obs_radius): 
                 self.hit = True 
+                print("Distance: "+str(distance_to_obstacle))
                 print("Position agent: "+str(self.x)+", "+str(self.y))
                 print("Position obstacle: "+str(obs[0])+", "+str(obs[1]))
-
-
-#Not used anymore for current scattering -> can be deleted 
-def adjust_initial_swarm_position(setup, agents): 
-        #Move swarm such that closest agent at predetermined point 
-
-        #Find closest agent 
-        min_dist = math.sqrt((agents[0].x-setup.agents_start_x)**2+(agents[0].y-setup.agents_start_y)**2)
-        closest_agent = agents[0]
-        for ag in agents: 
-            distance = math.sqrt((ag.x-setup.agents_start_x)**2+(ag.y-setup.agents_start_y)**2)
-            if distance < min_dist: 
-                min_dist = distance 
-                closest_agent = ag 
-
-        #Determine shift 
-        shift_x = setup.agents_start_x - closest_agent.x
-        shift_y = setup.agents_start_y - closest_agent.y
-
-        #Shift agents 
-        for ag in agents: 
-            ag.x = ag.x + shift_x 
-            ag.y = ag.y + shift_y 
-            ag.pos_lst.append((ag.x, ag.y))
-            print(str(ag.x)+", "+str(ag.y))
-
