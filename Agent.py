@@ -9,41 +9,47 @@ from scipy.stats import truncnorm
 
 class Agent: 
     def __init__(self, setup, pos_other_agents, obstacles, fixed):
-    
-    #Fixed True: location at spawning center 
-    #Fixed False: location random scattered 
+
+    #Fixed True: location at spawning center
+    #Fixed False: location random scattered
         
         #------------Characteristics------------------------------
-         
-        self.algorithm = setup.algorithm  
 
-        self.x = 0                          #Current position
-        self.y = 0 
-        self.pos_lst = []                   #List representing path 
-        
-        self.target = False 
-        self.hit = False                    #True if hit obstacle ("dead") 
+        self.algorithm = setup.algorithm
+
+        # For A* algorithm, since we precompute the path
+        self.step_no = None
+        self.path = None
+        #Current position
+        self.x = 0                        #Current position
+        self.y = 0
+        self.radius = 0.2 #Agents cant spawn closer to each other than twice the radius
+        self.pos_lst = []                   #List representing path
+
+        self.target = False
+        self.hit = False                    #True if hit obstacle ("dead")
         self.local_minimum = False          #True if in local minimum
 
         self.artificial_obstacles = []      #List of all artificial obstacles locations
-        self.radius = setup.agent_radius 
+        self.radius = setup.agent_radius
 
         #--------Determine initial agent position-----------------
-         
-        if setup.nr_agents == 1 or fixed: 
+
+        if setup.nr_agents == 1 or fixed:
             self.x = setup.agents_start_x 
             self.y = setup.agents_start_y
-        else:    
+        else:
             center_x = setup.agents_start_x
             center_y = setup.agents_start_y
 
-            min_dist_target = math.sqrt((center_x-setup.target_x)**2+(center_y-setup.target_y)**2) 
+            min_dist_target = math.sqrt((center_x-setup.target_x)**2+(center_y-setup.target_y)**2)
 
-            close_to_target = True 
-            close_to_other_agent = True 
-            close_to_obstacle = True 
+            close_to_target = True
+            close_to_other_agent = True
+            close_to_obstacle = True
 
-            while close_to_other_agent or close_to_obstacle or close_to_target: 
+            while close_to_obstacle or close_to_other_agent:
+            while close_to_other_agent or close_to_obstacle or close_to_target:
 
                 #Create new position until one with distance to other objects is found 
                 angle = random.uniform(0, 2 * math.pi) #for random distribution 
@@ -56,34 +62,37 @@ class Agent:
                 new_y = center_y + dist_center * math.sin(angle)
 
                 #Reset conditions to check new location
-                close_to_target = False 
-                close_to_other_agent = False 
-                close_to_obstacle = False  
+                close_to_target = False
+                close_to_other_agent = False
+                close_to_obstacle = False
 
-                #Check distance to target 
-                distance_to_target = math.sqrt((new_x-setup.target_x)**2+(new_y-setup.target_y)**2) 
-                if distance_to_target < min_dist_target: 
-                    close_to_obstacle = True                  
-                
-                #Check distance to other agents 
-                if pos_other_agents: 
-                    for pos in pos_other_agents: 
+                #Check distance to target
+                distance_to_target = math.sqrt((new_x-setup.target_x)**2+(new_y-setup.target_y)**2)
+                if distance_to_target < min_dist_target:
+                    close_to_obstacle = True
+
+                #Check distance to other agents
+                if pos_other_agents:
+                    for pos in pos_other_agents:
                         distance_between_agents = math.sqrt((new_x-pos[0])**2+(new_y-pos[1])**2)
-                        if distance_between_agents <= (2*self.radius): 
+                        if distance_between_agents <= (2*self.radius):
                             close_to_other_agent = True
 
-                #Check distance to obstacles 
-                if obstacles: 
-                    for obs in obstacles: 
+                #Check distance to obstacles
+                if obstacles:
+                    for obs in obstacles:
                         distance_to_obs = math.sqrt((new_x-obs[0])**2+(new_y-obs[1])**2)
                         if distance_to_obs <= (setup.obst_radius + self.radius):
-                            close_to_obstacle = True  
+                            close_to_obstacle = True
 
-                #Add condition to notice when circle is full because circle too small or swarm too big 
-            
+                #Add condition to notice when circle is full because circle too small or swarm too big
+
             self.x = new_x
             self.y = new_y
 
+        self.astar_init = False # for A*, if the grid was initialized or not
+        #True if target is reached
+        self.target = False 
         self.pos_lst.append((self.x, self.y))
 
     #------------------Functions-------------------------------------------
@@ -99,7 +108,10 @@ class Agent:
             self.x, self.y = cr_bapf.pos_update(self, environment, setup)
         if self.algorithm == 3: 
             self.x, self.y = rapf.pos_update(self, environment, setup)
-        if self.algorithm == 4: 
+        if self.algorithm == 4:
+            if not self.astar_init:
+                a_star.initialize_path(self, environment, setup)
+                self.astar_init = True
             self.x, self.y = a_star.pos_update(self, environment, setup)
         
         #Append new location to the history list 
@@ -111,11 +123,16 @@ class Agent:
         # Set to True if target is reached
         distance_to_target = ((environment.target_x - self.x)**2 + (environment.target_y - self.y)**2)**0.5
         self.target = distance_to_target < environment.target_radius 
-    
-    #Check if obstacle is hit 
 
-    def obs_check(self, environment): 
-        for obs in environment.obstacles: 
+    #Check if obstacle is hit
+
+    def obs_check(self, environment):
+        for obs in environment.obstacles:
             distance_to_obstacle = math.sqrt((obs[0]-self.x)**2+(obs[1]-self.y)**2)
-            if distance_to_obstacle < (self.radius + environment.obs_radius): 
-                self.hit = True 
+            if distance_to_obstacle < (self.radius + environment.obs_radius):
+                self.hit = True
+
+    # sets path for the A* algorithm, once computed
+    def set_path(self, path):
+        self.path = path
+        self.step_no = 0

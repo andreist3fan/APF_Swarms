@@ -12,7 +12,7 @@ class Setup:
 
         #-------------Agents-----------------------------------
 
-        #Agent characteristics 
+        #Agent characteristics
         self.agent_radius = 0.2
         self.step_size = 0.4
         self.step_variance = 0.01
@@ -26,14 +26,14 @@ class Setup:
         self.N_bacteria_RAPF = 8
         #4: A*
 
-        #Swarm characteristics 
+        #Swarm characteristics
         self.smart_swarm = False #If one agent reaches a local minimum, that point is added to the obstacle list of the environment
         self.nr_agents = 1
-        
-        #Reachability/Stuck agents 
+
+        #Reachability/Stuck agents
         self.time_limit = 10 #If simulation takes longer, reachability is set to 0
         self.delete_stuck = True #If an agent gets stuck, ignore it in the further process (assumes that there is no way to unstuck it)
-        self.nr_stuck_agents = 0 
+        self.nr_stuck_agents = 0
         self.nr_hit_agents = 0
 
         #------------Environment--------------------------
@@ -41,7 +41,7 @@ class Setup:
         #Length of square (m)
         self.area_size = 35
 
-        #Point around which agents are initially scattered 
+        #Point around which agents are initially scattered
         self.agents_start_x = 10
         self.agents_start_y = 10
         self.start_radius = 10      #Radius of circle that represents area where agents start (scattering)
@@ -51,9 +51,9 @@ class Setup:
         self.target_y = 30
         self.target_radius = 0.5
 
-        #Obstacles 
+        #Obstacles
         self.obst_radius = 0.6
-        self.obst_N_lower = 60      #lower and upper bound for number of obstacles 
+        self.obst_N_lower = 60      #lower and upper bound for number of obstacles
         self.obst_N_upper = 80 
 
         #--------------Hyperparameter-------------------------
@@ -71,13 +71,23 @@ class Setup:
 
         self.visual = False         #Visualise run in pygame (! Influences speed of simulation)
         self.scale = 15
-        self.step_limit = 1000       #If exceeded, run fails 
-    
+        self.step_limit = 1000       #If exceeded, run fails
+
         #--------------Performance matrix-----------------------
 
-        self.target = False                 #True as soon as one agent reaches target 
+        #--------------Performance matrix-----------------------------
+
+        # Some A* specific parameters
+
+        self.grid_fineness = 20 # Number of grid points per meter (i.e, 1m x 1m space has 100 grid cells
+                                # with grid_fineness = 10)
+
+        #--------------Performance metrics-----------------------------
+
+        self.target = False #True as soon as one agent reaches target 
+        self.target = False                 #True as soon as one agent reaches target
         self.path_length = 0                #Lenth of path of agent that first reached the target (steps)
-        self.computational_complexity = 0   #Time of simulation (s) 
-        self.min_distance_target = 0        #Minimum clearance of agent that reached the target first        
+        self.computational_complexity = 0   #Time of simulation (s)
+        self.min_distance_target = 0        #Minimum clearance of agent that reached the target first
 
 
