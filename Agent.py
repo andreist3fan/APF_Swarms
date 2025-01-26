@@ -48,7 +48,6 @@ class Agent:
             close_to_other_agent = True
             close_to_obstacle = True
 
-            while close_to_obstacle or close_to_other_agent:
             while close_to_other_agent or close_to_obstacle or close_to_target:
 
                 #Create new position until one with distance to other objects is found 
