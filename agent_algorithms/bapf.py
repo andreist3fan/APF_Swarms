@@ -2,16 +2,8 @@ import numpy as np
 
 def pos_update(agent, environment, setup): 
     # Step 1: Isolate all obstacles that are within the view range
-    total_obstacles = environment.obstacles.copy() 
     obstacles_in_range = []
-    
-    #Smart swarm 
-    if setup.smart_swarm: 
-        if environment.artificial_obstacles: 
-            total_obstacles.extend(environment.artificial_obstacles)
-            print("I have added an artifical obstacle")
-
-    for obstacle in total_obstacles: 
+    for obstacle in environment.obstacles: 
         distance = ((agent.x - obstacle[0]) ** 2 + (agent.y - obstacle[1]) ** 2) ** 0.5
         if distance < setup.range:
             obstacles_in_range.append(obstacle)

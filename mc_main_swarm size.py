@@ -6,21 +6,29 @@ import pygame as pg
 import matplotlib.pyplot as plt
 import time 
 import os 
+import Analysis_settings_levels as asl 
+
+#----------------Level 1: Change cluttered environment--------------
+
+cluttered = asl.clut_1
+save_problematic_runs = False
 
 #---------------Monte Carlo settings---------------------------------
 
-mc_runs = 1 #Runs per setting
-mc_nr_agents = [1, 2, 3, 5, 10, 15, 20, 25] #Different settings 
-smart = True
+mc_runs = asl.nr_runs                         #Runs per setting
+mc_nr_agents = asl.swarm_sizes                #Different settings 
+scattered = asl.sws_scattering
+smart = False 
 
-mc_name = "New swarm size test"
+mc_name = "Swarm Size with obstacles " + str(cluttered) 
 
-algorithm = 0
+algorithm = asl.algorithm
 
 #Store results of each run for final analysis 
 res_reachability = []               #stores value per setting 
 res_path_length = []                #stores value per setting 
 res_computational_complexity = []   #stores value per setting  
+res_min_dist = []                   #stores value per setting  
 res_stuck_agents = []               #stores tupel per setting 
 
 #---------------Folder logistics-------------------------------------- 
@@ -63,6 +71,7 @@ for na in mc_nr_agents:
 
         setup.nr_agents = na 
         setup.smart_swarm = smart 
+        setup.start_radius = scattered
 
         #--------------------------------------------------------------
 
@@ -73,12 +82,19 @@ for na in mc_nr_agents:
         agents = [] 
         pos_agents = []
         agents_stuck = []
-        for i in range(setup.nr_agents): 
-            agents.append(a.Agent(setup, env, pos_agents))
-            pos_agents.append((agents[-1].x, agents[-1].y))
+
+        #Create closest agent 
+        agent_closest = a.Agent(setup, pos_agents, env.obstacles, True)
+        agents.append(agent_closest)
+        pos_agents.append((agent_closest.x, agent_closest.y))
+
+        #Create rest of the swarm 
+        if setup.nr_agents > 1: 
+            for i in range((setup.nr_agents)-1): 
+                agents.append(a.Agent(setup, pos_agents, env.obstacles, False))
+                pos_agents.append((agents[-1].x, agents[-1].y))
 
         running = True 
-
         start_time = time.time()
 
         #The while loop has to be updated according to the normal main function 
@@ -95,26 +111,33 @@ for na in mc_nr_agents:
                 #Update position 
                 i.update_position(env, setup)
 
+                #Check whether agent hit an obstacle 
+                i.obs_check(env)
+
                 #Check whether agent has reached target
                 i.target_check(env)
+
                 if i.target: 
-                    setup.target = True 
                     end_time = time.time()
-                    print("Target is reached.")
+
+                    #Performance matrix
+                    setup.target = True 
                     setup.computational_complexity = round((end_time - start_time), 5)
-                    #print(setup.computational_complexity)
                     setup.path_length = len(i.pos_lst)
-                    #print(setup.path_length)
                     setup.min_distance_target = ev.safety(i, env)
 
-                # Check whether agent has reached a local minimum
-                if i.local_minimum:
-                    print("Agent is stuck in a local minimum")
+                # Consequences if agent in trouble (hit obstacle, local minimum)
+                if i.hit: 
+                    del agents[ind]
+                    setup.nr_hit_agents += 1 
+                elif i.local_minimum:# Check whether agent has reached a local minimum
+                    if setup.smart_swarm: 
+                        env.artificial_obstacles.append((i.x, i.y))
                     #delete stuck agent
                     if setup.delete_stuck:
                         agents_stuck.append(agents[ind])
                         del agents[ind]
-                    setup.nr_stuck_agents += 1 
+                    setup.nr_stuck_agents += 1
 
                 ind += 1
 
@@ -123,14 +146,22 @@ for na in mc_nr_agents:
             #If too many steps required, run ends 
             if steps > 500: 
                 running = False
-                print("Run took to long and was stopped.")
+
+                #Draw problematic run 
+                if save_problematic_runs:
+                    file_name = "Run took too long (Number of agents "+str(na)+")("+str(m)+").png"
+                    ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
 
             #If all agents are stuck, run failed 
             if ind == 0: 
                 running = False 
+                
+                #Draw problematic run
+                if save_problematic_runs: 
+                    file_name = "All agents stuck (Number of agents "+str(na)+")("+str(m)+").png"
+                    ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
 
         setups_lst.append(setup)
-        print("Run " + str(m) + " completed")
 
         #Draw run if all agents got stuck 
 
@@ -153,6 +184,7 @@ for na in mc_nr_agents:
     res_path_length.append(pl)
     res_computational_complexity.append(cc)
     res_reachability.append(r)
+    res_min_dist.append(min_dist)
     res_stuck_agents.append(stuck)
 
     print("Setting "+str(na)+" completed.")
@@ -225,6 +257,7 @@ try:
         file.write("\n\n Path length: "+str(res_path_length))
         file.write("\n\n Computational complexity: "+str(res_computational_complexity))
         file.write("\n\n Reachability: "+str(res_reachability))
+        file.write("\n\n Safety distance (Closest distance to obstacle)"+str(res_min_dist))
     print("File has been created.")
 
 except Exception as e:

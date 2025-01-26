@@ -5,21 +5,24 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import norm
 
-step_limit = 500
-safety_goal = 0.5 #Goals for smallest distance to target in a set of 100 succesful runs (meter)
+step_limit = 250
+minimum_safety = 0.8 # 2 sigma safety (97.72% safe)
 
 # Hyperparameters
-algorithm = 1
-alpha_t = 10000
-mu_t = 0.0017
-alpha_o = 430
-mu_o = 3.6
+algorithm = 2
+alpha_t = 100
+mu_t = 0.002
+alpha_o = 8
+mu_o = 1.5
 
 def simulate():
-    setup = Setup(algorithm) 
+    setup = Setup(algorithm)
+    setup.nr_agents = 1
+    setup.obst_N_lower = 60 #influenced by values in paper 
+    setup.obst_N_upper = 80 
 
     #Create agent
-    agent = a.Agent(setup)
+    agent = a.Agent(setup, "placeholder", "placeholder")
 
     #Create environment according to setup
     env = e.Environment(setup)
@@ -63,19 +66,26 @@ def simulate():
     else:
         return False
 
-num_samples = 300 # Run the simulation multiple times to average out randomness
+num_samples = 1000 # Run the simulation multiple times to average out randomness
 results = []
+print("Simulating algorithm " + str(algorithm) + " with following hyperparameters: " + str(alpha_t) + ", " + str(mu_t) + ", " + str(alpha_o) + ", " + str(mu_o))
 while len(results) < num_samples:
+    print(str(len(results)) + " runs", end='\r')
+    if len(results) % 100 == 0:
+        print(str(len(results)) + " runs", end='\r')
     try:
         min_distance = simulate()
     except:
         min_distance = False
-    if min_distance: # If the run was succesful and an actual value was presented
+    if min_distance and not min_distance == 1: # If the run was succesful and an actual value was presented
         results.append(min_distance)
 min_result = min(results)
 avg_result = sum(results) / len(results)
+sorted_results = sorted(results)
+goal_result = sorted_results[int(0.0228*num_samples)]
 print("Minimum clearance: " + str(round(min_result, 3)))
 print("Average clearance: " + str(round(avg_result, 3)))
+print("2 sigma safety clearance: " + str(round(goal_result, 3)))
 
 # Plot the histogram of the data
 plt.hist(results, bins=50, density=True, alpha=0.6, color='blue', label='Data')

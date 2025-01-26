@@ -1,33 +1,24 @@
 
 #!!!
-#Please dont change the values of the parameters in this file since multiple main functions assume these default values
-#To run a setup with a different setting, change the values in an object, not the class itself
+#Please dont change the values of the parameters in this file since multiple main functions assume these default values 
+#To run a setup with a different setting, change the values in an object, not the class itself 
 #!!!
 
-class Setup:
+class Setup: 
 
     def __init__(self, algorithm):
 
         self.name = "Run_1"
 
-        #Visualise run in pygame (! Influences speed of simulation)
-        self.visual = False 
+        #-------------Agents-----------------------------------
 
-
-        #------Fill in-----------------------------
-
-        #Point around which agents are initially scattered 
-        self.agents_start_x = 5
-        self.agents_start_y = 5
-        self.start_radius = 3 #Radius of circle that represents area where agents start
-
-        self.smart_swarm = False #If one agent reaches a local minimum, that point is added to the obstacle list of the environment
-
-        #Agents
-        self.nr_agents = 1
+        #Agent characteristics
+        self.agent_radius = 0.2
+        self.step_size = 0.4
+        self.step_variance = 0.01
         self.algorithm = algorithm
 
-        #0: CAPF
+        #0: CAPF 
         #1: BAPF
         self.N_bacteria = 60
         #2: CR-BAPF
@@ -35,55 +26,54 @@ class Setup:
         self.N_bacteria_RAPF = 8
         #4: A*
 
+        #Swarm characteristics
+        self.smart_swarm = False #If one agent reaches a local minimum, that point is added to the obstacle list of the environment
+        self.nr_agents = 1
+
         #Reachability/Stuck agents
         self.time_limit = 10 #If simulation takes longer, reachability is set to 0
         self.delete_stuck = True #If an agent gets stuck, ignore it in the further process (assumes that there is no way to unstuck it)
         self.nr_stuck_agents = 0
+        self.nr_hit_agents = 0
+
         #------------Environment--------------------------
 
-        #Sqaured total size in m 
-        self.area_size = 30
+        #Length of square (m)
+        self.area_size = 35
+
+        #Point around which agents are initially scattered
+        self.agents_start_x = 10
+        self.agents_start_y = 10
+        self.start_radius = 10      #Radius of circle that represents area where agents start (scattering)
 
         #Target
-        self.target_x = 25
-        self.target_y = 25
+        self.target_x = 30
+        self.target_y = 30
         self.target_radius = 0.5
 
-        #lower and upper bound for number of obstacles 
-        self.obst_N_lower = 60 #influenced by values in paper 
+        #Obstacles
+        self.obst_radius = 0.6
+        self.obst_N_lower = 60      #lower and upper bound for number of obstacles
         self.obst_N_upper = 80 
 
-        #-------------Agents-----------------------------------
-
-        # Movement
-        self.step_size = 0.1
-        self.step_variance = 0.01
-
-        #--------------Hyperparameter from paper----------------
+        #--------------Hyperparameter-------------------------
 
         # Simulation Hyperparameter values (from https://ieeexplore-ieee-org.tudelft.idm.oclc.org/document/10115857)
         self.range = 8
-        self.obst_radius_inner = 0.4
+        self.obst_radius_inner = 0.6
         self.obst_radius_outer = 4.5
+        self.alpha_t = 100
+        self.mu_t = 0.002
+        self.alpha_o = 8
+        self.mu_o = 1.5
 
-        # Unfortunately, these parameters are highly dependent on the APF algorithm to work.
+        #------------Simulation--------------------------------
 
-        if self.algorithm == 0:
-            self.alpha_t = 10000 * 1
-            self.mu_t = 1 * 0.0017
-            self.alpha_o = 1 * 430 #was 1, changed it (no specific reason why this value) to see the influence of obstacles in the simulation
-            self.mu_o = 1000 * 0.0036
-        elif self.algorithm == 1:
-            self.alpha_t = 10000
-            self.mu_t = 0.8
-            self.alpha_o = 600
-            self.mu_o = 50
-        else:
-            self.alpha_t = 10000
-            self.mu_t = 1
-            self.alpha_o = 1
-            self.mu_o = 1000
+        self.visual = False         #Visualise run in pygame (! Influences speed of simulation)
+        self.scale = 15
+        self.step_limit = 1000       #If exceeded, run fails
 
+        #--------------Performance matrix-----------------------
 
         #--------------Performance matrix-----------------------------
 
@@ -95,11 +85,9 @@ class Setup:
         #--------------Performance metrics-----------------------------
 
         self.target = False #True as soon as one agent reaches target 
-        # Note by Rens: I feel like this variable belongs in main.py, since it is constantly switched between False and True between runs (and setup should contain constants right?)
-        #Response by Firine: Since we assume that the reachibility will be 100% (we stop the simulation only if an agent has reached the target), it could be in main. But I think we will 
-        #store the evaluation parameters (path length and computational complexity) also in Setup, so it might be nice to also have it here. Doesnt really matter I guess 
+        self.target = False                 #True as soon as one agent reaches target
+        self.path_length = 0                #Lenth of path of agent that first reached the target (steps)
+        self.computational_complexity = 0   #Time of simulation (s)
+        self.min_distance_target = 0        #Minimum clearance of agent that reached the target first
 
-        self.path_length = 0 
-        self.computational_complexity = 0 
-        self.min_distance_target = 0
 
