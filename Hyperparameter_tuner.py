@@ -9,7 +9,7 @@ step_limit = 250
 minimum_safety = 0.8 # 2 sigma safety (97.72% safe)
 
 # Hyperparameters
-algorithm = 2
+algorithm = 1
 alpha_t = 100
 mu_t = 0.002
 alpha_o = 8
@@ -18,8 +18,8 @@ mu_o = 1.5
 def simulate():
     setup = Setup(algorithm)
     setup.nr_agents = 1
-    setup.obst_N_lower = 60 #influenced by values in paper 
-    setup.obst_N_upper = 80 
+    setup.obst_N_lower = 150 #influenced by values in paper 
+    setup.obst_N_upper = 200 
 
     #Create agent
     agent = a.Agent(setup, "placeholder", "placeholder")
@@ -53,6 +53,14 @@ def simulate():
         if len(agent.pos_lst) >= step_limit: 
             running = False
 
+    min_distance = float('inf')
+    for obst_x, obst_y in env.obstacles:
+        for agent_x, agent_y in agent.pos_lst:
+            distance = ((obst_x - agent_x)**2 + (obst_y - agent_y)**2)**0.5
+            if distance < min_distance:
+                min_distance = distance
+    return min_distance
+"""
     if setup.target:
         # Calculates the minimum distance to any obstacle in succesful runs
         min_distance = float('inf')
@@ -65,6 +73,7 @@ def simulate():
     
     else:
         return False
+        """
 
 num_samples = 1000 # Run the simulation multiple times to average out randomness
 results = []
