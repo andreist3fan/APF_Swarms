@@ -44,7 +44,7 @@ class Setup:
         #Point around which agents are initially scattered 
         self.agents_start_x = 10
         self.agents_start_y = 10
-        self.start_radius = 10      #Radius of circle that represents area where agents start
+        self.start_radius = 10      #Radius of circle that represents area where agents start (scattering)
 
         #Target
         self.target_x = 30
@@ -71,7 +71,7 @@ class Setup:
 
         self.visual = False         #Visualise run in pygame (! Influences speed of simulation)
         self.scale = 15
-        self.step_limit = 500       #If exceeded, run fails 
+        self.step_limit = 1000       #If exceeded, run fails 
     
         #--------------Performance matrix-----------------------
 

@@ -6,17 +6,23 @@ import pygame as pg
 import matplotlib.pyplot as plt
 import time 
 import os 
+import Analysis_settings_levels as asl 
+
+#----------------Level 1: Change cluttered environment--------------
+
+cluttered = asl.clut_2
+save_problematic_runs = False 
 
 #---------------Monte Carlo settings---------------------------------
 
-mc_runs = 1 #Runs per setting
-mc_scattering = [1, 1.5, 2, 2.5, 3] 
-nr_agents = 15 #Different settings 
+mc_runs = asl.nr_runs                                             #Runs per setting
+mc_scattering = asl.scattering                                    #Scattering radius around center 
+nr_agents = asl.scat_swarm 
 smart = True
 
-mc_name = "New Scattering test"
+mc_name = "Scattering with obstacles " + str(cluttered)           #Folder name to store analysis 
 
-algorithm = 0
+algorithm = asl.algorithm
 
 #Store results of each run for final analysis 
 res_reachability = []               #stores value per setting 
@@ -24,7 +30,6 @@ res_path_length = []                #stores value per setting
 res_computational_complexity = []   #stores value per setting 
 res_min_dist = []                   #stores value per setting  
 res_stuck_agents = []               #stores tupel per setting 
-
 
 #---------------Folder logistics-------------------------------------- 
 
@@ -67,6 +72,8 @@ for sc in mc_scattering:
         setup.nr_agents = nr_agents
         setup.smart_swarm = smart 
         setup.start_radius = sc
+        setup.obst_N_lower = cluttered[0]
+        setup.obst_N_upper = cluttered[1]
 
         #--------------------------------------------------------------
 
@@ -77,12 +84,20 @@ for sc in mc_scattering:
         agents = [] 
         pos_agents = []
         agents_stuck = []
-        for i in range(setup.nr_agents): 
-            agents.append(a.Agent(setup, env, pos_agents))
-            pos_agents.append((agents[-1].x, agents[-1].y))
+
+        #Create closest agent 
+        agent_closest = a.Agent(setup, pos_agents, env.obstacles, True)
+        agents.append(agent_closest)
+        pos_agents.append((agent_closest.x, agent_closest.y))
+
+        #Create rest of the swarm 
+        if setup.nr_agents > 1: 
+            for i in range((setup.nr_agents)-1): 
+                agents.append(a.Agent(setup, pos_agents, env.obstacles, False))
+                pos_agents.append((agents[-1].x, agents[-1].y))
+
 
         running = True 
-
         start_time = time.time()
 
         #The while loop has to be updated according to the normal main function 
@@ -99,26 +114,33 @@ for sc in mc_scattering:
                 #Update position 
                 i.update_position(env, setup)
 
+                #Check whether agent hit an obstacle 
+                i.obs_check(env)
+
                 #Check whether agent has reached target
                 i.target_check(env)
+
                 if i.target: 
-                    setup.target = True 
                     end_time = time.time()
-                    print("Target is reached.")
+
+                    #Performance matrix
+                    setup.target = True 
                     setup.computational_complexity = round((end_time - start_time), 5)
-                    #print(setup.computational_complexity)
                     setup.path_length = len(i.pos_lst)
-                    #print(setup.path_length)
                     setup.min_distance_target = ev.safety(i, env)
 
-                # Check whether agent has reached a local minimum
-                if i.local_minimum:
-                    print("Agent is stuck in a local minimum")
+                # Consequences if agent in trouble (hit obstacle, local minimum)
+                if i.hit: 
+                    del agents[ind]
+                    setup.nr_hit_agents += 1 
+                elif i.local_minimum:# Check whether agent has reached a local minimum
+                    if setup.smart_swarm: 
+                        env.artificial_obstacles.append((i.x, i.y))
                     #delete stuck agent
                     if setup.delete_stuck:
                         agents_stuck.append(agents[ind])
                         del agents[ind]
-                    setup.nr_stuck_agents += 1 
+                    setup.nr_stuck_agents += 1
 
                 ind += 1
 
@@ -127,22 +149,28 @@ for sc in mc_scattering:
             #If too many steps required, run ends 
             if steps > 500: 
                 running = False
-                print("Run took to long and was stopped.")
+
+                #Draw problematic run 
+                if save_problematic_runs:
+                    file_name = "Run took too long (Scattering "+str(sc)+")("+str(m)+").png"
+                    ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
+
 
             #If all agents are stuck, run failed 
             if ind == 0: 
                 running = False 
+                
+                #Draw problematic run 
+                if save_problematic_runs:
+                    file_name = "All agents stuck (Scattering "+str(sc)+")("+str(m)+").png"
+                    ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
 
         setups_lst.append(setup)
-        print("Run " + str(m) + " completed")
 
-        #Draw run if all agents got stuck 
+        #Store first run of each setting
 
-        if setup.nr_stuck_agents == setup.nr_agents: 
-            file_name = "All agents stuck ("+str(setup.nr_stuck_agents)+")("+str(m)+").png"
-            ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
-        elif m == 0: 
-            file_name = "Scattering ("+str(sc)+").png"
+        if m == 0: 
+            file_name = "Scattering (Example for "+str(sc)+").png"
             ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
 
 

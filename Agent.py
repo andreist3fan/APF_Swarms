@@ -8,7 +8,10 @@ import math
 from scipy.stats import truncnorm
 
 class Agent: 
-    def __init__(self, setup, pos_other_agents, obstacles):
+    def __init__(self, setup, pos_other_agents, obstacles, fixed):
+    
+    #Fixed True: location at spawning center 
+    #Fixed False: location random scattered 
         
         #------------Characteristics------------------------------
          
@@ -27,7 +30,7 @@ class Agent:
 
         #--------Determine initial agent position-----------------
          
-        if setup.nr_agents == 1: 
+        if setup.nr_agents == 1 or fixed: 
             self.x = setup.agents_start_x 
             self.y = setup.agents_start_y
         else:    
@@ -116,6 +119,3 @@ class Agent:
             distance_to_obstacle = math.sqrt((obs[0]-self.x)**2+(obs[1]-self.y)**2)
             if distance_to_obstacle < (self.radius + environment.obs_radius): 
                 self.hit = True 
-                print("Distance: "+str(distance_to_obstacle))
-                print("Position agent: "+str(self.x)+", "+str(self.y))
-                print("Position obstacle: "+str(obs[0])+", "+str(obs[1]))

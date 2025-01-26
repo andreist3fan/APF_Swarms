@@ -33,6 +33,5 @@ def pos_update(agent, environment, setup):
     
     new_x = agent.x + np.random.normal(delta_x, setup.step_variance)
     new_y = agent.y + np.random.normal(delta_y, setup.step_variance)
-    #print("Position updated to (" + str(new_x) + ", " + str(new_y) + ")")
 
     return new_x, new_y

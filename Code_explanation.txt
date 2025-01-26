@@ -8,6 +8,9 @@ Monte Carlo Simulation for analysiing effect of scattering
 mc_main_swarm size.py: 
 Monte Carlo Simulation for analysiing effect of swarm size 
 
+Analysis_settings_levels.py: 
+Set parameters for the variables of interest for different levels of the project 
+
 Setup.py: 
 Class for all the meta variables for the simulation 
 If you want to change the value of a parameter (e.g. use a different algorithm), please change that in the main functions

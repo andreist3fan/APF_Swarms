@@ -20,6 +20,9 @@ setup.name = "main"           #Name of the image of the simulation screenchot th
 setup.scale = 15        #pixel/m 
 wait_time = 0.1         #Determines speed of simulation
 
+# Agents in local minimum:  Yellow 
+# Agents that hit obstacle: Orange 
+
 #-----------------------------------------------------------------
 
 #Create pygame 
@@ -38,16 +41,14 @@ pos_agents = []
 agents_stuck = []
 
 #Create closest agent 
-agent_closest = a.Agent(setup, pos_agents, env.obstacles)
-agent_closest.x = setup.agents_start_x
-agent_closest.y = setup.agents_start_y
+agent_closest = a.Agent(setup, pos_agents, env.obstacles, True)
 agents.append(agent_closest)
 pos_agents.append((agent_closest.x, agent_closest.y))
 
 #Create rest of the swarm 
 if setup.nr_agents > 1: 
     for i in range((setup.nr_agents)-1): 
-        agents.append(a.Agent(setup, pos_agents, env.obstacles))
+        agents.append(a.Agent(setup, pos_agents, env.obstacles, False))
         pos_agents.append((agents[-1].x, agents[-1].y))
 print("Agents created")
 
@@ -57,48 +58,6 @@ steps = 0
 running = True
 
 while not setup.target and running: 
-
-    #Draw pygame 
-    if setup.visual: 
-
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                running = False
-
-        #Draw spawning area agents 
-        min_dist = math.sqrt((setup.target_x-setup.agents_start_x)**2+(setup.target_y-setup.agents_start_y)**2)
-        pg.draw.circle(screen, "red", ((setup.target_x*setup.scale), (setup.target_y*setup.scale)), (min_dist*setup.scale+1), 2)
-
-        #Draw target 
-        pg.draw.circle(screen, "red", pg.Vector2((setup.target_x*setup.scale), (setup.target_y*setup.scale)), (setup.target_radius*setup.scale))
-
-        # draw obstacles
-        for obstacle in env.obstacles:
-            pos = pg.Vector2((obstacle[0]*setup.scale), (obstacle[1]*setup.scale))
-            pg.draw.circle(screen, "white", pos, round(setup.obst_radius*setup.scale))
-        
-        #Draw agents and their artificial objects 
-        for a in agents: 
-            #Artificial position of agents 
-            for obs in a.artificial_obstacles:
-                print("Trying to draw artificial obstacle")
-                pos = pg.Vector2((obs[0]*setup.scale), (obs[1]*setup.scale))
-                pg.draw.circle(screen, "yellow", pos, round(setup.agent_radius*setup.scale))
-            #Current position agent 
-            pg.draw.circle(screen, "blue", pg.Vector2((a.x*setup.scale), (a.y*setup.scale)), (a.radius*setup.scale))
-
-        #Draw initial position of agents 
-        for pos in pos_agents: 
-            pg.draw.circle(screen, "green", pg.Vector2((pos[0]*setup.scale), (pos[1]*setup.scale)), 2)
-
-        #Draw artificial obstacles of stuck agents 
-        for a in agents_stuck: 
-            for obs in a.artificial_obstacles:
-                print("Trying to draw artificial obstacle")
-                pos = pg.Vector2((obs[0]*setup.scale), (obs[1]*setup.scale))
-                pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_inner*setup.scale))
-
-        time.sleep(wait_time)
 
     ind = 0
 
@@ -142,8 +101,55 @@ while not setup.target and running:
                 del agents[ind]
             setup.nr_stuck_agents += 1
 
-
         ind += 1 
+
+    # Draw pygame 
+    if setup.visual: 
+
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                running = False
+
+        #Draw spawning area agents 
+        min_dist = math.sqrt((setup.target_x-setup.agents_start_x)**2+(setup.target_y-setup.agents_start_y)**2)
+        pg.draw.circle(screen, "red", ((setup.target_x*setup.scale), (setup.target_y*setup.scale)), (min_dist*setup.scale+1), 2)
+
+        #Draw target 
+        pg.draw.circle(screen, "red", pg.Vector2((setup.target_x*setup.scale), (setup.target_y*setup.scale)), (setup.target_radius*setup.scale))
+
+        # draw obstacles
+        for obstacle in env.obstacles:
+            pos = pg.Vector2((obstacle[0]*setup.scale), (obstacle[1]*setup.scale))
+            pg.draw.circle(screen, "white", pos, round(setup.obst_radius*setup.scale))
+        
+        #Draw agents and their artificial objects 
+        for a in agents: 
+            #Artificial position of agents 
+            for obs in a.artificial_obstacles:
+                print("Trying to draw artificial obstacle")
+                pos = pg.Vector2((obs[0]*setup.scale), (obs[1]*setup.scale))
+                pg.draw.circle(screen, "yellow", pos, round(setup.agent_radius*setup.scale))
+
+            #Agent in trouble 
+            if a.hit: 
+                pg.draw.circle(screen, "orange", pg.Vector2((a.x*setup.scale), (a.y*setup.scale)), (a.radius*setup.scale))
+            elif a.local_minimum: 
+                pg.draw.circle(screen, "yellow", pg.Vector2((a.x*setup.scale), (a.y*setup.scale)), (a.radius*setup.scale))
+            else: 
+                pg.draw.circle(screen, "blue", pg.Vector2((a.x*setup.scale), (a.y*setup.scale)), (a.radius*setup.scale))
+
+        #Draw initial position of agents 
+        for pos in pos_agents: 
+            pg.draw.circle(screen, "green", pg.Vector2((pos[0]*setup.scale), (pos[1]*setup.scale)), 2)
+
+        #Draw artificial obstacles of stuck agents 
+        for a in agents_stuck: 
+            for obs in a.artificial_obstacles:
+                print("Trying to draw artificial obstacle")
+                pos = pg.Vector2((obs[0]*setup.scale), (obs[1]*setup.scale))
+                pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius_inner*setup.scale))
+
+        time.sleep(wait_time)
 
     steps += 1
 

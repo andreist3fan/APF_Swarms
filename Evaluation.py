@@ -60,7 +60,6 @@ def draw_run(setup, env, agents, folder_path, file_name):
     min_dist = math.sqrt((setup.target_x-setup.agents_start_x)**2+(setup.target_y-setup.agents_start_y)**2)
     pg.draw.circle(screen, "red", ((setup.target_x*setup.scale), (setup.target_y*setup.scale)), (min_dist*setup.scale+1), 2)
 
-
     #Draw obstacles
     for obstacle in env.obstacles:
         pos = pg.Vector2((obstacle[0]*scale), (obstacle[1]*scale))
@@ -73,14 +72,20 @@ def draw_run(setup, env, agents, folder_path, file_name):
             pos = pg.Vector2((obs[0]*scale), (obs[1]*scale))
             pg.draw.circle(screen, "yellow", pos, round(setup.obst_radius*scale))
         for pos in a.pos_lst: 
-            pg.draw.circle(screen, "blue", pg.Vector2((pos[0]*scale), (pos[1]*scale)), setup.agent_radius)
+            pg.draw.circle(screen, "blue", pg.Vector2((pos[0]*scale), (pos[1]*scale)), (setup.agent_radius*scale))
+
+        #Agent in trouble 
+        if a.hit: 
+            pg.draw.circle(screen, "orange", pg.Vector2((a.x*setup.scale), (a.y*setup.scale)), (a.radius*setup.scale))
+        elif a.local_minimum: 
+            pg.draw.circle(screen, "yellow", pg.Vector2((a.x*setup.scale), (a.y*setup.scale)), (a.radius*setup.scale))
+
         #Draw initial position of agents 
         pg.draw.circle(screen, "green", pg.Vector2((a.pos_lst[0][0]*setup.scale), (a.pos_lst[0][1]*setup.scale)), 2)
  
     pg.display.flip()
     file_path = os.path.join(folder_path, file_name)
     pg.image.save(screen, file_path)
-    print(f"Simulation image saved.")
     pg.quit()
 
 
