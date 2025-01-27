@@ -8,12 +8,16 @@ import math
 
 #---------Change setup settings if not standard settings----------
 
-algorithm = 1
+algorithm = 2
 setup = Setup(algorithm)
 
 setup.nr_agents = 20
+setup.start_radius = 10
+setup.obst_N_lower = 280      
+setup.obst_N_upper = 320 
+
 setup.visual = True     #Pygame to show run
-setup.name = "main"           #Name of the image of the simulation screenchot that is stored at the end 
+setup.name = "Main"           #Name of the image of the simulation screenchot that is stored at the end 
 
 #--------------Pygame settings------------------------------------
 
@@ -130,13 +134,15 @@ while not setup.target and running:
                 pos = pg.Vector2((obs[0]*setup.scale), (obs[1]*setup.scale))
                 pg.draw.circle(screen, "yellow", pos, round(setup.agent_radius*setup.scale))
 
-            #Agent in trouble 
+            #Agent in trouble
             if a.hit: 
                 pg.draw.circle(screen, "orange", pg.Vector2((a.x*setup.scale), (a.y*setup.scale)), (a.radius*setup.scale))
             elif a.local_minimum: 
                 pg.draw.circle(screen, "yellow", pg.Vector2((a.x*setup.scale), (a.y*setup.scale)), (a.radius*setup.scale))
+            #Normal agent
             else: 
                 pg.draw.circle(screen, "blue", pg.Vector2((a.x*setup.scale), (a.y*setup.scale)), (a.radius*setup.scale))
+
 
         #Draw initial position of agents 
         for pos in pos_agents: 

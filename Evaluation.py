@@ -51,7 +51,8 @@ def draw_run(setup, env, agents, folder_path, file_name):
     scale = setup.scale #pixel/m 
 
     pg.init()
-    screen = pg.display.set_mode((600, 600))
+    size = scale*setup.area_size
+    screen = pg.display.set_mode((size, size))
 
     #Draw target 
     pg.draw.circle(screen, "red", pg.Vector2((setup.target_x*scale), (setup.target_y*scale)), (setup.target_radius*scale))
