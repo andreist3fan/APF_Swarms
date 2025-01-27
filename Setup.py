@@ -21,7 +21,8 @@ class Setup:
         #0: CAPF 
         #1: BAPF
         self.N_bacteria = 60
-        #2: CR-BAPF
+        #2: CR-BAPF*
+        self.random_walk_length = 3
         #3: RAPF
         self.N_bacteria_RAPF = 8
         #4: A*

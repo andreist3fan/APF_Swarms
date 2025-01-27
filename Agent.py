@@ -1,6 +1,7 @@
 from agent_algorithms import capf 
 from agent_algorithms import bapf
 from agent_algorithms import cr_bapf
+from agent_algorithms import cr_bapf_star
 from agent_algorithms import rapf 
 from agent_algorithms import a_star 
 import random 
@@ -32,6 +33,9 @@ class Agent:
 
         self.artificial_obstacles = []      #List of all artificial obstacles locations
         self.radius = setup.agent_radius
+
+        # For CR-BAPF*
+        self.random_walk = 0
 
         #--------Determine initial agent position-----------------
 
@@ -104,7 +108,7 @@ class Agent:
         if self.algorithm == 1: 
             self.x, self.y = bapf.pos_update(self, environment, setup)
         if self.algorithm == 2: 
-            self.x, self.y = cr_bapf.pos_update(self, environment, setup)
+            self.x, self.y = cr_bapf_star.pos_update(self, environment, setup)
         if self.algorithm == 3: 
             self.x, self.y = rapf.pos_update(self, environment, setup)
         if self.algorithm == 4:
