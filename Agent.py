@@ -58,7 +58,8 @@ class Agent:
                 angle = random.uniform(0, 2 * math.pi) #for random distribution 
 
                 std_dev = (setup.start_radius) / 2
-                dist_center = truncnorm.rvs(-2, 2, loc=0, scale=std_dev)
+                a, b = (-setup.start_radius) / std_dev, (setup.start_radius) / std_dev
+                dist_center = truncnorm.rvs(a, b, loc=0, scale=std_dev)
 
                 new_x = center_x + dist_center * math.cos(angle)
                 new_y = center_y + dist_center * math.sin(angle)
