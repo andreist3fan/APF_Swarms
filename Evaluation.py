@@ -3,11 +3,13 @@ import os
 import math
 
 # Evaluate Monte Carlo simulation (average performance matrices)
-# Return: path length, complexity, reachability, min average distance
+# Return: path length, effective path length, complexity, reachability, min average distance
 
 def evaluate_multiple(setups): 
 
     path_length = 0
+    eff_path_length = 0                         
+
     computational_complexity = 0 
     avg_min_distance_obs = 0
     target = 0                      # Number of runs where an agent found the target 
@@ -16,22 +18,25 @@ def evaluate_multiple(setups):
     for s in setups: 
         if s.target: 
             target += 1     
-            path_length += s.path_length 
+            path_length += s.path_length
+            eff_path_length += s.eff_path_length 
             computational_complexity += s.computational_complexity 
             avg_min_distance_obs += s.min_distance_target
         else: 
             not_target += 1 
     if target != 0: 
         path_length = path_length/target 
+        eff_path_length = eff_path_length/target 
         computational_complexity = computational_complexity/target 
         avg_min_distance_obs = avg_min_distance_obs/target 
     else: 
         path_length = 0
         computational_complexity = 0
+        eff_path_length = 0
         avg_min_distance_obs = 0
     reachability = target/(target+not_target)
 
-    return round(path_length, 3), round(computational_complexity, 5), reachability, round(avg_min_distance_obs, 3)
+    return round(path_length, 3), round(eff_path_length, 3), round(computational_complexity, 5), reachability, round(avg_min_distance_obs, 3)
 
 # Find minimum clearance of an agent during the run 
 
@@ -58,8 +63,7 @@ def draw_run(setup, env, agents, folder_path, file_name):
     pg.draw.circle(screen, "red", pg.Vector2((setup.target_x*scale), (setup.target_y*scale)), (setup.target_radius*scale))
     
     #Draw spawning area agents 
-    min_dist = math.sqrt((setup.target_x-setup.agents_start_x)**2+(setup.target_y-setup.agents_start_y)**2)
-    pg.draw.circle(screen, "red", ((setup.target_x*setup.scale), (setup.target_y*setup.scale)), (min_dist*setup.scale+1), 2)
+    pg.draw.circle(screen, "green", ((setup.agents_start_x*setup.scale), (setup.agents_start_y*setup.scale)), (setup.start_radius*setup.scale), 2)
 
     #Draw obstacles
     for obstacle in env.obstacles:

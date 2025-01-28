@@ -12,9 +12,7 @@ algorithm = 0
 setup = Setup(algorithm)
 
 setup.nr_agents = 20
-setup.start_radius = 10
-setup.obst_N_lower = 60     
-setup.obst_N_upper = 80 
+setup.start_radius = 5
 
 setup.visual = True     #Pygame to show run
 setup.name = "Main"           #Name of the image of the simulation screenchot that is stored at the end 
@@ -44,14 +42,8 @@ agents = []
 pos_agents = []
 agents_stuck = []
 
-#Create closest agent 
-agent_closest = a.Agent(setup, pos_agents, env.obstacles, True)
-agents.append(agent_closest)
-pos_agents.append((agent_closest.x, agent_closest.y))
-
 #Create rest of the swarm 
-if setup.nr_agents > 1: 
-    for i in range((setup.nr_agents)-1): 
+for i in range((setup.nr_agents)): 
         agents.append(a.Agent(setup, pos_agents, env.obstacles, False))
         pos_agents.append((agents[-1].x, agents[-1].y))
 print("Agents created")
@@ -87,6 +79,7 @@ while not setup.target and running:
             setup.target = True 
             setup.computational_complexity = round((end_time - start_time), 5)
             setup.path_length = len(i.pos_lst)
+            setup.eff_path_length = setup.path_length / i.initial_distance_target_steps 
             setup.min_distance_target = ev.safety(i, env)
 
             #User output 
@@ -116,7 +109,7 @@ while not setup.target and running:
 
         #Draw spawning area agents 
         min_dist = math.sqrt((setup.target_x-setup.agents_start_x)**2+(setup.target_y-setup.agents_start_y)**2)
-        pg.draw.circle(screen, "red", ((setup.target_x*setup.scale), (setup.target_y*setup.scale)), (min_dist*setup.scale+1), 2)
+        pg.draw.circle(screen, "green", ((setup.agents_start_x*setup.scale), (setup.agents_start_y*setup.scale)), (setup.start_radius*setup.scale), 2)
 
         #Draw target 
         pg.draw.circle(screen, "red", pg.Vector2((setup.target_x*setup.scale), (setup.target_y*setup.scale)), (setup.target_radius*setup.scale))
