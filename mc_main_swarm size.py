@@ -133,8 +133,6 @@ for na in mc_nr_agents:
                     del agents[ind]
                     setup.nr_hit_agents += 1 
                 elif i.local_minimum:# Check whether agent has reached a local minimum
-                    if setup.smart_swarm: 
-                        env.artificial_obstacles.append((i.x, i.y))
                     #delete stuck agent
                     if setup.delete_stuck:
                         agents_stuck.append(agents[ind])
@@ -146,7 +144,7 @@ for na in mc_nr_agents:
             steps += 1 
 
             #If too many steps required, run ends 
-            if steps > 500: 
+            if steps > setup.step_limit: 
                 running = False
 
                 #Draw problematic run 

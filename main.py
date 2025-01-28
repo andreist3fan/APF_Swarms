@@ -99,8 +99,6 @@ while not setup.target and running:
             setup.nr_hit_agents += 1 
         elif i.local_minimum:# Check whether agent has reached a local minimum
             print("Agent is stuck in a local minimum")
-            if setup.smart_swarm: 
-                env.artificial_obstacles.append((i.x, i.y))
             #delete stuck agent
             if setup.delete_stuck:
                 agents_stuck.append(agents[ind])
