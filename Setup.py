@@ -72,7 +72,7 @@ class Setup:
 
         self.visual = False         #Visualise run in pygame (! Influences speed of simulation)
         self.scale = 15
-        self.step_limit = 1000       #If exceeded, run fails
+        self.step_limit = 250       #If exceeded, run fails
 
         #--------------Performance matrix-----------------------
 
