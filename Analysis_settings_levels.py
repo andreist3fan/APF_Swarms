@@ -5,6 +5,8 @@
 clut_1 = [20, 40]
 clut_2 = [60, 80]   #From paper 
 clut_3 = [100, 120]
+clut_4 = [150, 170]
+clut_5 = [200, 220]
 
 #Swarm 
 swarm_sizes = [1, 2, 3, 5, 10, 15, 20, 25]     #Number of agents  

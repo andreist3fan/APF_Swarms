@@ -93,6 +93,8 @@ for na in mc_nr_agents:
             for i in range((setup.nr_agents)-1): 
                 agents.append(a.Agent(setup, pos_agents, env.obstacles, False))
                 pos_agents.append((agents[-1].x, agents[-1].y))
+        
+        agents_all = agents.copy()
 
         running = True 
         start_time = time.time()
@@ -159,7 +161,7 @@ for na in mc_nr_agents:
                 #Draw problematic run
                 if save_problematic_runs: 
                     file_name = "All agents stuck (Number of agents "+str(na)+")("+str(m)+").png"
-                    ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
+                    ev.draw_run(setup, env, agents_all, folder_path, file_name)
 
         setups_lst.append(setup)
 

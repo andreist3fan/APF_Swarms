@@ -65,6 +65,3 @@ class Environment:
 
             self.grid = grid
             
-
-
-        print("Environment created")

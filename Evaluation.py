@@ -66,7 +66,7 @@ def draw_run(setup, env, agents, folder_path, file_name):
         pos = pg.Vector2((obstacle[0]*scale), (obstacle[1]*scale))
         pg.draw.circle(screen, "white", pos, round(setup.obst_radius*scale))
     
-    #Draw agents and their artificial objects 
+    #Draw paths of agents 
     for a in agents: 
         for obs in a.artificial_obstacles:
             print("Trying to draw artificial obstacle")
@@ -75,6 +75,8 @@ def draw_run(setup, env, agents, folder_path, file_name):
         for pos in a.pos_lst: 
             pg.draw.circle(screen, "blue", pg.Vector2((pos[0]*scale), (pos[1]*scale)), (setup.agent_radius*scale))
 
+    #Draw special points of agents on top
+    for a in agents: 
         #Agent in trouble 
         if a.hit: 
             pg.draw.circle(screen, "orange", pg.Vector2((a.x*setup.scale), (a.y*setup.scale)), (a.radius*setup.scale))

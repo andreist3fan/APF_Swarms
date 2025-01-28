@@ -10,7 +10,7 @@ import Analysis_settings_levels as asl
 
 #----------------Level 1: Change cluttered environment--------------
 
-cluttered = asl.clut_2
+cluttered = asl.clut_5
 save_problematic_runs = False 
 
 #---------------Monte Carlo settings---------------------------------
@@ -96,6 +96,7 @@ for sc in mc_scattering:
                 agents.append(a.Agent(setup, pos_agents, env.obstacles, False))
                 pos_agents.append((agents[-1].x, agents[-1].y))
 
+        agents_all = agents.copy()
 
         running = True 
         start_time = time.time()
@@ -153,7 +154,7 @@ for sc in mc_scattering:
                 #Draw problematic run 
                 if save_problematic_runs:
                     file_name = "Run took too long (Scattering "+str(sc)+")("+str(m)+").png"
-                    ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
+                    ev.draw_run(setup, env, agents_all, folder_path, file_name)
 
 
             #If all agents are stuck, run failed 

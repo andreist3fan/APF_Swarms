@@ -8,13 +8,13 @@ import math
 
 #---------Change setup settings if not standard settings----------
 
-algorithm = 2
+algorithm = 0
 setup = Setup(algorithm)
 
 setup.nr_agents = 20
 setup.start_radius = 10
-setup.obst_N_lower = 280      
-setup.obst_N_upper = 320 
+setup.obst_N_lower = 60     
+setup.obst_N_upper = 80 
 
 setup.visual = True     #Pygame to show run
 setup.name = "Main"           #Name of the image of the simulation screenchot that is stored at the end 
@@ -55,6 +55,8 @@ if setup.nr_agents > 1:
         agents.append(a.Agent(setup, pos_agents, env.obstacles, False))
         pos_agents.append((agents[-1].x, agents[-1].y))
 print("Agents created")
+
+agents_all = agents.copy()
 
 #Start simulation 
 start_time = time.time()
