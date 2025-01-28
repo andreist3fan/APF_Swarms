@@ -4,6 +4,7 @@ from agent_algorithms import cr_bapf
 from agent_algorithms import cr_bapf_star
 from agent_algorithms import rapf 
 from agent_algorithms import a_star 
+from agent_algorithms import multi_agent_rapf
 import random 
 import math 
 from scipy.stats import truncnorm
@@ -105,7 +106,7 @@ class Agent:
 
     # Update position based on position and algorithm
 
-    def update_position(self, environment, setup): 
+    def update_position(self, environment, setup, agent_positions = None): 
         if self.algorithm == 0: 
             self.x, self.y = capf.pos_update(self, environment, setup)
         if self.algorithm == 1: 
@@ -119,6 +120,8 @@ class Agent:
                 a_star.initialize_path(self, environment, setup)
                 self.astar_init = True
             self.x, self.y = a_star.pos_update(self, environment, setup)
+        if self.algorithm == 5:
+            self.x, self.y = multi_agent_rapf.pos_update(self, environment, setup, agent_positions)
         
         #Append new location to the history list 
         self.pos_lst.append((self.x, self.y))

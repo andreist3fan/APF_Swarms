@@ -8,10 +8,10 @@ import math
 
 #---------Change setup settings if not standard settings----------
 
-algorithm = 0
+algorithm = 5
 setup = Setup(algorithm)
 
-setup.nr_agents = 20
+setup.nr_agents = 5
 setup.start_radius = 5
 
 setup.visual = True     #Pygame to show run
@@ -58,12 +58,15 @@ running = True
 while not setup.target and running: 
 
     ind = 0
+    
 
     #Update posiiton of agents
     for i in agents: 
-
+        
+        agent_positions = [(j.x, j.y) for j in agents if not j == i] # Used for Level 3: agent-agent collision avoidance
+        
         #Update position 
-        i.update_position(env, setup)
+        i.update_position(env, setup, agent_positions)
 
         #Check whether agent has reached target
         i.target_check(env)
@@ -123,7 +126,7 @@ while not setup.target and running:
         for a in agents: 
             #Artificial position of agents 
             for obs in a.artificial_obstacles:
-                print("Trying to draw artificial obstacle")
+                #print("Trying to draw artificial obstacle")
                 pos = pg.Vector2((obs[0]*setup.scale), (obs[1]*setup.scale))
                 pg.draw.circle(screen, "yellow", pos, round(setup.agent_radius*setup.scale))
 
