@@ -83,17 +83,12 @@ for na in mc_nr_agents:
         pos_agents = []
         agents_stuck = []
 
-        #Create closest agent 
-        agent_closest = a.Agent(setup, pos_agents, env.obstacles, True)
-        agents.append(agent_closest)
-        pos_agents.append((agent_closest.x, agent_closest.y))
-
         #Create rest of the swarm 
-        if setup.nr_agents > 1: 
-            for i in range((setup.nr_agents)-1): 
+        for i in range((setup.nr_agents)): 
                 agents.append(a.Agent(setup, pos_agents, env.obstacles, False))
                 pos_agents.append((agents[-1].x, agents[-1].y))
-        
+        print("Agents created")
+
         agents_all = agents.copy()
 
         running = True 
@@ -126,6 +121,7 @@ for na in mc_nr_agents:
                     setup.target = True 
                     setup.computational_complexity = round((end_time - start_time), 5)
                     setup.path_length = len(i.pos_lst)
+                    setup.eff_path_length = setup.path_length / i.initial_distance_target_steps 
                     setup.min_distance_target = ev.safety(i, env)
 
                 # Consequences if agent in trouble (hit obstacle, local minimum)

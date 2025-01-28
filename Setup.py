@@ -29,7 +29,7 @@ class Setup:
 
         #Swarm characteristics
         self.smart_swarm = False #If one agent reaches a local minimum, that point is added to the obstacle list of the environment
-        self.nr_agents = 1
+        self.nr_agents = 5
 
         #Reachability/Stuck agents
         self.time_limit = 10 #If simulation takes longer, reachability is set to 0
@@ -45,7 +45,7 @@ class Setup:
         #Point around which agents are initially scattered
         self.agents_start_x = 10
         self.agents_start_y = 10
-        self.start_radius = 10      #Radius of circle that represents area where agents start (scattering)
+        self.start_radius = 5      #Radius of circle that represents area where agents start (scattering)
 
         #Target
         self.target_x = 30
@@ -54,8 +54,7 @@ class Setup:
 
         #Obstacles
         self.obst_radius = 0.6
-        self.obst_N_lower = 60      #lower and upper bound for number of obstacles
-        self.obst_N_upper = 80 
+        self.obstacle_density = 0.07 #obstacles/m^2  
 
         #--------------Hyperparameter-------------------------
 
@@ -85,9 +84,9 @@ class Setup:
 
         #--------------Performance metrics-----------------------------
 
-        self.target = False #True as soon as one agent reaches target 
-        self.target = False                 #True as soon as one agent reaches target
+        self.target = False                 #True as soon as one agent reaches target 
         self.path_length = 0                #Lenth of path of agent that first reached the target (steps)
+        self.eff_path_length = 0            #Lenth of path of agent that first reached the target divided by initial distance (steps)
         self.computational_complexity = 0   #Time of simulation (s)
         self.min_distance_target = 0        #Minimum clearance of agent that reached the target first
 

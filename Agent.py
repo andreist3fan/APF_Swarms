@@ -27,6 +27,8 @@ class Agent:
         self.radius = 0.2 #Agents cant spawn closer to each other than twice the radius
         self.pos_lst = []                   #List representing path
 
+        self.initial_distance_target_steps = 0 
+
         self.target = False
         self.hit = False                    #True if hit obstacle ("dead")
         self.local_minimum = False          #True if in local minimum
@@ -69,9 +71,9 @@ class Agent:
                 close_to_obstacle = False
 
                 #Check distance to target
-                distance_to_target = math.sqrt((new_x-setup.target_x)**2+(new_y-setup.target_y)**2)
-                if distance_to_target < min_dist_target:
-                    close_to_obstacle = True
+                #distance_to_target = math.sqrt((new_x-setup.target_x)**2+(new_y-setup.target_y)**2)
+                #if distance_to_target < min_dist_target:
+                #    close_to_obstacle = True
 
                 #Check distance to other agents
                 if pos_other_agents:
@@ -96,6 +98,7 @@ class Agent:
         #True if target is reached
         self.target = False 
         self.pos_lst.append((self.x, self.y))
+        self.initial_distance_target_steps = (math.sqrt((self.x-setup.target_x)**2+(self.y-setup.target_y)**2)) /setup.step_size
 
     #------------------Functions-------------------------------------------
 
