@@ -58,7 +58,7 @@ class Setup:
 
         #--------------Hyperparameter-------------------------
 
-        # Simulation Hyperparameter values (from https://ieeexplore-ieee-org.tudelft.idm.oclc.org/document/10115857)
+        # Simulation Hyperparameter values
         self.range = 8
         self.obst_radius_inner = 0.6
         self.obst_radius_outer = 4.5
@@ -66,6 +66,9 @@ class Setup:
         self.mu_t = 0.002
         self.alpha_o = 8
         self.mu_o = 1.5
+        self.alpha_a = 5  
+        self.mu_a = 0.2
+        self.agent_influence_radius = 4.5
 
         #------------Simulation--------------------------------
 

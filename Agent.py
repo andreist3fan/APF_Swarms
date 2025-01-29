@@ -121,7 +121,11 @@ class Agent:
                 self.astar_init = True
             self.x, self.y = a_star.pos_update(self, environment, setup)
         if self.algorithm == 5:
-            self.x, self.y = multi_agent_rapf.pos_update(self, environment, setup, agent_positions)
+            self.x, self.y = multi_agent_rapf.pos_update(self, environment, setup, agent_positions, 1)
+        if self.algorithm == 6:
+            self.x, self.y = multi_agent_rapf.pos_update(self, environment, setup, agent_positions, 2)
+        if self.algorithm == 7:
+            self.x, self.y = multi_agent_rapf.pos_update(self, environment, setup, agent_positions, 3)
         
         #Append new location to the history list 
         self.pos_lst.append((self.x, self.y))

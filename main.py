@@ -8,8 +8,9 @@ import math
 
 #---------Change setup settings if not standard settings----------
 
-algorithm = 5
+algorithm = 7
 setup = Setup(algorithm)
+setup.obstacle_density = 0.15
 
 setup.nr_agents = 5
 setup.start_radius = 5
