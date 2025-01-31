@@ -16,8 +16,7 @@ class Environment:
         self.obs_radius = setup.obst_radius
 
         #Determine number of obstacles 
-        #obst_nr = random.randint(setup.obst_N_lower, setup.obst_N_upper)
-        obst_nr = round(setup.obstacle_density * (setup.area_size) ** 2)
+        obst_nr = setup.obstacle_number
 
         # Create obstacles
         possible_locations = [(x, y) for x in range(setup.area_size) for y in range(setup.area_size)]

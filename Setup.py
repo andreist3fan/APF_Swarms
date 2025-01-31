@@ -54,7 +54,7 @@ class Setup:
 
         #Obstacles
         self.obst_radius = 0.6
-        self.obstacle_density = 0.07 #obstacles/m^2  
+        self.obstacle_number = 70  
 
         #--------------Hyperparameter-------------------------
 

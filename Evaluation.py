@@ -38,6 +38,29 @@ def evaluate_multiple(setups):
 
     return round(path_length, 3), round(eff_path_length, 3), round(computational_complexity, 5), reachability, round(avg_min_distance_obs, 3)
 
+# Store data of all runs organized by performance parameter in arrays (prepare for storage)
+
+def evaluate_multiple_detail(setups): 
+
+    path_length = []
+    eff_path_length = []                        
+    computational_complexity = []
+    reachability = []                      #1 for reached and 0 for all agents lost
+
+    for s in setups: 
+        if s.target: 
+            path_length.append(s.path_length)
+            eff_path_length.append(s.eff_path_length)
+            computational_complexity.append(s.computational_complexity)
+            reachability.append(1)
+        else: 
+            path_length.append(0)
+            eff_path_length.append(0)
+            computational_complexity.append(0)
+            reachability.append(0)
+
+    return path_length, eff_path_length, computational_complexity, reachability
+
 # Find minimum clearance of an agent during the run 
 
 def safety(agent, env):

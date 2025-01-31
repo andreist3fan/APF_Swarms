@@ -7,23 +7,23 @@ import matplotlib.pyplot as plt
 import time 
 import os 
 import Analysis_settings_levels as asl 
-import numpy as np 
+import Arrays_Storage_Control as storage 
 
-#----------------Level 1: Change cluttered environment--------------
+#----------------Level 1: Adjust settings--------------
 
-obs_dens = 0                      #Index of density of list in asl (!not the actual value)
-mc_runs = 100 
+obs_num = 1                      #Index of number in list in asl (!not the actual value) -> 0, 1, 2
+mc_runs = 200 
 
-save_problematic_runs = False 
-create_visuals = True             #Create folder for analysis 
+save_problematic_runs = False
+create_visuals = False
 
-mc_name = "Scattering with obstacles " + str(asl.L1_obstacle_density[obs_dens])           #Folder name to store analysis 
+mc_name = "Swarm Size (" + str(asl.L1_obstacle_number[obs_num]) + str(" obstacles)") 
 
 #Store results of each run for final analysis 
 res_reachability = []               #stores value per setting 
 res_path_length = []                #stores value per setting 
 res_eff_path_length = []            #stores value per setting 
-res_computational_complexity = []   #stores value per setting 
+res_computational_complexity = []   #stores value per setting  
 res_min_dist = []                   #stores value per setting  
 res_stuck_agents = []               #stores tupel per setting 
 
@@ -53,7 +53,7 @@ if create_visuals:
 
 #--------------Runs for different settings----------------------------
 
-for sc in range(len(asl.L1_scattering)):
+for na in range(len(asl.L1_swarm_sizes )):
 
     setups_lst = []
 
@@ -61,13 +61,13 @@ for sc in range(len(asl.L1_scattering)):
 
     for m in range(mc_runs): 
 
-        setup = Setup(asl.algorithm) 
+        setup = Setup(asl.L1_algorithm) 
 
         #---------Adjust Setup according to MC Settings----------------
 
-        setup.nr_agents = asl.L1_fixed_swarm_size
-        setup.start_radius = asl.L1_scattering[sc]
-        setup.obstacle_density = asl.L1_obstacle_density[obs_dens]
+        setup.nr_agents = asl.L1_swarm_sizes[na]
+        setup.start_radius = asl.L1_sws_scattering
+        setup.obstacle_number = asl.L1_obstacle_number[obs_num]
 
         #--------------------------------------------------------------
 
@@ -83,8 +83,7 @@ for sc in range(len(asl.L1_scattering)):
         for i in range((setup.nr_agents)): 
                 agents.append(a.Agent(setup, pos_agents, env.obstacles, False))
                 pos_agents.append((agents[-1].x, agents[-1].y))
-        print("Agents created")
-
+                
         agents_all = agents.copy()
 
         running = True 
@@ -142,83 +141,98 @@ for sc in range(len(asl.L1_scattering)):
                 if create_visuals:
                     #Draw problematic run 
                     if save_problematic_runs:
-                        file_name = "Run took too long (Scattering "+str(sc)+")("+str(m)+").png"
-                        ev.draw_run(setup, env, agents_all, folder_path, file_name)
-
+                        file_name = "Run took too long (Number of agents "+str(na)+")("+str(m)+").png"
+                        ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
 
             #If all agents are stuck, run failed 
             if ind == 0: 
                 running = False 
                 
                 if create_visuals:
-                    #Draw problematic run 
-                    if save_problematic_runs:
-                        file_name = "All agents stuck (Scattering "+str(sc)+")("+str(m)+").png"
-                        ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
+                    #Draw problematic run
+                    if save_problematic_runs: 
+                        file_name = "All agents stuck (Number of agents "+str(na)+")("+str(m)+").png"
+                        ev.draw_run(setup, env, agents_all, folder_path, file_name)
 
         setups_lst.append(setup)
 
         #Store first run of each setting
-        if create_visuals:
+        if create_visuals: 
             if m == 0: 
-                file_name = "Scattering (Example for "+str(sc)+").png"
+                file_name = "Number of agents ("+str(setup.nr_agents)+").png"
                 ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
 
 
     #---------------Final evaluation for one setting------------------------
 
-    pl, ef_pl, cc, r, min_dist = ev.evaluate_multiple(setups_lst)
+    #Store data in storage files
 
-    stuck = []
-    for s in setups_lst: 
-        stuck.append(s.nr_stuck_agents)
+    #path_length, eff_path_length, computational_complexity, reachability
 
-    res_path_length.append(pl)
-    res_eff_path_length.append(ef_pl)
-    res_computational_complexity.append(cc)
-    res_reachability.append(r)
-    res_min_dist.append(min_dist)
-    res_stuck_agents.append(stuck)
+    pl_l, ef_pl_l, cc_l, r_l = ev.evaluate_multiple_detail(setups_lst)
 
-    print("Setting "+str(sc)+" completed.")
+    #add_data(file_name, obstacle_density, swarm_setting, algorithm, data): 
+
+    storage.add_data_L1("Storage_swarm_size_L1.npy", 0, obs_num, na, pl_l)
+    storage.add_data_L1("Storage_swarm_size_L1.npy", 1, obs_num, na, ef_pl_l)
+    storage.add_data_L1("Storage_swarm_size_L1.npy", 2, obs_num, na, cc_l)
+    storage.add_data_L1("Storage_swarm_size_L1.npy", 3, obs_num, na, r_l)
+
+    # Analyse setting for immediate diagram creation 
+    if create_visuals: 
+
+        pl, ef_pl, cc, r, min_dist = ev.evaluate_multiple(setups_lst)
+
+        stuck = []
+        for s in setups_lst: 
+            stuck.append(s.nr_stuck_agents)
+
+        res_path_length.append(pl)
+        res_eff_path_length.append(ef_pl)
+        res_computational_complexity.append(cc)
+        res_reachability.append(r)
+        res_min_dist.append(min_dist)
+        res_stuck_agents.append(stuck)
+
+        print("Setting "+str(na)+" completed.")
 
 #---------------Comparison of different settings----------------------------
 
 if create_visuals:
     #Reachability graph 
     plt.figure()
-    plt.plot(asl.L1_scattering, res_reachability, color="red")
-    plt.xlabel('Scattering')
-    plt.xticks(asl.L1_scattering)
+    plt.plot(asl.L1_swarm_sizes, res_reachability, color="red")
+    plt.xlabel('Swarm size')
+    plt.xticks(asl.L1_swarm_sizes)
     plt.ylabel('Reachability')
     plt.ylim(0, 1.1)
-    plt.title('Reachability vs. Scattering')
+    plt.title('Reachability vs. Swarm size')
     plt.grid(True)
-    plot_path = os.path.join(folder_path, "ReachabilityScattering")
+    plot_path = os.path.join(folder_path, "ReachabilitySwarmSize")
     plt.savefig(plot_path)
 
     #Computational Complexity graph 
     plt.figure()
-    plt.plot(asl.L1_scattering, res_computational_complexity, color="blue")
-    plt.xlabel('Scattering')
-    plt.xticks(asl.L1_scattering)
+    plt.plot(asl.L1_swarm_sizes, res_computational_complexity, color="blue")
+    plt.xlabel('Swarm size')
+    plt.xticks(asl.L1_swarm_sizes)
     plt.ylabel('Computational Complexity [s]')
     plt.ylim(0, (max(res_computational_complexity)+0.001))
-    plt.title('Computational Complexity vs. Scattering')
+    plt.title('Computational Complexity vs. Swarm size')
     plt.grid(True)
-    plot_path = os.path.join(folder_path, "ComplexityScattering")
+    plot_path = os.path.join(folder_path, "ComplexitySwarmSize")
     plt.savefig(plot_path)
 
     #Path length graph 
     plt.figure()
-    plt.plot(asl.L1_scattering, res_path_length, color="green")
-    plt.xlabel('Scattering')
-    plt.xticks(asl.L1_scattering)
+    plt.plot(asl.L1_swarm_sizes, res_path_length, color="green")
+    plt.xlabel('Swarm size')
+    plt.xticks(asl.L1_swarm_sizes)
     plt.ylabel('Path length [steps]')
     plt.ylim(0, (max(res_path_length)+5))
-    plt.title('Path length vs. Scattering')
+    plt.title('Path length vs. Swarm size')
     plt.grid(True)
-    plot_path = os.path.join(folder_path, "PathLengthScattering")
+    plot_path = os.path.join(folder_path, "PathLengthSwarmSize")
     plt.savefig(plot_path)
 
     #Save nr. stuck agents and other results in a text file 
@@ -232,10 +246,9 @@ if create_visuals:
         
         # Create the file and fill it with most important information
         with open(file_path, "w") as file:
-            file.write("Testing different initial scattering for swarm")
+            file.write("Testing different swarm sizes")
             file.write("\n\n Runs per setting: "+str(mc_runs))
-            file.write("\n\n Settings (Scattering): "+str(asl.L1_scattering))
-            file.write("\n\n Number of agents: "+str(asl.L1_fixed_swarm_size))
+            file.write("\n\n Settings (swarm size): "+str(asl.L1_swarm_sizes))
             file.write("\n\n Algorithm used: "+str(asl.L1_algorithm))
             if asl.L1_algorithm == 0: 
                 file.write(" (CAPF)")
@@ -257,9 +270,7 @@ if create_visuals:
     except Exception as e:
         print(f"An error occurred during creating the file: {e}")
 
-    
-
-
+storage.overview_swarm_size_L1()
 
 
 

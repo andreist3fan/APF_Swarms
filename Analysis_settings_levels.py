@@ -2,11 +2,11 @@
 #---------------Level 1--------------------------
 
 #Cluttered environment
-L1_obstacle_density = [0.04, 0.07, 0.1]
+L1_obstacle_number = [50, 80, 110] 
 
 #Swarm 
-swarm_sizes = [1, 2, 3, 5, 10, 15, 20, 25]     #Number of agents  
-sws_scattering = 5
+L1_swarm_sizes = [1, 2, 3, 5, 10, 15, 20, 25]     #Number of agents  
+L1_sws_scattering = 5
 
 #Scattering settings 
 L1_scattering = [2, 3, 5, 7.5, 10]                # Scattering radius around center (not smaller than 2)
@@ -17,10 +17,12 @@ L1_algorithm = 0
 
 #----------------Level 2-------------------------
 
-L2_obstacle_density = [0, 0, 0, 0, 0] 
+#Environment settings 
+L2_obstacle_numbers = [75, 125, 175, 225, 275]
 
+#Swarm settings 
 L2_swarm_size = [1, 5, 5]
-L2_scattering = [2, 2, 10]
+L2_scattering = [3, 3, 10]
 
 L2_algorithm = [0, 1, 2, 3, 4]
 
