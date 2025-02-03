@@ -8,9 +8,9 @@ import math
 
 #---------Change setup settings if not standard settings----------
 
-algorithm = 7
+algorithm = 0
 setup = Setup(algorithm)
-setup.obstacle_density = 0.15
+setup.obstacle_number = 110
 
 setup.nr_agents = 5
 setup.start_radius = 5
@@ -32,6 +32,7 @@ wait_time = 0.1         #Determines speed of simulation
 if setup.visual: 
     pg.init()
     screen = pg.display.set_mode(((setup.scale*setup.area_size), (setup.scale*setup.area_size)))
+    screen.fill("white")
     running = True
 
 #Create environment and obstacles according to setup
@@ -121,7 +122,7 @@ while not setup.target and running:
         # draw obstacles
         for obstacle in env.obstacles:
             pos = pg.Vector2((obstacle[0]*setup.scale), (obstacle[1]*setup.scale))
-            pg.draw.circle(screen, "white", pos, round(setup.obst_radius*setup.scale))
+            pg.draw.circle(screen, "gray", pos, round(setup.obst_radius*setup.scale))
         
         #Draw agents and their artificial objects 
         for a in agents: 
