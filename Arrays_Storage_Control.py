@@ -136,6 +136,22 @@ def overview_L2():
     for obs in range(5): 
         print("Obstacle setting "+str(obs)+ ": "+str(np.argmax(swarm[0,obs,0,0] == -1)))
 
+def clean_L2(): 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(current_dir, "Arrays_Storage")
+    storage_L2 = np.load(os.path.join(folder_path, "Storage_L2.npy"))
+
+    #Clean level (delete unfinished runs)
+    mask = storage_L2 != -1
+    count_not_minus_one = mask.sum(axis=0)
+    mixed_indices = (count_not_minus_one != 0) & (count_not_minus_one != storage_L2.shape[0])
+    storage_L2[:, mixed_indices] = -1     # Reset all values to -1 where an inconsistency is found
+
+    print("Mixed indices: ")
+    print(mixed_indices)
+
+    np.save(folder_path, storage_L2)
+
 #------------------Level universal functions-------------------
 
 # Create average of run 
@@ -158,6 +174,8 @@ def avg(run):
 create_empty_storage_L1()
 create_empty_storage_L2()
 
+print("")
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 folder_path = os.path.join(current_dir, "Arrays_Storage")
 #file_path = os.path.join(folder_path, 'Storage_scattering_L1.npy')
@@ -169,11 +187,13 @@ re = np.load(file_path)
 # Level 1: [performance parameter][obstacle_density][scattering][run]
 # Level 2: [performance parameter][obstacle_density][swarm][algorithm][run]
 
-print(re[3, 0, 0, 2, 0:100])
+#---------------------------------------------------------------
 
 overview_scat_L1()
 overview_swarm_size_L1()
-overview_L2()
+
+#overview_L2()
+#clean_L2()
 
 
 

@@ -67,7 +67,7 @@ for sc in range(len(asl.L1_scattering)):
 
         setup.nr_agents = asl.L1_fixed_swarm_size
         setup.start_radius = asl.L1_scattering[sc]
-        setup.obstacle_number = asl.L1_obstacle_density[obs_num]
+        setup.obstacle_number = asl.L1_obstacle_number[obs_num]
 
         #--------------------------------------------------------------
 
