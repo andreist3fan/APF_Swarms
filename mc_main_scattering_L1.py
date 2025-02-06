@@ -11,8 +11,8 @@ import Arrays_Storage_Control as storage
 
 #----------------Level 1: Adjust settings--------------
 
-obs_num = 1                      #Index of density of list in asl (!not the actual value) -> 0, 1, 2
-mc_runs = 100 
+obs_num = 2                      #Index of density of list in asl (!not the actual value) -> 0, 1, 2
+mc_runs = 500 
 
 save_problematic_runs = False 
 create_visuals = False            #Create folder for analysis 
