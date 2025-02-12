@@ -5,7 +5,7 @@ import Evaluation as ev
 import pygame as pg 
 import time 
 import math
-
+from communication import min_communication_distance
 #---------Change setup settings if not standard settings----------
 
 algorithm = 0
@@ -87,8 +87,12 @@ while not setup.target and running:
             setup.eff_path_length = setup.path_length / i.initial_distance_target_steps 
             setup.min_distance_target = ev.safety(i, env)
 
-            #User output 
-            print("Target is reached.")
+            #Compute minimum communication distance such that all agents know that
+            # this one has reached the target
+            min_d = min_communication_distance(agents + agents_stuck)
+            #User output
+
+            print(f"Target is reached. Minimum communication distance:{min_d}")
  
         # Consequences if agent in trouble (hit obstacle, local minimum)
         if i.hit: 
