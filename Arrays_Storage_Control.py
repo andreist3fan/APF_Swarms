@@ -1,5 +1,6 @@
 import numpy as np
 import os 
+import matplotlib.pyplot as plt 
 
 # ----------Level 1-----------------------------------------------------------
 
@@ -42,18 +43,21 @@ def add_data_L1(file_name, performance_parameter_ind, obstacle_density_ind, swar
 
     re = np.load(file_path)
 
-    start = np.argmax(re[performance_parameter_ind, obstacle_density_ind, swarm_or_scattering_ind] == -1)
-    print(start)
+    if re[performance_parameter_ind, obstacle_density_ind, swarm_or_scattering_ind, -1]==-1:
+        start = np.argmax(re[performance_parameter_ind, obstacle_density_ind, swarm_or_scattering_ind] == -1)
+        print(start)
 
-    open_spaces = 999-start
+        open_spaces = 1000 - start
 
-    if len(data) > open_spaces: 
-        print("That setting has more than 1,000 runs. Only "+str(open_spaces)+" more data points added.")
-        data = data[0:(open_spaces-1)]
+        if len(data) > open_spaces: 
+            print("That setting has more than 1,000 runs. Only "+str(open_spaces)+" more data points added.")
+            data = data[0:(open_spaces)]
 
-    re[performance_parameter_ind, obstacle_density_ind, swarm_or_scattering_ind, start:(start+len(data))] = data
+        re[performance_parameter_ind, obstacle_density_ind, swarm_or_scattering_ind, start:(start+len(data))] = data
 
-    np.save(file_path, re)
+        np.save(file_path, re)
+    else: 
+        print("Setting is full.")
 
 def overview_scat_L1(): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -62,9 +66,9 @@ def overview_scat_L1():
     scattering = np.load(os.path.join(folder_path, "Storage_scattering_L1.npy"))
 
     print("Amount of runs for scattering: ")
-    print("Obstacle setting 0: "+str(np.argmax(scattering[0,0,0] == -1)))
-    print("Obstacle setting 1: "+str(np.argmax(scattering[0,1,0] == -1)))
-    print("Obstacle setting 2: "+str(np.argmax(scattering[0,2,0] == -1)))
+    print("Obstacle setting 0: "+str(sum(1 for x in scattering[0,0,0] if x != -1)))
+    print("Obstacle setting 1: "+str(sum(1 for x in scattering[0,1,0] if x != -1)))
+    print("Obstacle setting 2: "+str(sum(1 for x in scattering[0,2,0] if x != -1)))
 
 def overview_swarm_size_L1(): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -73,9 +77,9 @@ def overview_swarm_size_L1():
     swarm = np.load(os.path.join(folder_path, "Storage_swarm_size_L1.npy"))
 
     print("Amount of runs for swarm size: ")
-    print("Obstacle setting 0: "+str(np.argmax(swarm[0,0,0] == -1)))
-    print("Obstacle setting 1: "+str(np.argmax(swarm[0,1,0] == -1)))
-    print("Obstacle setting 2: "+str(np.argmax(swarm[0,2,0] == -1)))
+    print("Obstacle setting 0: "+str(sum(1 for x in swarm[0,0,0] if x != -1)))
+    print("Obstacle setting 1: "+str(sum(1 for x in swarm[0,1,0] if x != -1)))
+    print("Obstacle setting 2: "+str(sum(1 for x in swarm[0,2,0] if x != -1)))
 
 # ----------Level 2-----------------------------------------------------------
 
@@ -115,7 +119,7 @@ def add_data_L2(performance_parameter_ind, obstacle_density_ind, swarm_setting_i
     start = np.argmax(re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, algorithm] == -1)
     print(start)
 
-    open_spaces = 999-start
+    open_spaces = 1000 - start
 
     if len(data) > open_spaces: 
         print("That setting has more than 1,000 runs. Only "+str(open_spaces)+" more data points added.")
@@ -134,7 +138,7 @@ def overview_L2():
     print("Amount of runs for L2: ")
 
     for obs in range(5): 
-        print("Obstacle setting "+str(obs)+ ": "+str(np.argmax(swarm[0,obs,0,0] == -1)))
+        print("Obstacle setting "+str(obs)+ ": "+str(sum(1 for x in swarm[0,obs,0,0] if x != -1)))
 
 def clean_L2(): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -179,8 +183,8 @@ print("")
 current_dir = os.path.dirname(os.path.abspath(__file__))
 folder_path = os.path.join(current_dir, "Arrays_Storage")
 #file_path = os.path.join(folder_path, 'Storage_scattering_L1.npy')
-#file_path = os.path.join(folder_path, 'Storage_swarm_size_L1.npy')
-file_path = os.path.join(folder_path, 'Storage_L2.npy')
+file_path = os.path.join(folder_path, 'Storage_swarm_size_L1.npy')
+#file_path = os.path.join(folder_path, 'Storage_L2.npy')
 
 re = np.load(file_path)
 
@@ -191,9 +195,16 @@ re = np.load(file_path)
 
 overview_scat_L1()
 overview_swarm_size_L1()
+overview_L2()
 
-#overview_L2()
 #clean_L2()
+
+print(re[0][0][1])
+print(np.std(re[0][0][1]))
+
+plt.figure()
+plt.hist(re[0][0][2], bins=500)
+plt.savefig("Histogram data")
 
 
 

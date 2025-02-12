@@ -11,8 +11,8 @@ import Arrays_Storage_Control as storage
 
 #----------------Level 1: Adjust settings--------------
 
-obs_num = 2                      #Index of density of list in asl (!not the actual value) -> 0, 1, 2
-mc_runs = 500 
+obs_num = 0                      #Index of density of list in asl (!not the actual value) -> 0, 1, 2
+mc_runs = 3 
 
 save_problematic_runs = False 
 create_visuals = False            #Create folder for analysis 
@@ -115,8 +115,8 @@ for sc in range(len(asl.L1_scattering)):
                     #Performance matrix
                     setup.target = True 
                     setup.computational_complexity = round((end_time - start_time), 5)
-                    setup.path_length = len(i.pos_lst)
-                    setup.eff_path_length = setup.path_length / i.initial_distance_target_steps 
+                    setup.path_length = (len(i.pos_lst)-1)*setup.step_size 
+                    setup.eff_path_length = setup.path_length / i.initial_distance_target
                     setup.min_distance_target = ev.safety(i, env)
 
                     print(setup.computational_complexity)

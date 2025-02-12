@@ -11,8 +11,8 @@ import Arrays_Storage_Control as storage
 
 #----------------Level 1: Adjust settings--------------
 
-obs_num = 0                      #Index of number in list in asl (!not the actual value) -> 0, 1, 2
-mc_runs = 100 
+obs_num = 2                      #Index of number in list in asl (!not the actual value) -> 0, 1, 2
+mc_runs = 3
 
 save_problematic_runs = False
 create_visuals = False
@@ -53,7 +53,7 @@ if create_visuals:
 
 #--------------Runs for different settings----------------------------
 
-for na in range(len(asl.L1_swarm_sizes )):
+for na in range(len(asl.L1_swarm_sizes)):
 
     setups_lst = []
 
@@ -115,8 +115,8 @@ for na in range(len(asl.L1_swarm_sizes )):
                     #Performance matrix
                     setup.target = True 
                     setup.computational_complexity = round((end_time - start_time), 5)
-                    setup.path_length = len(i.pos_lst)
-                    setup.eff_path_length = setup.path_length / i.initial_distance_target_steps 
+                    setup.path_length = (len(i.pos_lst)-1)*setup.step_size 
+                    setup.eff_path_length = setup.path_length / i.initial_distance_target 
                     setup.min_distance_target = ev.safety(i, env)
 
                 # Consequences if agent in trouble (hit obstacle, local minimum)

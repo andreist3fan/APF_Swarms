@@ -118,8 +118,8 @@ for m in range(mc_runs):
                         #Performance matrix
                         setup.target = True 
                         setup.computational_complexity = round((end_time - start_time), 5)
-                        setup.path_length = len(i.pos_lst)
-                        setup.eff_path_length = setup.path_length / i.initial_distance_target_steps 
+                        setup.path_length = (len(i.pos_lst)-1)*setup.step_size 
+                        setup.eff_path_length = setup.path_length / i.initial_distance_target
                         setup.min_distance_target = ev.safety(i, env)
 
                         print(setup.computational_complexity)
