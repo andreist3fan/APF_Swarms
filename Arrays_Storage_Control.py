@@ -85,7 +85,7 @@ def overview_swarm_size_L1():
 
 # Array_L2[performance parameter][obstacle_density][swarm][algorithm][run]
 
-# Performance Parameter: 0 (path_length) | 1(eff_path_length) | 2(computational_complexity) | 3(reachability)
+# Performance Parameter: 0 (path_length) | 1 (eff_path_length) | 2 (computational_complexity) | 3 (reachability)
 
 # Obstacle density: 0() | 1() | 2() | 3() | 4()
 
@@ -115,19 +115,40 @@ def add_data_L2(performance_parameter_ind, obstacle_density_ind, swarm_setting_i
     file_path = os.path.join(folder_path, 'Storage_L2.npy')
 
     re = np.load(file_path)
+    
+    if re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, algorithm, -1]==-1:
+        start = np.argmax(re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, algorithm] == -1)
+        print("Start: "+str(start))
 
+        open_spaces = 1000 - start
+
+        if len(data) > open_spaces: 
+            print("That setting has more than 1,000 runs. Only "+str(open_spaces)+" more data points added.")
+            data = data[0:(open_spaces)]
+
+        re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, algorithm, start:(start+len(data))] = data
+        print("Saved something")
+
+        np.save(file_path, re)
+    else: 
+        print("Setting is full.")
+    
+    '''
+    # Step 2: Modify the data
     start = np.argmax(re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, algorithm] == -1)
     print(start)
 
     open_spaces = 1000 - start
 
     if len(data) > open_spaces: 
-        print("That setting has more than 1,000 runs. Only "+str(open_spaces)+" more data points added.")
-        data = data[0:(open_spaces-1)]
+        print(f"That setting has more than 1,000 runs. Only {open_spaces} more data points added.")
+        data = data[:open_spaces]  # Correct slicing
 
+    # Update array with new data
     re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, algorithm, start:(start+len(data))] = data
 
     np.save(file_path, re)
+    '''
 
 def overview_L2(): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -140,22 +161,6 @@ def overview_L2():
     for obs in range(5): 
         print("Obstacle setting "+str(obs)+ ": "+str(sum(1 for x in swarm[0,obs,0,0] if x != -1)))
 
-def clean_L2(): 
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    folder_path = os.path.join(current_dir, "Arrays_Storage")
-    storage_L2 = np.load(os.path.join(folder_path, "Storage_L2.npy"))
-
-    #Clean level (delete unfinished runs)
-    mask = storage_L2 != -1
-    count_not_minus_one = mask.sum(axis=0)
-    mixed_indices = (count_not_minus_one != 0) & (count_not_minus_one != storage_L2.shape[0])
-    storage_L2[:, mixed_indices] = -1     # Reset all values to -1 where an inconsistency is found
-
-    print("Mixed indices: ")
-    print(mixed_indices)
-
-    np.save(folder_path, storage_L2)
-
 #------------------Level universal functions-------------------
 
 # Create average of run 
@@ -166,8 +171,7 @@ def avg(run):
     for i in range(amount): 
         x += run[i]
     x = x/(amount)
-    return x
-    
+    return x    
 
 # Analyse two variables 
 
@@ -183,8 +187,8 @@ print("")
 current_dir = os.path.dirname(os.path.abspath(__file__))
 folder_path = os.path.join(current_dir, "Arrays_Storage")
 #file_path = os.path.join(folder_path, 'Storage_scattering_L1.npy')
-file_path = os.path.join(folder_path, 'Storage_swarm_size_L1.npy')
-#file_path = os.path.join(folder_path, 'Storage_L2.npy')
+#file_path = os.path.join(folder_path, 'Storage_swarm_size_L1.npy')
+file_path = os.path.join(folder_path, 'Storage_L2.npy')
 
 re = np.load(file_path)
 
@@ -199,12 +203,15 @@ overview_L2()
 
 #clean_L2()
 
-print(re[0][0][1])
-print(np.std(re[0][0][1]))
+#print(re[0][0][0][0])
+#for index, value in np.ndenumerate(re):
+#    if value != -1:
+#        print(f"Index: {index}, Value: {value}")
+#print(np.std(re[0][0][1]))
 
-plt.figure()
-plt.hist(re[0][0][2], bins=500)
-plt.savefig("Histogram data")
+#plt.figure()
+#plt.hist(re[0][0][2], bins=500)
+#plt.savefig("Histogram data")
 
 
 

@@ -8,14 +8,15 @@ import time
 import os 
 import Analysis_settings_levels as asl 
 import Arrays_Storage_Control as storage 
+import time 
 
 #----------------Level 2: Adjust settings--------------
 
 obs_num = 0                         # Index of density of list in asl (!not the actual value) -> 0, 1, 2, 3, 4
-mc_runs = 100 
+mc_runs = 100
 
 save_problematic_runs = False 
-create_visuals = False            #Create folder for analysis 
+create_visuals = False              # Create folder for analysis 
 
 mc_name = "Algorithms (" + str(asl.L2_obstacle_numbers[obs_num]) + str(" obstacles)")           #Folder name to store analysis 
 
@@ -53,17 +54,27 @@ if create_visuals:
 
 #--------------Runs for different settings----------------------------
 
-for m in range(mc_runs): 
+#Not used 
+setups_store = []
 
-    for alg in range(len(asl.L2_algorithm)):
 
-        for swarm in range(3):
+set_lst = []
+data_lst = []
 
-            setups_lst = []
+for alg in range(len(asl.L2_algorithm)):
+
+    for swarm in range(3):
+
+        setups_lst = []
+
+        for m in range(mc_runs): 
+
+            print("------------------------------------------------------")
+
 
             #---------------Monte Carlo runs-----------------------------------
 
-            setup = Setup(asl.L1_algorithm) 
+            setup = Setup(asl.L2_algorithm[alg]) 
 
             #---------Adjust Setup according to MC Settings----------------
 
@@ -161,24 +172,30 @@ for m in range(mc_runs):
                             ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
 
             setups_lst.append(setup)
-            storage.add_data_L2(0, obs_num, swarm, alg, [setup.path_length])
-            storage.add_data_L2(1, obs_num, swarm, alg, [setup.eff_path_length])
-            storage.add_data_L2(2, obs_num, swarm, alg, [setup.computational_complexity])
-            if setup.target: 
-                storage.add_data_L2(3, obs_num, swarm, alg, [1])
-            else: 
-                storage.add_data_L2(3, obs_num, swarm, alg, [0])
-
-            #Store first run of each setting
-            if create_visuals:
-                if m == 0: 
-                    file_name = "Scattering (Example for algorithm "+str(alg)+".png"
-                    ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name) 
-
-
-        #---------------Final evaluation for one setting------------------------
-
-        #Store data in storage files
-        pl_l, ef_pl_l, cc_l, r_l = ev.evaluate_multiple_detail(setups_lst)
-
         
+
+        # Intermediate storage 
+        set_lst_new = [obs_num, swarm, alg]
+        set_lst.append(set_lst_new)
+
+        pl_l, ef_pl_l, cc_l, r_l = ev.evaluate_multiple_detail(setups_lst)
+        data_lst_new = [pl_l, ef_pl_l, cc_l, r_l]
+        data_lst.append(data_lst_new)
+
+# Store all data (they are all stored at the end to make sure that in 
+# case the program stops in the middle, no intermediate results are stored that mess the storing structure up)
+print("Start storing")
+
+for i in range(len(set_lst)): 
+    storage.add_data_L2(0, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][0])
+    print(data_lst[i][0])
+    storage.add_data_L2(1, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][1])
+    storage.add_data_L2(2, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][2])
+    storage.add_data_L2(3, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][3])
+
+print("End storing")
+
+
+
+
+    

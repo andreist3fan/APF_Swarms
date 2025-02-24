@@ -71,15 +71,15 @@ for na in range(len(asl.L1_swarm_sizes)):
 
         #--------------------------------------------------------------
 
-        #Create environment according to setup
+        # Create environment according to setup
         env = e.Environment(setup)
 
-        #Create agent according to setup
+        # Create agent according to setup
         agents = [] 
         pos_agents = []
         agents_stuck = []
 
-        #Create rest of the swarm 
+        # Create rest of the swarm 
         for i in range((setup.nr_agents)): 
                 agents.append(a.Agent(setup, pos_agents, env.obstacles, False))
                 pos_agents.append((agents[-1].x, agents[-1].y))
@@ -89,7 +89,7 @@ for na in range(len(asl.L1_swarm_sizes)):
         running = True 
         start_time = time.time()
 
-        #The while loop has to be updated according to the normal main function 
+        # The while loop has to be updated according to the normal main function 
 
         steps = 0 
 

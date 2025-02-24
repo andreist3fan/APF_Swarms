@@ -82,7 +82,7 @@ class Setup:
 
         # Some A* specific parameters
 
-        self.grid_fineness = 20 # Number of grid points per meter (i.e, 1m x 1m space has 100 grid cells
+        self.grid_fineness = 10 # Number of grid points per meter (i.e, 1m x 1m space has 100 grid cells
                                 # with grid_fineness = 10)
 
         #--------------Performance metrics-----------------------------
