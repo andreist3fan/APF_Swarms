@@ -7,8 +7,12 @@ import time
 import math
 from communication import min_communication_distance
 #---------Change setup settings if not standard settings----------
-
-algorithm = 0
+# 0: CAPF
+# 1: BAPF
+# 2: CR-BAPF*
+# 3: RAPF
+# 4: A*
+algorithm = 4
 setup = Setup(algorithm)
 setup.obstacle_number = 110
 

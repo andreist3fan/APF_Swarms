@@ -26,6 +26,7 @@ class Setup:
         #3: RAPF
         self.N_bacteria_RAPF = 8
         #4: A*
+        self.grid_fineness = 10
 
         #Swarm characteristics
         self.smart_swarm = False #If one agent reaches a local minimum, that point is added to the obstacle list of the environment
@@ -76,14 +77,6 @@ class Setup:
         self.scale = 15
         self.step_limit = 250       #If exceeded, run fails
 
-        #--------------Performance matrix-----------------------
-
-        #--------------Performance matrix-----------------------------
-
-        # Some A* specific parameters
-
-        self.grid_fineness = 10 # Number of grid points per meter (i.e, 1m x 1m space has 100 grid cells
-                                # with grid_fineness = 10)
 
         #--------------Performance metrics-----------------------------
 
