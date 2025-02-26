@@ -5,8 +5,11 @@ import Analysis_settings_levels as asl
 
 #Folders results 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-folder_path_swarm_L1 = os.path.join(current_dir, "Plots_Results\\Plots_swarm_size_L1")
-folder_path_scattering_L1 = os.path.join(current_dir, "Plots_Results\\Plots_scattering_L1")
+folder_path_swarm_L1 = os.path.join(current_dir, "Plots_Results\\L1_Plots_swarm_size")
+folder_path_scattering_L1 = os.path.join(current_dir, "Plots_Results\\L1_Plots_scattering")
+folder_path_single_L2 = os.path.join(current_dir, "Plots_Results\\L2_Plots_single_agent")
+folder_path_swarm_low_L2 = os.path.join(current_dir, "Plots_Results\\L2_Plots_swarm_low_scattering")
+folder_path_swarm_high_L2 = os.path.join(current_dir, "Plots_Results\\L2_Plots_swarm_high_scattering")
 
 #Folder to array storage 
 folder_storage = os.path.join(current_dir, "Arrays_Storage")
@@ -192,5 +195,128 @@ def plot_L1(swarm, scattering):
         plot_path = os.path.join(folder[j], ("Reachability"))
         plt.savefig(plot_path)
 
+def plot_L2(nr_alg): 
 
-plot_L1(True, True)
+    #data = np.load(os.path.join(folder_storage, "Storage_L2.npy"))
+    data = np.load(os.path.join(folder_storage, "Storage_L2_missing _A_star.npy"))
+
+    #values = []
+    x_ticks = asl.L2_obstacle_numbers 
+    name = ["Single agent", "Swarm low scattering", "Swarm high scattering"]
+    folder = [folder_path_single_L2, folder_path_swarm_low_L2, folder_path_swarm_high_L2]
+
+    color = ["pink", "blue", "red", "orange", "green"]
+    alg_name = ["CAPF", "BAPF", "CR-BAPF*", "RAPF", "A*"]
+
+    for j in range(3): 
+    
+        # Array_L2[performance parameter][obstacle_density][swarm][algorithm][run]
+
+        # Path length
+
+        y = [] 
+
+        for i in range(nr_alg):
+            y.append([])
+
+        for i in range(len(x_ticks)): 
+            for k in range(nr_alg): 
+                y[k].append(sum(x for x in data[0][i][j][k] if x != -1 and x != 0) / sum(1 for x in data[0][i][j][k] if x != -1 and x != 0))
+            
+        plt.figure()
+        
+        for i in range(len(y)): 
+            plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+        plt.xlabel("Obstacle number")
+        plt.ylim(0)
+        plt.xticks(x_ticks)
+        plt.ylabel('Path length')
+        plt.title('Path length vs. Obstacle density ('+str(name[j])+")")
+        plt.grid(True)
+        plt.legend()
+        plot_path = os.path.join(folder[j], ("PathLength"))
+        plt.savefig(plot_path)
+
+        # Effective path length 
+
+        y = [] 
+
+        for i in range(nr_alg):
+            y.append([])
+
+        for i in range(len(x_ticks)): 
+            for k in range(nr_alg): 
+                y[k].append(sum(x for x in data[1][i][j][k] if x != -1 and x != 0) / sum(1 for x in data[1][i][j][k] if x != -1 and x != 0))
+                
+        plt.figure()
+        for i in range(len(y)): 
+            plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+        plt.xlabel("Obstacle number")
+        plt.ylim(0)
+        plt.xticks(x_ticks)
+        plt.ylim(1)
+        plt.ylabel('Effective Path length')
+        plt.title('Effective Path length vs. Obstacle density ('+str(name[j])+")")
+        plt.grid(True)
+        plt.legend()
+        plot_path = os.path.join(folder[j], ("EffectivePathLength"))
+        plt.savefig(plot_path)
+
+        # Computational complexity 
+
+        y = [] 
+
+        for i in range(nr_alg):
+            y.append([])
+
+        for i in range(len(x_ticks)): 
+            for k in range(nr_alg): 
+                y[k].append(sum(x for x in data[2][i][j][k] if x != -1 and x != 0) / sum(1 for x in data[2][i][j][k] if x != -1 and x != 0))
+            
+        plt.figure()
+        for i in range(len(y)): 
+            plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+        plt.xlabel("Obstacle number")
+        plt.ylim(0)
+        plt.xticks(x_ticks)
+        plt.ylim(0)
+        plt.ylabel('Computational Complexity')
+        plt.title('Computational Complexity vs. Obstacle density ('+str(name[j])+")")
+        plt.grid(True)
+        plt.legend()
+        plot_path = os.path.join(folder[j], ("ComputationalComplexity"))
+        plt.savefig(plot_path)
+
+        # Reachability 
+
+        y = [] 
+
+        for i in range(nr_alg):
+            y.append([])
+
+        for i in range(len(x_ticks)): 
+            for k in range(nr_alg): 
+                y[k].append(sum(x for x in data[3][i][j][k] if x != -1) / sum(1 for x in data[3][i][j][k] if x != -1))
+
+        plt.figure()
+        for i in range(len(y)): 
+            plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+        plt.xlabel("Obstacle number")
+        plt.ylim(0)
+        plt.xticks(x_ticks)
+        plt.ylim(0, 1.05)
+        plt.ylabel('Reachability')
+        plt.title('Reachability vs. Obstacle density ('+str(name[j])+")")
+        plt.grid(True)
+        plt.legend()
+        plot_path = os.path.join(folder[j], ("Reachability"))
+        plt.savefig(plot_path)
+    
+
+
+#---------------Run functions---------------------
+
+
+#plot_L1(True, True)
+plot_L2(4)
+

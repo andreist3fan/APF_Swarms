@@ -74,7 +74,7 @@ def initialize_path(agent, environment, setup):
 
     while open_list:
         current_node = heapq.heappop(open_list)
-        print(current_node.x, current_node.y)
+        #print(current_node.x, current_node.y)
         closed_list.append((current_node.x, current_node.y))
 
         if (current_node.x, current_node.y) == goal:
@@ -83,7 +83,7 @@ def initialize_path(agent, environment, setup):
                 path.append((current_node.x, current_node.y))
                 current_node = current_node.parent
             agent.set_path(path[::-1])
-            print("Path computed: "+str(path[::-1]))
+            #print("Path computed: "+str(path[::-1]))
             return
 
         for neighbor in get_neighbors(current_node, grid):

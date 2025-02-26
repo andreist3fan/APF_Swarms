@@ -24,8 +24,8 @@ L2_obstacle_numbers = [75, 125, 175, 225, 275]
 L2_swarm_size = [1, 5, 5]
 L2_scattering = [3, 3, 10]
 
-#L2_algorithm = [0, 1, 2, 3, 4]
+L2_algorithm = [0, 1, 2, 3, 4]
 
-L2_algorithm = [0, 1, 2, 3]
+#L2_algorithm = [0, 1, 2, 3]
 
 
