@@ -195,10 +195,9 @@ def plot_L1(swarm, scattering):
         plot_path = os.path.join(folder[j], ("Reachability"))
         plt.savefig(plot_path)
 
-def plot_L2(nr_alg): 
+def plot_L2(nr_alg, name_data): 
 
-    #data = np.load(os.path.join(folder_storage, "Storage_L2.npy"))
-    data = np.load(os.path.join(folder_storage, "Storage_L2_missing _A_star.npy"))
+    data = np.load(os.path.join(folder_storage, name_data))
 
     #values = []
     x_ticks = asl.L2_obstacle_numbers 
@@ -210,8 +209,6 @@ def plot_L2(nr_alg):
 
     for j in range(3): 
     
-        # Array_L2[performance parameter][obstacle_density][swarm][algorithm][run]
-
         # Path length
 
         y = [] 
@@ -311,6 +308,9 @@ def plot_L2(nr_alg):
         plt.legend()
         plot_path = os.path.join(folder[j], ("Reachability"))
         plt.savefig(plot_path)
+
+
+
     
 
 
@@ -318,5 +318,5 @@ def plot_L2(nr_alg):
 
 
 #plot_L1(True, True)
-plot_L2(4)
+#plot_L2(4, "Storage_L2_missing _A_star.npy")
 
