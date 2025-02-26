@@ -10,6 +10,8 @@ def min_communication_distance(agents: [Agent] ):
     :param agents: list of agents
     :return: minimum communication distance
     """
+    if len(agents) <= 1:
+        return 0
     graph,edges = graph_mapping(agents)
 
     mst_graph = {}
