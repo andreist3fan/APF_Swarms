@@ -32,6 +32,9 @@ class Setup:
         self.smart_swarm = False #If one agent reaches a local minimum, that point is added to the obstacle list of the environment
         self.nr_agents = 5
 
+        #Communication
+        self.communication_distance = 4 # SAMPLE VALUE, TODO:Change
+
         #Reachability/Stuck agents
         self.time_limit = 10 #If simulation takes longer, reachability is set to 0
         self.delete_stuck = True #If an agent gets stuck, ignore it in the further process (assumes that there is no way to unstuck it)

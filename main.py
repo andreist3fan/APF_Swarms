@@ -5,18 +5,18 @@ import Evaluation as ev
 import pygame as pg 
 import time 
 import math
-from communication import min_communication_distance
+from Communication.communication_distance import min_communication_distance
 #---------Change setup settings if not standard settings----------
 # 0: CAPF
 # 1: BAPF
 # 2: CR-BAPF*
 # 3: RAPF
 # 4: A*
-algorithm = 4
+algorithm = 2
 setup = Setup(algorithm)
 setup.obstacle_number = 110
 
-setup.nr_agents = 5
+setup.nr_agents = 3
 setup.start_radius = 5
 
 setup.visual = True     #Pygame to show run
@@ -63,6 +63,12 @@ running = True
 
 while not setup.target and running: 
 
+    agents_targets = [x.target for x in agents]
+    if all(agents_targets):
+        running = False
+        print("All agents reached the target.")
+        break
+
     ind = 0
     
 
@@ -85,10 +91,10 @@ while not setup.target and running:
             end_time = time.time()
 
             #Performance matrix 
-            setup.target = True 
+            #setup.target = True
             setup.computational_complexity = round((end_time - start_time), 5)
             setup.path_length = len(i.pos_lst)
-            setup.eff_path_length = setup.path_length / i.initial_distance_target_steps 
+            #setup.eff_path_length = setup.path_length / i.initial_distance_target_steps
             setup.min_distance_target = ev.safety(i, env)
 
             #Compute minimum communication distance such that all agents know that

@@ -30,6 +30,39 @@ def min_communication_distance(agents: [Agent] ):
 
     return mst_edges[-1][2]
 
+
+def mst_limited_cost(agents: [Agent], limit: float):
+    """
+    Computes the agents who can communicate with each other given a cost limit;
+    Uses Kruskal's Algorithm to generate the MST and returns the edges used to generate the MST
+    :param agents: list of agents
+    :param limit: maximum cost allowed
+    :return: edges used to generate the MST
+    """
+    if len(agents) <= 1:
+        return 0
+    graph,edges = graph_mapping(agents)
+
+    mst_graph = {}
+    for i in range(len(agents)):
+        mst_graph[agents[i]] = []
+    mst_edges = []
+
+    edges = sorted(edges, key=lambda edge: edge[2])
+
+    for edge in edges:
+        mst_graph[edge[0]].append([edge[1],edge[2]])
+        if check_loop(agents,mst_graph):
+            mst_graph[edge[0]].remove([edge[1],edge[2]])
+        else:
+            mst_edges.append(edge)
+        if mst_edges[-1][2] > limit:
+            mst_edges.pop()
+            break
+
+    return mst_edges
+
+
 def check_loop(agents,graph):
     res = True
     visited:set = set([])
