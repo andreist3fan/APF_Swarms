@@ -10,15 +10,14 @@ import Analysis_settings_levels as asl
 import Arrays_Storage_Control as storage 
 import time 
 
-#----------------Level 2: Adjust settings--------------
+#----------------Level 3: Adjust settings--------------
 
-obs_num = 0                         # Index of density of list in asl (!not the actual value) -> 0, 1, 2, 3, 4
 mc_runs = 100
 
 save_problematic_runs = False 
 create_visuals = False              # Create folder for analysis 
 
-mc_name = "Algorithms (" + str(asl.L2_obstacle_numbers[obs_num]) + str(" obstacles)")           #Folder name to store analysis 
+mc_name = "Collision avoidance"     #Folder name to store analysis 
 
 #Store results of each run for final analysis 
 res_reachability = []               #stores value per setting 
@@ -58,7 +57,7 @@ setups_store = []
 set_lst = []
 data_lst = []
 
-for alg in range(len(asl.L2_algorithm)):
+for alg in range(len(asl.L3_algorithm)):
 
     for swarm in range(3):
 
@@ -68,14 +67,14 @@ for alg in range(len(asl.L2_algorithm)):
 
             #---------------Monte Carlo runs-----------------------------------
 
-            setup = Setup(asl.L2_algorithm[alg]) 
+            setup = Setup(asl.L3_algorithm[alg]) 
 
             #---------Adjust Setup according to MC Settings----------------
 
-            setup.nr_agents = asl.L2_swarm_size[swarm]
-            setup.start_radius = asl.L2_scattering[swarm]
-            setup.obstacle_number = asl.L2_obstacle_numbers[obs_num]
-            setup.algorithm = asl.L2_algorithm[alg]
+            setup.nr_agents = asl.L3_swarm_size[swarm]
+            setup.start_radius = asl.L3_scattering[swarm]
+            setup.obstacle_number = asl.L3_obstacle_numbers[obs_num]
+            setup.algorithm = asl.L3_algorithm[alg]
 
             #--------------------------------------------------------------
 
@@ -181,11 +180,11 @@ for alg in range(len(asl.L2_algorithm)):
 print("Start storing")
 
 for i in range(len(set_lst)): 
-    storage.add_data_L2(0, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][0])
+    storage.add_data_L3(0, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][0])
     print(data_lst[i][0])
-    storage.add_data_L2(1, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][1])
-    storage.add_data_L2(2, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][2])
-    storage.add_data_L2(3, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][3])
+    storage.add_data_L3(1, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][1])
+    storage.add_data_L3(2, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][2])
+    storage.add_data_L3(3, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][3])
 
 print("End storing")
 

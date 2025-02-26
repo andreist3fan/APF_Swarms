@@ -161,6 +161,68 @@ def overview_L2():
     for obs in range(5): 
         print("Obstacle setting "+str(obs)+ ": "+str(sum(1 for x in swarm[0,obs,0,0] if x != -1)))
 
+# ----------Level 3-----------------------------------------------------------
+
+# Array_L3[performance parameter][obstacle_density][swarm][collision][run]
+
+# Performance Parameter: 0 (path_length) | 1 (eff_path_length) | 2 (computational_complexity) | 3 (reachability)
+
+# Obstacle density: 0() | 1() | 2() | 3() | 4()
+
+# Swarm: 0(single agent) | 1 (swarm, low scattering) | 2 (swarm, high scattering)
+
+# Collision: 0 (Bumper method) | 1 (Obstacle method) | 2 (Teardrop method) 
+
+def create_empty_storage_L3(): 
+
+    #Create performance parameter 
+    storage_L3 = np.full((4, 5, 3, 3, 1000), -1.0)
+    name = 'Storage_L3.npy'
+
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(current_dir, "Arrays_Storage")
+    file_path = os.path.join(folder_path, name)
+    if not os.path.exists(file_path):
+        np.save(file_path, storage_L3)
+    else: 
+        print(str(name)+" already exists.")
+
+def add_data_L3(performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, collision, data): 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(current_dir, "Arrays_Storage")
+    file_path = os.path.join(folder_path, 'Storage_L2.npy')
+
+    re = np.load(file_path)
+    
+    if re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, collision, -1]==-1:
+        start = np.argmax(re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, collision] == -1)
+        print("Start: "+str(start))
+
+        open_spaces = 1000 - start
+
+        if len(data) > open_spaces: 
+            print("That setting has more than 1,000 runs. Only "+str(open_spaces)+" more data points added.")
+            data = data[0:(open_spaces)]
+
+        re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, collision, start:(start+len(data))] = data
+        print("Saved something")
+
+        np.save(file_path, re)
+    else: 
+        print("Setting is full.")
+
+
+def overview_L3(): 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(current_dir, "Arrays_Storage")
+
+    data = np.load(os.path.join(folder_path, "Storage_L3.npy"))
+
+    print("Amount of runs for L3: ")
+
+    for obs in range(5): 
+        print("Obstacle setting "+str(obs)+ ": "+str(sum(1 for x in data[0,obs,0,0] if x != -1)))
+
 #------------------Level universal functions-------------------
 
 # Create average of run 
@@ -181,6 +243,7 @@ def avg(run):
 #-------------------Run functions---------------------------------------------
 create_empty_storage_L1()
 create_empty_storage_L2()
+create_empty_storage_L3()
 
 print("")
 
@@ -200,6 +263,7 @@ re = np.load(file_path)
 overview_scat_L1()
 overview_swarm_size_L1()
 overview_L2()
+overview_L3()
 
 #clean_L2()
 
