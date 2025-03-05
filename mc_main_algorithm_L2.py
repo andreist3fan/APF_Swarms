@@ -64,6 +64,8 @@ for alg in range(len(asl.L2_algorithm)):
 
         setups_lst = []
 
+        start_time_runs = time.time()
+
         for m in range(mc_runs): 
 
             #---------------Monte Carlo runs-----------------------------------
@@ -166,6 +168,8 @@ for alg in range(len(asl.L2_algorithm)):
             setups_lst.append(setup)
 
         print("Done setting: alg("+str(alg+1)+ "/5) swarm("+str(swarm+1)+"/3)")
+        end_time_runs = time.time()
+        print("Time ("+str(mc_runs)+" runs): "+str(end_time_runs-start_time_runs))
         
 
         # Intermediate storage 

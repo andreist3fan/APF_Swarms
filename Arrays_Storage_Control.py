@@ -163,11 +163,9 @@ def overview_L2():
 
 # ----------Level 3-----------------------------------------------------------
 
-# Array_L3[performance parameter][obstacle_density][swarm][collision][run]
+# Array_L3[performance parameter][swarm][collision][run]
 
 # Performance Parameter: 0 (path_length) | 1 (eff_path_length) | 2 (computational_complexity) | 3 (reachability)
-
-# Obstacle density: 0() | 1() | 2() | 3() | 4()
 
 # Swarm: 0(single agent) | 1 (swarm, low scattering) | 2 (swarm, high scattering)
 
@@ -176,7 +174,7 @@ def overview_L2():
 def create_empty_storage_L3(): 
 
     #Create performance parameter 
-    storage_L3 = np.full((4, 5, 3, 3, 1000), -1.0)
+    storage_L3 = np.full((4, 3, 3, 1000), -1.0)
     name = 'Storage_L3.npy'
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -187,15 +185,17 @@ def create_empty_storage_L3():
     else: 
         print(str(name)+" already exists.")
 
-def add_data_L3(performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, collision, data): 
+#[performance parameter][swarm][collision][run]
+
+def add_data_L3(performance_parameter_ind, swarm_setting_ind, collision, data): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     folder_path = os.path.join(current_dir, "Arrays_Storage")
     file_path = os.path.join(folder_path, 'Storage_L2.npy')
 
     re = np.load(file_path)
     
-    if re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, collision, -1]==-1:
-        start = np.argmax(re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, collision] == -1)
+    if re[performance_parameter_ind, swarm_setting_ind, collision, -1]==-1:
+        start = np.argmax(re[performance_parameter_ind, swarm_setting_ind, collision] == -1)
         print("Start: "+str(start))
 
         open_spaces = 1000 - start
@@ -204,7 +204,7 @@ def add_data_L3(performance_parameter_ind, obstacle_density_ind, swarm_setting_i
             print("That setting has more than 1,000 runs. Only "+str(open_spaces)+" more data points added.")
             data = data[0:(open_spaces)]
 
-        re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, collision, start:(start+len(data))] = data
+        re[performance_parameter_ind, swarm_setting_ind, collision, start:(start+len(data))] = data
         print("Saved something")
 
         np.save(file_path, re)
