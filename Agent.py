@@ -14,7 +14,10 @@ class Agent:
 
     #Fixed True: location at spawning center
     #Fixed False: location random scattered
-        
+        #------------Communication--------------------------------
+        self.communicated_data = []         #List of all communicated data
+
+
         #------------Characteristics------------------------------
 
         self.algorithm = setup.algorithm

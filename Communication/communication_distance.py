@@ -1,7 +1,8 @@
 from agent_algorithms.a_star import euclidean_distance
 from Agent import Agent
 
-def min_communication_distance(agents: [Agent] ):
+
+def min_communication_distance(agents: [Agent]):
     """
     Computes the minimum communication distance between agents;
     In graph theory, this is also knows as the Minimum Spanning Tree (MST) Problem;
@@ -12,7 +13,7 @@ def min_communication_distance(agents: [Agent] ):
     """
     if len(agents) <= 1:
         return 0
-    graph,edges = graph_mapping(agents)
+    graph, edges = graph_mapping(agents)
 
     mst_graph = {}
     for i in range(len(agents)):
@@ -22,9 +23,9 @@ def min_communication_distance(agents: [Agent] ):
     edges = sorted(edges, key=lambda edge: edge[2])
 
     for edge in edges:
-        mst_graph[edge[0]].append([edge[1],edge[2]])
-        if check_loop(agents,mst_graph):
-            mst_graph[edge[0]].remove([edge[1],edge[2]])
+        mst_graph[edge[0]].append([edge[1], edge[2]])
+        if check_loop(agents, mst_graph):
+            mst_graph[edge[0]].remove([edge[1], edge[2]])
         else:
             mst_edges.append(edge)
 
@@ -41,7 +42,7 @@ def mst_limited_cost(agents: [Agent], limit: float):
     """
     if len(agents) <= 1:
         return 0
-    graph,edges = graph_mapping(agents)
+    _, edges = graph_mapping(agents)
 
     mst_graph = {}
     for i in range(len(agents)):
@@ -51,9 +52,9 @@ def mst_limited_cost(agents: [Agent], limit: float):
     edges = sorted(edges, key=lambda edge: edge[2])
 
     for edge in edges:
-        mst_graph[edge[0]].append([edge[1],edge[2]])
-        if check_loop(agents,mst_graph):
-            mst_graph[edge[0]].remove([edge[1],edge[2]])
+        mst_graph[edge[0]].append([edge[1], edge[2]])
+        if check_loop(agents, mst_graph):
+            mst_graph[edge[0]].remove([edge[1], edge[2]])
         else:
             mst_edges.append(edge)
         if mst_edges[-1][2] > limit:
@@ -63,22 +64,32 @@ def mst_limited_cost(agents: [Agent], limit: float):
     return mst_edges
 
 
-def check_loop(agents,graph):
+def check_loop(agents, graph):
+    """
+    Checks if there is a loop in the given graph using a Depth-First Search (DFS) traversal.
+    :param agents: The nodes of the graph (agents)
+    :param graph: The adjacency map of the graph
+    :return: True if there is a loop, False otherwise
+    """
     res = True
-    visited:set = set([])
+    visited: set = set([])
     for agent in agents:
-        if not(visited.__contains__(agent)):
-            res = res and dfs(agent,visited,graph)
+        if not (visited.__contains__(agent)):
+            res = res and dfs(agent, visited, graph)
 
     return not res
+
+
 def dfs(agent, visited, graph):
     res = True
     visited.add(agent)
     for [n_agent, dist] in graph[agent]:
-        if agent!=n_agent and visited.__contains__(n_agent):
+        if agent != n_agent and visited.__contains__(n_agent):
             return False
-        else: res = res and dfs(n_agent, visited, graph)
+        else:
+            res = res and dfs(n_agent, visited, graph)
     return res
+
 
 def graph_mapping(agents: [Agent]):
     """
@@ -86,7 +97,7 @@ def graph_mapping(agents: [Agent]):
      - The graph of the agents is a complete graph where each agent is connected with each other
         with a cost equal to the Euclidean distance between them
     :param agents: list of all agents (that didn't crash in a obstacle)
-    :return: Adjacency map of the graph
+    :return: Adjacency map of the graph and the edges of the graph
     """
     graph = {}
     edges = []
@@ -94,10 +105,10 @@ def graph_mapping(agents: [Agent]):
         graph[agents[i]] = []
     for i in range(len(agents) - 1):
         for j in range(i + 1, len(agents)):
-            dist = euclidean_distance(agents[i].x, agents[i].y, agents[j].x,agents[j].y)
+            dist = euclidean_distance(agents[i].x, agents[i].y, agents[j].x, agents[j].y)
             graph[agents[i]].append([agents[j], dist])
-            graph[agents[j]].append([agents[i],dist])
-            edges.append([agents[i],agents[j],dist])
-            edges.append([agents[ j], agents[i], dist])
+            graph[agents[j]].append([agents[i], dist])
+            edges.append([agents[i], agents[j], dist])
+            edges.append([agents[j], agents[i], dist])
 
-    return graph,edges
+    return graph, edges
