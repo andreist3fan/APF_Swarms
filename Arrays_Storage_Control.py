@@ -169,12 +169,12 @@ def overview_L2():
 
 # Swarm: 0(single agent) | 1 (swarm, low scattering) | 2 (swarm, high scattering)
 
-# Collision: 0 (Bumper method) | 1 (Obstacle method) | 2 (Teardrop method) 
+# Collision: 0 (None) | 1 (Bumper method) | 2 (Obstacle method) | 3 (Teardrop method) 
 
 def create_empty_storage_L3(): 
 
     #Create performance parameter 
-    storage_L3 = np.full((4, 3, 3, 1000), -1.0)
+    storage_L3 = np.full((4, 3, 4, 1000), -1.0)
     name = 'Storage_L3.npy'
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -190,7 +190,7 @@ def create_empty_storage_L3():
 def add_data_L3(performance_parameter_ind, swarm_setting_ind, collision, data): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     folder_path = os.path.join(current_dir, "Arrays_Storage")
-    file_path = os.path.join(folder_path, 'Storage_L2.npy')
+    file_path = os.path.join(folder_path, 'Storage_L3.npy')
 
     re = np.load(file_path)
     
@@ -219,9 +219,8 @@ def overview_L3():
     data = np.load(os.path.join(folder_path, "Storage_L3.npy"))
 
     print("Amount of runs for L3: ")
-
-    for obs in range(5): 
-        print("Obstacle setting "+str(obs)+ ": "+str(sum(1 for x in data[0,obs,0,0] if x != -1)))
+ 
+    print("Number runs: "+str(sum(1 for x in data[0,0,0] if x != -1)))
 
 #------------------Level universal functions-------------------
 
@@ -276,6 +275,13 @@ overview_L3()
 #plt.figure()
 #plt.hist(re[0][0][2], bins=500)
 #plt.savefig("Histogram data")
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+folder_path = os.path.join(current_dir, "Arrays_Storage")
+data = np.load(os.path.join(folder_path, "Storage_L3.npy"))
+
+
+
 
 
 

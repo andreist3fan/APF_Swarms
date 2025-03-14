@@ -108,7 +108,11 @@ for alg in range(len(asl.L3_algorithm)):
                 for i in agents: 
 
                     #Update position 
-                    i.update_position(env, setup)
+                    if i.algorithm == 5 or i.algorithm == 6 or i.algorithm == 7: 
+                        agent_positions = [(j.x, j.y) for j in agents if not j == i] # Used for Level 3: agent-agent collision avoidance
+                        i.update_position(env, setup, agent_positions)
+                    else:
+                        i.update_position(env, setup)
 
                     #Check whether agent hit an obstacle 
                     i.obs_check(env)
@@ -164,11 +168,11 @@ for alg in range(len(asl.L3_algorithm)):
 
             setups_lst.append(setup)
 
-        print("Done setting: alg("+str(alg+1)+ "/5) swarm("+str(swarm+1)+"/3)")
+        print("Done setting: alg("+str(alg+1)+ "/4) swarm("+str(swarm+1)+"/3)")
         
 
         # Intermediate storage 
-        set_lst_new = [asl.L3_obs_number, swarm, alg]
+        set_lst_new = [swarm, alg]
         set_lst.append(set_lst_new)
 
         pl_l, ef_pl_l, cc_l, r_l = ev.evaluate_multiple_detail(setups_lst)
@@ -180,12 +184,11 @@ for alg in range(len(asl.L3_algorithm)):
 print("Start storing")
 
 for i in range(len(set_lst)): 
-    # performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, collision, data
-    storage.add_data_L3(0, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][0])
-    #print(data_lst[i][0])
-    storage.add_data_L3(1, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][1])
-    storage.add_data_L3(2, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][2])
-    storage.add_data_L3(3, set_lst[i][0], set_lst[i][1], set_lst[i][2], data_lst[i][3])
+    # performance_parameter_ind, swarm_setting_ind, collision, data
+    storage.add_data_L3(0, set_lst[i][0], set_lst[i][1], data_lst[i][0])
+    storage.add_data_L3(1, set_lst[i][0], set_lst[i][1], data_lst[i][1])
+    storage.add_data_L3(2, set_lst[i][0], set_lst[i][1], data_lst[i][2])
+    storage.add_data_L3(3, set_lst[i][0], set_lst[i][1], data_lst[i][3])
 
 print("End storing")
 

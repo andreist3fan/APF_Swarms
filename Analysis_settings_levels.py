@@ -30,11 +30,12 @@ L2_algorithm = [4]
 #---------------Level 3--------------------------
 
 #Environment settings 
-L3_obs_number = 200
+L3_obs_number = 300
 
 #Swarm settings 
 L3_swarm_size = [5, 5, 10]
 L3_scattering = [3, 10, 10]
+L3_swarm_options = ["size: 5, scattering: 3", "size: 5, scattering: 10", "size: 10, scattering: 10"]
 
 L3_algorithm = [3, 5, 6, 7] #RAPF with no/different collision methods 
 

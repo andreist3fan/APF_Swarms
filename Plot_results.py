@@ -10,6 +10,7 @@ folder_path_scattering_L1 = os.path.join(current_dir, "Plots_Results\\L1_Plots_s
 folder_path_single_L2 = os.path.join(current_dir, "Plots_Results\\L2_Plots_single_agent")
 folder_path_swarm_low_L2 = os.path.join(current_dir, "Plots_Results\\L2_Plots_swarm_low_scattering")
 folder_path_swarm_high_L2 = os.path.join(current_dir, "Plots_Results\\L2_Plots_swarm_high_scattering")
+folder_path_L3 = os.path.join(current_dir, "Plots_Results\\L3_Plots")
 
 #Folder to array storage 
 folder_storage = os.path.join(current_dir, "Arrays_Storage")
@@ -309,6 +310,117 @@ def plot_L2(nr_alg, name_data):
         plot_path = os.path.join(folder[j], ("Reachability"))
         plt.savefig(plot_path)
 
+def plot_L3(name_data): 
+    data = np.load(os.path.join(folder_storage, name_data))
+    
+    x_ticks = asl.L3_swarm_options
+    name = ["Single agent", "Swarm low scattering", "Swarm high scattering"]
+    #folder_path_L3
+
+    color = ["pink", "blue", "orange", "green"]
+    alg_name = ["No collision avoidance", "Bumper method", "Obstacle method", "Teardrop method"]
+
+    # Path length
+
+    y = [] 
+
+    for i in range(4):
+        y.append([])
+
+    for i in range(len(x_ticks)): 
+        for k in range(4): 
+            y[k].append(sum(x for x in data[0][i][k] if x != -1 and x != 0) / sum(1 for x in data[0][i][k] if x != -1 and x != 0))
+        
+    plt.figure()
+    
+    for i in range(len(y)): 
+        plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+    plt.xlabel("Swarm setting")
+    plt.ylim(0)
+    plt.xticks(x_ticks)
+    plt.ylabel('Path length')
+    plt.title('Path length vs. Swarm setting')
+    plt.grid(True)
+    plt.legend()
+    plot_path = os.path.join(folder_path_L3, ("PathLength"))
+    plt.savefig(plot_path)
+
+    
+    # Effective path length 
+
+    y = [] 
+
+    for i in range(4):
+        y.append([])
+
+    for i in range(len(x_ticks)): 
+        for k in range(4): 
+            y[k].append(sum(x for x in data[1][i][k] if x != -1 and x != 0) / sum(1 for x in data[1][i][k] if x != -1 and x != 0))
+            
+    plt.figure()
+    for i in range(len(y)): 
+        plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+    plt.xlabel("Swarm setting")
+    plt.ylim(0)
+    plt.xticks(x_ticks)
+    plt.ylim(1)
+    plt.ylabel('Effective Path length')
+    plt.title("Effective Path length vs. Swarm Setting")
+    plt.grid(True)
+    plt.legend()
+    plot_path = os.path.join(folder_path_L3, ("EffectivePathLength"))
+    plt.savefig(plot_path)
+
+    # Computational complexity 
+
+    y = [] 
+
+    for i in range(4):
+        y.append([])
+
+    for i in range(len(x_ticks)): 
+        for k in range(4): 
+            y[k].append(sum(x for x in data[2][i][k] if x != -1 and x != 0) / sum(1 for x in data[2][i][k] if x != -1 and x != 0))
+        
+    plt.figure()
+    for i in range(len(y)): 
+        plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+    plt.xlabel("Swarm setting")
+    plt.ylim(0)
+    plt.xticks(x_ticks)
+    plt.ylim(0)
+    plt.ylabel('Computational Complexity')
+    plt.title('Computational Complexity vs. Swarm settings')
+    plt.grid(True)
+    plt.legend()
+    plot_path = os.path.join(folder_path_L3, ("ComputationalComplexity"))
+    plt.savefig(plot_path)
+
+    # Reachability 
+
+    y = [] 
+
+    for i in range(4):
+        y.append([])
+
+    for i in range(len(x_ticks)): 
+        for k in range(4): 
+            y[k].append(sum(x for x in data[3][i][k] if x != -1) / sum(1 for x in data[3][i][k] if x != -1))
+
+    plt.figure()
+    for i in range(len(y)): 
+        plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+        plt.xlabel("Swarm setting")
+    plt.ylim(0)
+    plt.xticks(x_ticks)
+    plt.ylim(0, 1.05)
+    plt.ylabel('Reachability')
+    plt.title('Reachability vs. Swarm settings')
+    plt.grid(True)
+    plt.legend()
+    plot_path = os.path.join(folder_path_L3, ("Reachability"))
+    plt.savefig(plot_path)
+
 
 
     
@@ -319,4 +431,4 @@ def plot_L2(nr_alg, name_data):
 
 #plot_L1(True, True)
 #plot_L2(4, "Storage_L2_missing _A_star.npy")
-
+plot_L3("Storage_L3.npy")
