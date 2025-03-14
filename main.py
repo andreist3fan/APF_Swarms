@@ -12,9 +12,9 @@ from communication import min_communication_distance
 # 2: CR-BAPF*
 # 3: RAPF
 # 4: A*
-algorithm = 4
+algorithm = 8
 setup = Setup(algorithm)
-setup.obstacle_number = 110
+setup.obstacle_number = 200
 
 setup.nr_agents = 5
 setup.start_radius = 5

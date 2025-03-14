@@ -5,6 +5,7 @@ from agent_algorithms import cr_bapf_star
 from agent_algorithms import rapf 
 from agent_algorithms import a_star 
 from agent_algorithms import multi_agent_rapf
+from agent_algorithms import L4_rapf
 import random 
 import math 
 from scipy.stats import truncnorm
@@ -126,6 +127,8 @@ class Agent:
             self.x, self.y = multi_agent_rapf.pos_update(self, environment, setup, agent_positions, 2)
         if self.algorithm == 7:
             self.x, self.y = multi_agent_rapf.pos_update(self, environment, setup, agent_positions, 3)
+        if self.algorithm == 8:
+            self.x, self.y = L4_rapf.pos_update(self, environment, setup, agent_positions, 3)
         
         #Append new location to the history list 
         self.pos_lst.append((self.x, self.y))

@@ -4,6 +4,9 @@ def pos_update(agent, environment, setup, agent_positions, implementation):
     # Step 1: Isolate all (artificial) obstacles and agents that are within the view range
     obstacles_in_range = []
     agents_in_range = []
+    agents_in_comm_range = []
+    communication_range = 5
+    agent_attraction_strength = 0.5
     for obstacle in environment.obstacles:
         distance = ((agent.x - obstacle[0]) ** 2 + (agent.y - obstacle[1]) ** 2) ** 0.5
         if distance < setup.range:
@@ -16,6 +19,8 @@ def pos_update(agent, environment, setup, agent_positions, implementation):
         distance = ((agent.x - other_agent[0]) ** 2 + (agent.y - other_agent[1]) ** 2) ** 0.5
         if distance < setup.range:
             agents_in_range.append(other_agent)
+        if distance < communication_range: ################# Still need to add this variable to setup
+            agents_in_comm_range.append(other_agent)
 
     # Step 2: Define potential field equation
     starting_distance_to_target = ((setup.target_x - setup.agents_start_x)**2 + (setup.target_y - setup.agents_start_y)**2) ** 0.5
@@ -23,12 +28,14 @@ def pos_update(agent, environment, setup, agent_positions, implementation):
         target_potential = - setup.alpha_t * np.exp(-setup.mu_t * ((setup.target_x - x)**2 + (setup.target_y - y)**2))
         obstacle_potential = 0
         agent_potential = 0
+        # Obstacles
         for obstacle in obstacles_in_range:
             distance_squared = (obstacle[0] - x)**2 + (obstacle[1] - y)**2
             if distance_squared**0.5 < setup.obst_radius_inner:
                 obstacle_potential = float('inf')
             elif distance_squared**0.5 < setup.obst_radius_outer:
                 obstacle_potential += setup.alpha_o * np.exp(-setup.mu_o * distance_squared)
+        # Inter-agent repelling forces
         for other_agent in agents_in_range:
             distance = ((x - other_agent[0]) ** 2 + (y - other_agent[1]) ** 2) ** 0.5
             if implementation == 1 or implementation == 2 or implementation == 3:
@@ -42,6 +49,15 @@ def pos_update(agent, environment, setup, agent_positions, implementation):
                 relative_distance_to_target = distance_to_target / starting_distance_to_target
                 if distance < setup.agent_influence_radius:
                     agent_potential += 2 * relative_distance_to_target * setup.alpha_a * np.exp(-setup.mu_a * distance**2)
+        # Attracting forces to keep connected network
+        if len(agents_in_comm_range) == 1:
+            other_agent = agents_in_comm_range[0] # The only entry in that list
+            distance = ((x - other_agent[0]) ** 2 + (y - other_agent[1]) ** 2) ** 0.5
+            if distance < communication_range:
+                agent_potential += agent_attraction_strength * communication_range**2 / (distance - communication_range)**2
+            else:
+                agent_potential = float('inf')
+
 
         return target_potential + obstacle_potential + agent_potential
 
