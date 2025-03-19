@@ -313,8 +313,12 @@ def plot_L2(nr_alg, name_data):
 def plot_L3(name_data): 
     data = np.load(os.path.join(folder_storage, name_data))
     
-    x_ticks = asl.L3_swarm_options
-    name = ["Single agent", "Swarm low scattering", "Swarm high scattering"]
+    x_ticks = []
+    #name = []
+    for i in range(len(asl.L3_swarm_size)): 
+        n = "Size: "+str(asl.L3_swarm_size[i])+", Scattering: "+str(asl.L3_scattering)
+        #name.append(n)
+        x_ticks.append(n)
     #folder_path_L3
 
     color = ["pink", "blue", "orange", "green"]

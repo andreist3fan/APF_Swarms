@@ -12,7 +12,7 @@ import time
 
 #----------------Level 3: Adjust settings--------------
 
-mc_runs = 100
+mc_runs = 10
 
 save_problematic_runs = False 
 create_visuals = False              # Create folder for analysis 
@@ -59,7 +59,7 @@ data_lst = []
 
 for alg in range(len(asl.L3_algorithm)):
 
-    for swarm in range(3):
+    for swarm in range(len(asl.L3_swarm_size)):
 
         setups_lst = []
 

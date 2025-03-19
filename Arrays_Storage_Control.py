@@ -1,6 +1,7 @@
 import numpy as np
 import os 
 import matplotlib.pyplot as plt 
+import Analysis_settings_levels as asl
 
 # ----------Level 1-----------------------------------------------------------
 
@@ -174,7 +175,9 @@ def overview_L2():
 def create_empty_storage_L3(): 
 
     #Create performance parameter 
-    storage_L3 = np.full((4, 3, 4, 1000), -1.0)
+    swarm_int = len(asl.L3_swarm_size)
+    collision_int = len(asl.L3_algorithm)
+    storage_L3 = np.full((4, swarm_int, collision_int, 1000), -1.0)
     name = 'Storage_L3.npy'
 
     current_dir = os.path.dirname(os.path.abspath(__file__))

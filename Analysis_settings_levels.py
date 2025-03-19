@@ -24,18 +24,22 @@ L2_obstacle_numbers = [75, 125, 175, 225, 275]
 L2_swarm_size = [1, 5, 5]
 L2_scattering = [3, 3, 10]
 
-#L2_algorithm = [0, 1, 2, 3, 4]
-L2_algorithm = [4]
+L2_algorithm = [0, 1, 2, 3, 4]
+#L2_algorithm = [4]
 
 #---------------Level 3--------------------------
 
 #Environment settings 
-L3_obs_number = 300
+L3_obs_number = 200
 
-#Swarm settings 
-L3_swarm_size = [5, 5, 10]
-L3_scattering = [3, 10, 10]
-L3_swarm_options = ["size: 5, scattering: 3", "size: 5, scattering: 10", "size: 10, scattering: 10"]
+#Swarm settings: From Report 
+#L3_swarm_size = [5, 5, 10]
+#L3_scattering = [3, 10, 10]
+#L3_swarm_options = ["size: 5, scattering: 3", "size: 5, scattering: 10", "size: 10, scattering: 10"]
+
+#Swarm settings: testing 
+L3_swarm_size = [5, 5, 5, 5, 5]
+L3_scattering = [2, 3, 5, 7.5, 10]
 
 L3_algorithm = [3, 5, 6, 7] #RAPF with no/different collision methods 
 
