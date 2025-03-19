@@ -45,23 +45,49 @@ def mst_limited_cost(agents: [Agent], limit: float):
     _, edges = graph_mapping(agents)
 
     mst_graph = {}
-    for i in range(len(agents)):
-        mst_graph[agents[i]] = []
+    assigned_clusters = {}
+    for index,agent in enumerate(agents):
+        mst_graph[agent] = []
+        assigned_clusters[agent] = index
     mst_edges = []
 
     edges = sorted(edges, key=lambda edge: edge[2])
+
+
 
     for edge in edges:
         mst_graph[edge[0]].append([edge[1], edge[2]])
         if check_loop(agents, mst_graph):
             mst_graph[edge[0]].remove([edge[1], edge[2]])
         else:
-            mst_edges.append(edge)
+            mst_edges.append([edge[0], edge[1],edge[2]])
+            k = assigned_clusters[edge[1]]
+            for agent in agents:
+                if assigned_clusters[agent] == k:
+                    assigned_clusters[agent] = assigned_clusters[edge[0]]
         if mst_edges[-1][2] > limit:
             mst_edges.pop()
             break
 
-    return mst_edges
+    return mst_edges, assigned_clusters
+
+# def mst_path(agents: [Agent], mst_edges):
+#     """
+#     Computes, given an MST, which agents can communicate with each other through the edges
+#     :param agents:
+#     :param mst_edges:
+#     :return:
+#     """
+#     communication_map = {}
+#     for agent in agents:
+#         communication_map[agent] = []
+#     for agent in agents:
+#         for other_agent in agents:
+#             if agent != other_agent and [agent, other_agent] in mst_edges:
+#                 communication_map[agent].append(other_agent)
+#                 communication_map[other_agent].append()
+#     return communication_map
+
 
 
 def check_loop(agents, graph):

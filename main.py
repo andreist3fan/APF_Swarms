@@ -1,4 +1,5 @@
-from Setup import Setup 
+from Communication.communication import pool_communication_data
+from Setup import Setup
 import Environment as e 
 import Agent as a 
 import Evaluation as ev
@@ -12,9 +13,9 @@ from Communication.communication_distance import min_communication_distance
 # 2: CR-BAPF*
 # 3: RAPF
 # 4: A*
-algorithm = 2
+algorithm = 0
 setup = Setup(algorithm)
-setup.obstacle_number = 110
+setup.obstacle_number = 90
 
 setup.nr_agents = 3
 setup.start_radius = 5
@@ -73,34 +74,41 @@ while not setup.target and running:
     
 
     #Update posiiton of agents
-    for i in agents: 
+    for index,i in enumerate(agents):
         
         agent_positions = [(j.x, j.y) for j in agents if not j == i] # Used for Level 3: agent-agent collision avoidance
         
-        #Update position 
-        i.update_position(env, setup, agent_positions)
+        #Update position
+        if not i.target:
+            i.update_position(env, setup, agent_positions)
 
-        #Check whether agent has reached target
-        i.target_check(env)
+            #Check whether agent has reached target
+            i.target_check(env)
 
-        #Check whether agent hit an obstacle 
-        i.obs_check(env)
+            #Check whether agent hit an obstacle
+            i.obs_check(env)
 
         # Consequences if agent reached target
-        if i.target: 
-            end_time = time.time()
+        if i.target:
+            # if all agents have reached the target, the run is over
+            if all(x.target for x in agents):
+                setup.target = True
+                end_time = time.time()
 
-            #Performance matrix 
-            #setup.target = True
-            setup.computational_complexity = round((end_time - start_time), 5)
-            setup.path_length = len(i.pos_lst)
-            #setup.eff_path_length = setup.path_length / i.initial_distance_target_steps
-            setup.min_distance_target = ev.safety(i, env)
+                #Performance matrix
+                #setup.target = True
+                #setup.computational_complexity = round((end_time - start_time), 5)
+                setup.path_length = len(i.pos_lst)
+                #setup.eff_path_length = setup.path_length / i.initial_distance_target_steps
+                setup.min_distance_target = ev.safety(i, env)
 
             #Compute minimum communication distance such that all agents know that
             # this one has reached the target
             min_d = min_communication_distance(agents + agents_stuck)
-            #User output
+
+
+            # Gather data
+            pool_communication_data(agents, setup)
 
             print(f"Target is reached. Minimum communication distance:{min_d}")
  

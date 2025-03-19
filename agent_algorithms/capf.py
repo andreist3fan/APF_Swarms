@@ -1,6 +1,9 @@
 import numpy as np
 
-def pos_update(agent, environment, setup): 
+from agent_algorithms.a_star import euclidean_distance
+
+
+def pos_update(agent, environment, setup):
     # Step 1: Isolate all obstacles that are within the view range
     obstacles_in_range = []
     for obstacle in environment.obstacles:
@@ -11,8 +14,16 @@ def pos_update(agent, environment, setup):
     # Step 2: Define potential field equation
     def potential_field(x, y):
         target_potential = - setup.alpha_t * np.exp(-setup.mu_t * ((setup.target_x - x)**2 + (setup.target_y - y)**2))
+
         obstacle_potentials = [setup.alpha_o * np.exp(-setup.mu_o *((obstacle[0] - x)**2 + (obstacle[1] - y)**2)) for obstacle in obstacles_in_range]
-        return target_potential + sum(obstacle_potentials)
+        s = target_potential + sum(obstacle_potentials)
+        if len(agent.communicated_data)>0:
+            cd = np.array(agent.communicated_data)
+            flat = cd.reshape(-1, cd.shape[-1])
+            communicated_potentials = [(-setup.alpha_c * np.exp(-setup.mu_c * ((pt[0] - x) ** 2 + (pt[1] - y) ** 2)))*(45 - (euclidean_distance(pt[0],pt[1],setup.target_x, setup.target_y))) for pt in flat]
+            s += sum(communicated_potentials)
+
+        return s
 
     # Step 3: Determine the gradient of the potential field
     def calculate_gradient(J, x, y, dx=1e-3, dy=1e-3):

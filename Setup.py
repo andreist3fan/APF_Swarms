@@ -72,6 +72,8 @@ class Setup:
         self.mu_o = 1.5
         self.alpha_a = 5  
         self.mu_a = 0.2
+        self.alpha_c = 20
+        self.mu_c = 0.2
         self.agent_influence_radius = 4.5
 
         #------------Simulation--------------------------------
