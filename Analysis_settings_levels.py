@@ -38,8 +38,12 @@ L3_obs_number = 200
 #L3_swarm_options = ["size: 5, scattering: 3", "size: 5, scattering: 10", "size: 10, scattering: 10"]
 
 #Swarm settings: testing 
-L3_swarm_size = [5, 5, 5, 5, 5]
-L3_scattering = [2, 3, 5, 7.5, 10]
+L3_swarm_size = [1, 2, 5, 10, 15]
+L3_scattering = [5, 5, 5, 5, 5]
+
+#Test 001 
+#L3_swarm_size = [5, 5, 5, 5, 5]
+#L3_scattering = [2, 3, 5, 7.5, 10]
 
 L3_algorithm = [3, 5, 6, 7] #RAPF with no/different collision methods 
 

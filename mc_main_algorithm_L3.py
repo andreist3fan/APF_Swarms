@@ -12,7 +12,7 @@ import time
 
 #----------------Level 3: Adjust settings--------------
 
-mc_runs = 10
+mc_runs = 448
 
 save_problematic_runs = False 
 create_visuals = False              # Create folder for analysis 
@@ -168,7 +168,7 @@ for alg in range(len(asl.L3_algorithm)):
 
             setups_lst.append(setup)
 
-        print("Done setting: alg("+str(alg+1)+ "/4) swarm("+str(swarm+1)+"/3)")
+        print("Done setting: alg("+str(alg+1)+ "/4) swarm("+str(swarm+1)+"/"+str(len(asl.L3_swarm_size))+")")
         
 
         # Intermediate storage 
