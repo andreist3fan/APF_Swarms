@@ -31,13 +31,17 @@ def pos_update(agent, environment, setup, agent_positions, implementation):
                 obstacle_potential += setup.alpha_o * np.exp(-setup.mu_o * distance_squared)
         for other_agent in agents_in_range:
             distance = ((x - other_agent[0]) ** 2 + (y - other_agent[1]) ** 2) ** 0.5
+            if implementation == 1: 
+                print("Uses multi_agent 1")
             if implementation == 1 or implementation == 2 or implementation == 3:
                 if distance < agent.radius * 2 * 1.5: # Added 50% safety margin (still needs to be decided how to handle things properly)
                     agent_potential = float('inf')
             if implementation == 2:
+                print("Uses multi_agent 2")
                 if distance < setup.agent_influence_radius:
-                    agent_potential += setup.alpha_a * np.exp(-setup.mu_a * distance**2)
+                    agent_potential += setup.alpha_a * np.exp(-setup.mu_a * distance**2)   
             if implementation == 3:
+                print("Uses multi_agent 3")
                 distance_to_target = ((setup.target_x - other_agent[0])**2 + (setup.target_y - other_agent[1])**2) ** 0.5
                 relative_distance_to_target = distance_to_target / starting_distance_to_target
                 if distance < setup.agent_influence_radius:
@@ -46,7 +50,7 @@ def pos_update(agent, environment, setup, agent_positions, implementation):
         return target_potential + obstacle_potential + agent_potential
 
     # Step 3: Set bacteria points, find the minimum potential
-    N_bacteria_RAPF = 16 ### Change this in setup.py later.
+    N_bacteria_RAPF = setup.N_bacteria_RAPF
     target_vector_angle = np.arctan((setup.target_y - agent.y)/(setup.target_x - agent.x))
     bacteria_points = [(agent.x + setup.step_size * np.cos(2* np.pi * k / N_bacteria_RAPF + target_vector_angle), agent.y + setup.step_size * np.sin(2* np.pi * k / N_bacteria_RAPF + target_vector_angle)) for k in range(N_bacteria_RAPF)]
     bacteria_potentials = [potential_field(x, y) for (x, y) in bacteria_points]

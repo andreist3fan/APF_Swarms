@@ -25,7 +25,7 @@ def pos_update(agent, environment, setup):
         return target_potential + obstacle_potential
 
     # Step 3: Set bacteria points, find the minimum potential
-    N_bacteria_RAPF = 16 ### Change this in setup.py later.
+    N_bacteria_RAPF = setup.N_bacteria_RAPF
     target_vector_angle = np.arctan((setup.target_y - agent.y)/(setup.target_x - agent.x))
     bacteria_points = [(agent.x + setup.step_size * np.cos(2* np.pi * k / N_bacteria_RAPF + target_vector_angle), agent.y + setup.step_size * np.sin(2* np.pi * k / N_bacteria_RAPF + target_vector_angle)) for k in range(N_bacteria_RAPF)]
     bacteria_potentials = [potential_field(x, y) for (x, y) in bacteria_points]

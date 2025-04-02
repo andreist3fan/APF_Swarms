@@ -89,11 +89,8 @@ while not setup.target and running:
             i.obs_check(env)
 
         # Consequences if agent reached target
-        if i.target:
-            # if all agents have reached the target, the run is over
-            if all(x.target for x in agents):
-                setup.target = True
-                end_time = time.time()
+        if i.target: 
+            end_time = time.time()
 
                 #Performance matrix
                 #setup.target = True

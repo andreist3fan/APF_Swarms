@@ -59,23 +59,23 @@ def initialize_path(agent, environment, setup):
     :param setup:
     :return:
     """
-    pos_list = []
     grid = copy.deepcopy(environment.grid)
-    pos_list.append((agent.x, agent.y))
-    grid[int(agent.x * setup.grid_fineness)][int(agent.y * setup.grid_fineness)] = 1
+    current = (int(agent.x * setup.grid_fineness), int(agent.y * setup.grid_fineness))
+
+    grid[current[0]][current[1]] = 1
 
     goal = (int(environment.target_x * setup.grid_fineness), int(environment.target_y * setup.grid_fineness))
-    current = (int(agent.x * setup.grid_fineness),int(agent.y * setup.grid_fineness))
+    #current = (int(agent.x * setup.grid_fineness),int(agent.y * setup.grid_fineness))
 
     open_list = []
-    closed_list = []
+    closed_list = set()
     heapq.heappush(open_list, Node(current[0], current[1], 0, euclidean_distance(*current, *goal)))
     came_from = {}
 
     while open_list:
         current_node = heapq.heappop(open_list)
-        print(current_node.x, current_node.y)
-        closed_list.append((current_node.x, current_node.y))
+        #print(current_node.x, current_node.y)
+        closed_list.add((current_node.x, current_node.y))
 
         if (current_node.x, current_node.y) == goal:
             path = []
@@ -83,7 +83,7 @@ def initialize_path(agent, environment, setup):
                 path.append((current_node.x, current_node.y))
                 current_node = current_node.parent
             agent.set_path(path[::-1])
-            print("Path computed: "+str(path[::-1]))
+            #print("Path computed: "+str(path[::-1]))
             return
 
         for neighbor in get_neighbors(current_node, grid):

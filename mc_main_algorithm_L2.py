@@ -12,7 +12,7 @@ import time
 
 #----------------Level 2: Adjust settings--------------
 
-obs_num = 4                         # Index of density of list in asl (!not the actual value) -> 0, 1, 2, 3, 4
+obs_num = 0                         # Index of density of list in asl (!not the actual value) -> 0, 1, 2, 3, 4
 mc_runs = 500
 
 save_problematic_runs = False 
@@ -53,10 +53,7 @@ if create_visuals:
                 print("The name is kept and data overwritten.")
 
 #--------------Runs for different settings----------------------------
-
-#Not used 
 setups_store = []
-
 
 set_lst = []
 data_lst = []
@@ -67,10 +64,9 @@ for alg in range(len(asl.L2_algorithm)):
 
         setups_lst = []
 
+        start_time_runs = time.time()
+
         for m in range(mc_runs): 
-
-            print("------------------------------------------------------")
-
 
             #---------------Monte Carlo runs-----------------------------------
 
@@ -133,8 +129,6 @@ for alg in range(len(asl.L2_algorithm)):
                         setup.eff_path_length = setup.path_length / i.initial_distance_target
                         setup.min_distance_target = ev.safety(i, env)
 
-                        print(setup.computational_complexity)
-
                     # Consequences if agent in trouble (hit obstacle, local minimum)
                     if i.hit: 
                         del agents[ind]
@@ -172,6 +166,10 @@ for alg in range(len(asl.L2_algorithm)):
                             ev.draw_run(setup, env, (agents+agents_stuck), folder_path, file_name)
 
             setups_lst.append(setup)
+
+        print("Done setting: alg("+str(alg+1)+ "/5) swarm("+str(swarm+1)+"/3)")
+        end_time_runs = time.time()
+        print("Time ("+str(mc_runs)+" runs): "+str(end_time_runs-start_time_runs))
         
 
         # Intermediate storage 

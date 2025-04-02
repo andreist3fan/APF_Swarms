@@ -24,7 +24,7 @@ class Setup:
         #2: CR-BAPF*
         self.random_walk_length = 3
         #3: RAPF
-        self.N_bacteria_RAPF = 8
+        self.N_bacteria_RAPF = 16
         #4: A*
         self.grid_fineness = 10
 
