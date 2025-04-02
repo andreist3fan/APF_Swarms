@@ -16,12 +16,21 @@ def pos_update(agent, environment, setup):
         target_potential = - setup.alpha_t * np.exp(-setup.mu_t * ((setup.target_x - x)**2 + (setup.target_y - y)**2))
 
         obstacle_potentials = [setup.alpha_o * np.exp(-setup.mu_o *((obstacle[0] - x)**2 + (obstacle[1] - y)**2)) for obstacle in obstacles_in_range]
-        s = target_potential + sum(obstacle_potentials)
+        s =  sum(obstacle_potentials)
+        s += target_potential
+
         if len(agent.communicated_data)>0:
-            cd = np.array(agent.communicated_data)
-            flat = cd.reshape(-1, cd.shape[-1])
-            communicated_potentials = [(-setup.alpha_c * np.exp(-setup.mu_c * ((pt[0] - x) ** 2 + (pt[1] - y) ** 2)))*(45 - (euclidean_distance(pt[0],pt[1],setup.target_x, setup.target_y))) for pt in flat]
-            s += sum(communicated_potentials)
+            comm = agent.communicated_data
+            communicated_potentials = []
+
+
+            for pt in comm:
+                communicated_potentials.append(-setup.alpha_c * np.exp(-setup.mu_c *((pt[0] - x)**2 + (pt[1] - y)**2)))
+            #print(np.max(communicated_potentials))
+            #print(target_potential)
+            #print(flat)
+            #print(communicated_potentials)
+            s += (sum(communicated_potentials))
 
         return s
 

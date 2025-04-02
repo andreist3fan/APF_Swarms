@@ -3,7 +3,7 @@ from cgi import print_form
 from Agent import Agent
 from Communication.communication_distance import mst_limited_cost
 from Setup import Setup
-
+import numpy as np
 
 def pool_communication_data(agents:[Agent], setup:Setup):
     """
@@ -32,3 +32,16 @@ def pool_communication_data(agents:[Agent], setup:Setup):
                 if agent != other_agent:
                     other_agent.communicated_data.append(agent.pos_lst)
 
+    for agent in agents:
+        if len(agent.communicated_data)>0:
+            all_comm = np.vstack(agent.communicated_data)
+
+            # Compute pairwise distances using broadcasting
+            all_comm = np.array(all_comm)  # Ensure it's a NumPy array
+            distances = np.sqrt(((all_comm[:, None, :] - all_comm[None, :, :]) ** 2).sum(axis=-1))
+
+            # Apply the minimum neighborhood distance condition
+            mask = (distances > setup.min_neighbourhood_distance).all(axis=1)
+
+            # Filter the reduced points
+            agent.communicated_data = all_comm[mask].tolist()

@@ -33,7 +33,7 @@ class Setup:
         self.nr_agents = 5
 
         #Communication
-        self.communication_distance = 4 # SAMPLE VALUE, TODO:Change
+        self.communication_distance = 100 # SAMPLE VALUE, TODO:Change
 
         #Reachability/Stuck agents
         self.time_limit = 10 #If simulation takes longer, reachability is set to 0
@@ -72,9 +72,11 @@ class Setup:
         self.mu_o = 1.5
         self.alpha_a = 5  
         self.mu_a = 0.2
-        self.alpha_c = 20
-        self.mu_c = 0.2
+        self.alpha_c = 5
+        self.mu_c = 0.001
         self.agent_influence_radius = 4.5
+
+        self.min_neighbourhood_distance = 1
 
         #------------Simulation--------------------------------
 

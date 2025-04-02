@@ -6,6 +6,7 @@ import Evaluation as ev
 import pygame as pg 
 import time 
 import math
+import random
 from Communication.communication_distance import min_communication_distance
 #---------Change setup settings if not standard settings----------
 # 0: CAPF
@@ -15,13 +16,13 @@ from Communication.communication_distance import min_communication_distance
 # 4: A*
 algorithm = 0
 setup = Setup(algorithm)
-setup.obstacle_number = 90
+setup.obstacle_number = 110
 
-setup.nr_agents = 3
+setup.nr_agents = 6
 setup.start_radius = 5
 
 setup.visual = True     #Pygame to show run
-setup.name = "Main"           #Name of the image of the simulation screenchot that is stored at the end 
+setup.name = "Main"     #Name of the image of the simulation screenshot that is stored at the end
 
 #--------------Pygame settings------------------------------------
 
@@ -61,10 +62,12 @@ agents_all = agents.copy()
 start_time = time.time()
 steps = 0 
 running = True
+agent_visual_colors = []
 
 while not setup.target and running: 
 
     agents_targets = [x.target for x in agents]
+    non_target = [x for x in agents if not x.target]
     if all(agents_targets):
         running = False
         print("All agents reached the target.")
@@ -80,6 +83,7 @@ while not setup.target and running:
         
         #Update position
         if not i.target:
+
             i.update_position(env, setup, agent_positions)
 
             #Check whether agent has reached target
@@ -88,16 +92,19 @@ while not setup.target and running:
             #Check whether agent hit an obstacle
             i.obs_check(env)
 
+            if(len(non_target)<=2):
+                print(f"agent is at {i.x}, {i.y}")
+
         # Consequences if agent reached target
         if i.target: 
             end_time = time.time()
 
-                #Performance matrix
-                #setup.target = True
-                #setup.computational_complexity = round((end_time - start_time), 5)
-                setup.path_length = len(i.pos_lst)
-                #setup.eff_path_length = setup.path_length / i.initial_distance_target_steps
-                setup.min_distance_target = ev.safety(i, env)
+            #Performance matrix
+            #setup.target = True
+            #setup.computational_complexity = round((end_time - start_time), 5)
+            #setup.path_length = len(i.pos_lst)
+            #setup.eff_path_length = setup.path_length / i.initial_distance_target_steps
+            #setup.min_distance_target = ev.safety(i, env)
 
             #Compute minimum communication distance such that all agents know that
             # this one has reached the target
@@ -107,7 +114,7 @@ while not setup.target and running:
             # Gather data
             pool_communication_data(agents, setup)
 
-            print(f"Target is reached. Minimum communication distance:{min_d}")
+            #print(f"Target is reached. Minimum communication distance:{min_d}")
  
         # Consequences if agent in trouble (hit obstacle, local minimum)
         if i.hit: 
@@ -123,7 +130,12 @@ while not setup.target and running:
             setup.nr_stuck_agents += 1
 
         ind += 1 
-
+    if setup.visual and len(agent_visual_colors) == 0:
+        for a in agents:
+            r = random.randint(0, 255)
+            g = random.randint(0, 255)
+            b = random.randint(0, 255)
+            agent_visual_colors.append(pg.Color(r,g,b,1))
     # Draw pygame 
     if setup.visual: 
 
@@ -142,9 +154,9 @@ while not setup.target and running:
         for obstacle in env.obstacles:
             pos = pg.Vector2((obstacle[0]*setup.scale), (obstacle[1]*setup.scale))
             pg.draw.circle(screen, "gray", pos, round(setup.obst_radius*setup.scale))
-        
+
         #Draw agents and their artificial objects 
-        for a in agents: 
+        for ix,a in enumerate(agents):
             #Artificial position of agents 
             for obs in a.artificial_obstacles:
                 #print("Trying to draw artificial obstacle")
@@ -158,7 +170,7 @@ while not setup.target and running:
                 pg.draw.circle(screen, "yellow", pg.Vector2((a.x*setup.scale), (a.y*setup.scale)), (a.radius*setup.scale))
             #Normal agent
             else: 
-                pg.draw.circle(screen, "blue", pg.Vector2((a.x*setup.scale), (a.y*setup.scale)), (a.radius*setup.scale))
+                pg.draw.circle(screen, agent_visual_colors[ix], pg.Vector2((a.x*setup.scale), (a.y*setup.scale)), (a.radius*setup.scale))
 
 
         #Draw initial position of agents 
@@ -180,6 +192,11 @@ while not setup.target and running:
     if steps > setup.step_limit: 
         running = False
         print("Run took to long and was stopped.")
+        for agent in agents:
+            if not agent.target:
+                agent.local_minimum = True
+                agents_stuck.append(agent)
+                setup.nr_stuck_agents += 1
 
     #If all agents are stuck, run failed 
     if ind == 0: 
