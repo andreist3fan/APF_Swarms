@@ -23,29 +23,31 @@ def pos_update(agent, environment, setup, agent_positions, implementation):
         target_potential = - setup.alpha_t * np.exp(-setup.mu_t * ((setup.target_x - x)**2 + (setup.target_y - y)**2))
         obstacle_potential = 0
         agent_potential = 0
+        # Determining the obstacle potential
         for obstacle in obstacles_in_range:
             distance_squared = (obstacle[0] - x)**2 + (obstacle[1] - y)**2
             if distance_squared**0.5 < setup.obst_radius_inner:
                 obstacle_potential = float('inf')
             elif distance_squared**0.5 < setup.obst_radius_outer:
                 obstacle_potential += setup.alpha_o * np.exp(-setup.mu_o * distance_squared)
+        # Determining the potential created by other agents (depending on implementation method)
         for other_agent in agents_in_range:
             distance = ((x - other_agent[0]) ** 2 + (y - other_agent[1]) ** 2) ** 0.5
-            if implementation == 1: 
+            if implementation == 1: # Implementation 1: Bumper method
                 print("Uses multi_agent 1")
-            if implementation == 1 or implementation == 2 or implementation == 3:
-                if distance < agent.radius * 2 * 1.5: # Added 50% safety margin (still needs to be decided how to handle things properly)
+            if implementation == 1 or implementation == 2 or implementation == 3: # For each method, a small radius of inifinitely high potential is applied
+                if distance < agent.radius * 2 * 1.5: # Added 50% safety margin 
                     agent_potential = float('inf')
-            if implementation == 2:
+            if implementation == 2: # Implementation 2: Obstacle method
                 print("Uses multi_agent 2")
                 if distance < setup.agent_influence_radius:
                     agent_potential += setup.alpha_a * np.exp(-setup.mu_a * distance**2)   
-            if implementation == 3:
+            if implementation == 3: # Implementation 3: Teardrop method
                 print("Uses multi_agent 3")
                 distance_to_target = ((setup.target_x - other_agent[0])**2 + (setup.target_y - other_agent[1])**2) ** 0.5
                 relative_distance_to_target = distance_to_target / starting_distance_to_target
-                if distance < setup.agent_influence_radius:
-                    agent_potential += 2 * relative_distance_to_target * setup.alpha_a * np.exp(-setup.mu_a * distance**2)
+                if distance < setup.agent_influence_radius: 
+                    agent_potential += 2 * relative_distance_to_target * setup.alpha_a * np.exp(-setup.mu_a * distance**2) # Linearly decreasing repelling force based on distance to target
 
         return target_potential + obstacle_potential + agent_potential
 
@@ -66,9 +68,9 @@ def pos_update(agent, environment, setup, agent_positions, implementation):
         bacteria_potentials = [potential_field(x, y) for (x, y) in bacteria_points]
         min_potential = min(bacteria_potentials)
         selected_point = bacteria_points[bacteria_potentials.index(min_potential)] # Select the point with lowest potential, even if it is not an improvement (to dodge the artificial obstacle)
-        new_x = np.random.normal(selected_point[0], setup.step_variance)
-        new_y = np.random.normal(selected_point[1], setup.step_variance)
+        new_x = np.random.normal(selected_point[0], setup.step_variance) # Move to the best position (with error)
+        new_y = np.random.normal(selected_point[1], setup.step_variance) # Move to the best position (with error)
         if min_potential > potential_field(agent.x, agent.y):
-            agent.artificial_obstacles.append((agent.x, agent.y))
+            agent.artificial_obstacles.append((agent.x, agent.y)) # place artificial obstacle
 
     return new_x, new_y
