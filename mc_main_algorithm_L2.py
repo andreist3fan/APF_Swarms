@@ -12,8 +12,8 @@ import time
 
 #----------------Level 2: Adjust settings--------------
 
-obs_num = 0                         # Index of density of list in asl (!not the actual value) -> 0, 1, 2, 3, 4
-mc_runs = 500
+obs_num = 3                         # Index of density of list in asl (!not the actual value) -> 0, 1, 2, 3, 4
+mc_runs = 1000
 
 save_problematic_runs = False 
 create_visuals = False              # Create folder for analysis 
