@@ -33,20 +33,20 @@ def pos_update(agent, environment, setup):
         return new_x, new_y
     else: # Local minimum, searching for a random step that does not collide with an obstacle
         random_steps = np.random.permutation(bacteria_points)
-        for random_step in random_steps:
+        for random_step in random_steps: # Going 1-by-1 through possible random steps
             searching = False
-            for obstacle in obstacles_in_range:
+            for obstacle in obstacles_in_range: # Checking the distance to every obstacle
                 distance = ((random_step[0] - obstacle[0]) ** 2 + (random_step[1] - obstacle[1]) ** 2) ** 0.5
                 if distance < (setup.obst_radius_inner + setup.agent_radius):
-                    searching = True
+                    searching = True # If the random step is close to an obstacle, continue searching
             if not searching: # If the random step does not collide with an obstacle
                 new_x = np.random.normal(random_step[0], setup.step_variance)
                 new_y = np.random.normal(random_step[1], setup.step_variance)
                 agent.random_walk += 1
-                if agent.random_walk == setup.random_walk_length:
+                if agent.random_walk == setup.random_walk_length:  # When enough random steps have been taken, return to normal
                     agent.random_walk = 0
                 return new_x, new_y
-        # If none of the steps work, because they all collide with an obstacle (incredibly rare if not impossible)
+        # If none of the steps work, because they all collide with an obstacle (incredibly rare)
         agent.local_minimum = True
         return agent.x, agent.y
 
