@@ -87,6 +87,9 @@ class Setup:
 
         #--------------Performance metrics-----------------------------
 
+        self.min_communication_distance = 45 # Minimum communication distance between any two agents when one reaches the target 
+                                             # -> maximum default value (30sqrt2)
+
         self.target = False                 #True as soon as one agent reaches target 
         self.path_length = 0                #Lenth of path of agent that first reached the target (steps)
         self.eff_path_length = 0            #Lenth of path of agent that first reached the target divided by initial distance (steps)

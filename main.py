@@ -18,8 +18,8 @@ algorithm = 0
 setup = Setup(algorithm)
 setup.obstacle_number = 110
 
-setup.nr_agents = 6
-setup.start_radius = 5
+setup.nr_agents = 5
+setup.start_radius = 3
 
 setup.visual = True     #Pygame to show run
 setup.name = "Main"     #Name of the image of the simulation screenshot that is stored at the end
@@ -115,6 +115,9 @@ while not setup.target and running:
             pool_communication_data(agents, setup)
 
             #print(f"Target is reached. Minimum communication distance:{min_d}")
+            # insert into Setup
+            setup.min_communication_distance = min_d
+            print(f"Target is reached. Minimum communication distance:{min_d}")
  
         # Consequences if agent in trouble (hit obstacle, local minimum)
         if i.hit: 

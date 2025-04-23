@@ -16,7 +16,7 @@ folder_path_L3 = os.path.join(current_dir, "Plots_Results\\L3_Plots_Summary")
 folder_storage = os.path.join(current_dir, "Arrays_Storage")
 
 #Function to delete upper outliers for computational complexity (gap is distance to last largest value before value gets deleted)
-def delete_outliers(array, gap): 
+def delete_outliers(array, gap, ignore): 
     
     array_sorted = np.sort(array)
 
@@ -27,12 +27,15 @@ def delete_outliers(array, gap):
     for i in range(len(array_sorted)): 
         if i == 0: 
             array_filtered.append(array_sorted[i])
-        if array_sorted[i] < gap+array_sorted[i-1] and con: 
+        elif array_sorted[i] == ignore: 
             array_filtered.append(array_sorted[i])
-            print("Hehehhe")
         else: 
-            con = False 
-            print("Deleted: "+str(array_sorted[i]))
+            if array_sorted[i] < gap+array_sorted[i-1] and con: 
+                array_filtered.append(array_sorted[i])
+                #print("Hehehhe")
+            else: 
+                con = False 
+                print("Deleted: "+str(array_sorted[i]))
 
     return array_filtered
 
@@ -289,10 +292,50 @@ def plot_L2(nr_alg, name_data):
             y.append([])
 
         for i in range(len(x_ticks)): 
+            print("-----------------------------------------------------")
+            print(x_ticks[i])
+            print("-----------------------------------------------------")
             for k in range(nr_alg): 
-                filtered_data = delete_outliers(data[2][i][j][k], 5)
+                print("Algorithm: "+str(k)+"----------------------------------")
+                #print("Unfiltered data:")
+                #print(data[2][i][j][k])
+                #print("Maximum data: ")
+                #print(max(data[2][i][j][k]))
+                filtered_data = delete_outliers(data[2][i][j][k], 5, -1)
+                #print("Filtered data:")
+                #print(filtered_data)
+                #print("Maximum filtered:")
+                #print(max(filtered_data))
+                reached = []
+                for x in data[2][i][j][k]:
+                    if x != -1 and x != 0: 
+                        reached.append(x)
+                #print("Average: "+str(sum(reached)/len(reached)))
+                #print("Reached: ")
+                #print(reached)
                 y[k].append(sum(x for x in filtered_data if x != -1 and x != 0) / sum(1 for x in filtered_data if x != -1 and x != 0))
-        
+                if i == 3: 
+                    print("Unfiltered data:")
+                    print(data[2][i][j][k])
+                    print("Maximum data: ")
+                    print(max(data[2][i][j][k]))
+                    print("Filtered data:")
+                    print(filtered_data)
+                    print("Maximum filtered:")
+                    print(max(filtered_data))
+                    min_value = np.min(filtered_data)
+                    max_value = np.max(filtered_data)
+                    bin_width = 0.5
+                    bins = np.arange(min_value, max_value + bin_width, bin_width)
+
+                    plt.hist(filtered_data, bins=bins, edgecolor='black', alpha=0.7)
+                    plt.xlabel("Computational Complexity")
+                    plt.ylabel("Count")
+                    plt.title("Computational Complexity with largest value dropped (A*)")
+                    plt.show()
+
+
+
         plt.figure()
         for i in range(len(y)): 
             plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 

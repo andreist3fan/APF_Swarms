@@ -1,5 +1,11 @@
 import numpy as np
 
+####### !!!!!!!!!!!!!!!!!!!!! #######
+## This method is an attempt at creating inter-agent attraction forces when agents are about to leave the communication distance,
+## thereby assuring that the communication network remains connected.
+## This method is not used in the paper.
+
+
 def pos_update(agent, environment, setup, agent_positions, implementation): 
     # Step 1: Isolate all (artificial) obstacles and agents that are within the view range
     obstacles_in_range = []
@@ -19,7 +25,7 @@ def pos_update(agent, environment, setup, agent_positions, implementation):
         distance = ((agent.x - other_agent[0]) ** 2 + (agent.y - other_agent[1]) ** 2) ** 0.5
         if distance < setup.range:
             agents_in_range.append(other_agent)
-        if distance < communication_range: ################# Still need to add this variable to setup
+        if distance < communication_range:
             agents_in_comm_range.append(other_agent)
 
     # Step 2: Define potential field equation
