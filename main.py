@@ -94,8 +94,8 @@ while not setup.target and running:
             #Compute minimum communication distance such that all agents know that
             # this one has reached the target
             min_d = min_communication_distance(agents + agents_stuck)
-            #User output
-
+            # insert into Setup
+            setup.min_communication_distance = min_d
             print(f"Target is reached. Minimum communication distance:{min_d}")
  
         # Consequences if agent in trouble (hit obstacle, local minimum)
