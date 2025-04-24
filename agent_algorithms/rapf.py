@@ -41,9 +41,9 @@ def pos_update(agent, environment, setup):
         bacteria_potentials = [potential_field(x, y) for (x, y) in bacteria_points]
         min_potential = min(bacteria_potentials)
         selected_point = bacteria_points[bacteria_potentials.index(min_potential)] # Select the point with lowest potential, even if it is not an improvement (to dodge the artificial obstacle)
-        new_x = np.random.normal(selected_point[0], setup.step_variance)
-        new_y = np.random.normal(selected_point[1], setup.step_variance)
+        new_x = np.random.normal(selected_point[0], setup.step_variance) # Move to the best position (with error)
+        new_y = np.random.normal(selected_point[1], setup.step_variance)# Move to the best position (with error)
         if min_potential > potential_field(agent.x, agent.y):
-            agent.artificial_obstacles.append((agent.x, agent.y))
+            agent.artificial_obstacles.append((agent.x, agent.y)) # place artificial obstacle
 
     return new_x, new_y

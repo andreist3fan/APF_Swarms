@@ -17,7 +17,7 @@ setup = Setup(algorithm)
 setup.obstacle_number = 200
 
 setup.nr_agents = 5
-setup.start_radius = 5
+setup.start_radius = 3
 
 setup.visual = True     #Pygame to show run
 setup.name = "Main"           #Name of the image of the simulation screenchot that is stored at the end 
@@ -88,14 +88,14 @@ while not setup.target and running:
             setup.target = True 
             setup.computational_complexity = round((end_time - start_time), 5)
             setup.path_length = len(i.pos_lst)
-            setup.eff_path_length = setup.path_length / i.initial_distance_target_steps 
+            #setup.eff_path_length = setup.path_length / i.initial_distance_target_steps 
             setup.min_distance_target = ev.safety(i, env)
 
             #Compute minimum communication distance such that all agents know that
             # this one has reached the target
             min_d = min_communication_distance(agents + agents_stuck)
-            #User output
-
+            # insert into Setup
+            setup.min_communication_distance = min_d
             print(f"Target is reached. Minimum communication distance:{min_d}")
  
         # Consequences if agent in trouble (hit obstacle, local minimum)
