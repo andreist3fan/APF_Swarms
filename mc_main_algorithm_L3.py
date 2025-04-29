@@ -12,7 +12,15 @@ import time
 
 #----------------Level 3: Adjust settings--------------
 
-mc_runs = 448
+mc_runs = 1000
+#file = 'Storage_L3.npy'
+#swarm_set = asl.L3_swarm_size
+#scat_set = asl.L3_scattering
+
+file = 'Storage_L3_2.npy'
+swarm_set = asl.L3_2_swarm_size
+scat_set = asl.L3_2_scattering
+
 
 save_problematic_runs = False 
 create_visuals = False              # Create folder for analysis 
@@ -59,7 +67,7 @@ data_lst = []
 
 for alg in range(len(asl.L3_algorithm)):
 
-    for swarm in range(len(asl.L3_swarm_size)):
+    for swarm in range(len(swarm_set)):
 
         setups_lst = []
 
@@ -71,8 +79,8 @@ for alg in range(len(asl.L3_algorithm)):
 
             #---------Adjust Setup according to MC Settings----------------
 
-            setup.nr_agents = asl.L3_swarm_size[swarm]
-            setup.start_radius = asl.L3_scattering[swarm]
+            setup.nr_agents = swarm_set[swarm]
+            setup.start_radius = scat_set[swarm]
             setup.obstacle_number = asl.L3_obs_number
             setup.algorithm = asl.L3_algorithm[alg]
 
@@ -168,7 +176,7 @@ for alg in range(len(asl.L3_algorithm)):
 
             setups_lst.append(setup)
 
-        print("Done setting: alg("+str(alg+1)+ "/4) swarm("+str(swarm+1)+"/"+str(len(asl.L3_swarm_size))+")")
+        print("Done setting: alg("+str(alg+1)+ "/4) swarm("+str(swarm+1)+"/"+str((len(swarm_set)))+")")
         
 
         # Intermediate storage 
@@ -185,10 +193,10 @@ print("Start storing")
 
 for i in range(len(set_lst)): 
     # performance_parameter_ind, swarm_setting_ind, collision, data
-    storage.add_data_L3(0, set_lst[i][0], set_lst[i][1], data_lst[i][0])
-    storage.add_data_L3(1, set_lst[i][0], set_lst[i][1], data_lst[i][1])
-    storage.add_data_L3(2, set_lst[i][0], set_lst[i][1], data_lst[i][2])
-    storage.add_data_L3(3, set_lst[i][0], set_lst[i][1], data_lst[i][3])
+    storage.add_data_L3(0, set_lst[i][0], set_lst[i][1], data_lst[i][0], file)
+    storage.add_data_L3(1, set_lst[i][0], set_lst[i][1], data_lst[i][1], file)
+    storage.add_data_L3(2, set_lst[i][0], set_lst[i][1], data_lst[i][2], file)
+    storage.add_data_L3(3, set_lst[i][0], set_lst[i][1], data_lst[i][3], file)
 
 print("End storing")
 

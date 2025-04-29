@@ -110,11 +110,24 @@ def create_empty_storage_L2():
 
 # Add data to storage files 
 
+def clean_obs_dens(storage_file): 
+    data = re = np.load(file_path)
+    for perf_idx in range(len(data)):
+        if len(data[perf_idx]) > 1:  # Ensure obstacle_density index 2 exists
+            for swarm_idx in range(len(data[perf_idx][2])):
+                for algo_idx in range(len(data[perf_idx][2][swarm_idx])):
+                    for run_idx in range(len(data[perf_idx][2][swarm_idx][algo_idx])):
+                        data[perf_idx][3][swarm_idx][algo_idx][run_idx] = -1
+
+    np.save(storage_file, data)
+    print("Updated with deleted obstacle density")
+
+
 def add_data_L2(performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, algorithm, data): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     folder_path = os.path.join(current_dir, "Arrays_Storage")
+    #file_path = os.path.join(folder_path, 'Storage_L2.npy')
     file_path = os.path.join(folder_path, 'Storage_L2.npy')
-
     re = np.load(file_path)
     
     if re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, algorithm, -1]==-1:
@@ -188,12 +201,29 @@ def create_empty_storage_L3():
     else: 
         print(str(name)+" already exists.")
 
-#[performance parameter][swarm][collision][run]
+def create_empty_storage_L3_2(): 
+    #Create performance parameter 
+    swarm_int = len(asl.L3_2_swarm_size)
+    collision_int = len(asl.L3_algorithm)
+    storage_L3 = np.full((4, swarm_int, collision_int, 1000), -1.0)
+    name = 'Storage_L3_2.npy'
 
-def add_data_L3(performance_parameter_ind, swarm_setting_ind, collision, data): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     folder_path = os.path.join(current_dir, "Arrays_Storage")
-    file_path = os.path.join(folder_path, 'Storage_L3.npy')
+    file_path = os.path.join(folder_path, name)
+    if not os.path.exists(file_path):
+        np.save(file_path, storage_L3)
+    else: 
+        print(str(name)+" already exists.")
+
+
+
+#[performance parameter][swarm][collision][run]
+
+def add_data_L3(performance_parameter_ind, swarm_setting_ind, collision, data, file): 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(current_dir, "Arrays_Storage")
+    file_path = os.path.join(folder_path, file)
 
     re = np.load(file_path)
     
@@ -225,6 +255,17 @@ def overview_L3():
  
     print("Number runs: "+str(sum(1 for x in data[0,0,0] if x != -1)))
 
+def overview_L3_2(): 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(current_dir, "Arrays_Storage")
+
+    data = np.load(os.path.join(folder_path, "Storage_L3_2.npy"))
+
+    print("Amount of runs for L3_2: ")
+ 
+    print("Number runs: "+str(sum(1 for x in data[0,0,0] if x != -1)))
+
+
 #------------------Level universal functions-------------------
 
 # Create average of run 
@@ -246,6 +287,7 @@ def avg(run):
 create_empty_storage_L1()
 create_empty_storage_L2()
 create_empty_storage_L3()
+create_empty_storage_L3_2()
 
 print("")
 
@@ -266,6 +308,7 @@ overview_scat_L1()
 overview_swarm_size_L1()
 overview_L2()
 overview_L3()
+overview_L3_2()
 
 #clean_L2()
 
@@ -283,8 +326,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 folder_path = os.path.join(current_dir, "Arrays_Storage")
 data = np.load(os.path.join(folder_path, "Storage_L3.npy"))
 
-
-
-
+#L2_data = os.path.join(folder_path, "Storage_L2.npy")
+#clean_obs_dens(L2_data)
 
 

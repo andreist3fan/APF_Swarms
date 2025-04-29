@@ -11,6 +11,8 @@ folder_path_single_L2 = os.path.join(current_dir, "Plots_Results\\L2_Plots_Summa
 folder_path_swarm_low_L2 = os.path.join(current_dir, "Plots_Results\\L2_Plots_Summary\\L2_Plots_swarm_low_scattering")
 folder_path_swarm_high_L2 = os.path.join(current_dir, "Plots_Results\\L2_Plots_Summary\\L2_Plots_swarm_high_scattering")
 folder_path_L3 = os.path.join(current_dir, "Plots_Results\\L3_Plots_Summary")
+folder_path_L3_2_swarm = os.path.join(current_dir, "Plots_Results\\L3_2_Plots_Summary\\Swarm")
+folder_path_L3_2_scattering = os.path.join(current_dir, "Plots_Results\\L3_2_Plots_Summary\\Scattering")
 
 #Folder to array storage 
 folder_storage = os.path.join(current_dir, "Arrays_Storage")
@@ -492,6 +494,120 @@ def plot_L3(name_data):
     plot_path = os.path.join(folder_path_L3, ("Reachability"))
     plt.savefig(plot_path)
 
+def plot_L3_2(name_data): 
+    data = np.load(os.path.join(folder_storage, name_data))
+
+    x_ticks = [asl.L3_2_swarm_analysis, asl.L3_2_scat_analysis]
+    folder_plots = [folder_path_L3_2_swarm, folder_path_L3_2_scattering]
+    x_label = ["Swarm size", "Scattering"]
+    run_idx = [list(range(0, len(asl.L3_2_swarm_analysis))), list(range(len(asl.L3_2_swarm_analysis), len(asl.L3_2_swarm_size)))]
+
+    
+    for s in range(2): 
+
+        color = ["pink", "blue", "orange", "green"]
+        alg_name = ["No collision avoidance", "Bumper method", "Obstacle method", "Teardrop method"]
+
+        # Path length
+
+        y = [] 
+
+        for i in range(4):
+            y.append([])
+
+        for i in run_idx[s]: 
+            for k in range(4): 
+                y[k].append(sum(x for x in data[0][i][k] if x != -1 and x != 0) / sum(1 for x in data[0][i][k] if x != -1 and x != 0))
+            
+        plt.figure()
+        
+        for i in range(len(y)): 
+            plt.plot(x_ticks[s], y[i], color[i], label = alg_name[i]) 
+        plt.xlabel(x_label[s])
+        plt.ylim(0)
+        plt.xticks(x_ticks[s])
+        plt.ylabel('Path length')
+        plt.title('Path length vs. Swarm setting')
+        plt.grid(True)
+        plt.legend()
+        plot_path = os.path.join(folder_plots[s], ("PathLength"))
+        plt.savefig(plot_path)
+
+        # Effective path length 
+
+        y = [] 
+
+        for i in range(4):
+            y.append([])
+
+        for i in run_idx[s]: 
+            for k in range(4): 
+                y[k].append(sum(x for x in data[1][i][k] if x != -1 and x != 0) / sum(1 for x in data[1][i][k] if x != -1 and x != 0))
+                
+        plt.figure()
+        for i in range(len(y)): 
+            plt.plot(x_ticks[s], y[i], color[i], label = alg_name[i]) 
+        plt.xlabel(x_label[s])
+        plt.ylim(0)
+        plt.xticks(x_ticks[s])
+        plt.ylim(1)
+        plt.ylabel('Effective Path length')
+        plt.title("Effective Path length vs. Swarm Setting")
+        plt.grid(True)
+        plt.legend()
+        plot_path = os.path.join(folder_plots[s], ("EffectivePathLength"))
+        plt.savefig(plot_path)
+
+        # Computational complexity 
+
+        y = [] 
+
+        for i in range(4):
+            y.append([])
+
+        for i in run_idx[s]:  
+            for k in range(4): 
+                y[k].append(sum(x for x in data[2][i][k] if x != -1 and x != 0) / sum(1 for x in data[2][i][k] if x != -1 and x != 0))
+            
+        plt.figure()
+        for i in range(len(y)): 
+            plt.plot(x_ticks[s], y[i], color[i], label = alg_name[i]) 
+        plt.xlabel(x_label[s])
+        plt.ylim(0)
+        plt.xticks(x_ticks[s])
+        plt.ylim(0)
+        plt.ylabel('Computational Complexity')
+        plt.title('Computational Complexity vs. Swarm settings')
+        plt.grid(True)
+        plt.legend()
+        plot_path = os.path.join(folder_plots[s], ("ComputationalComplexity"))
+        plt.savefig(plot_path)
+
+        # Reachability 
+
+        y = [] 
+
+        for i in range(4):
+            y.append([])
+
+        for i in run_idx[s]:  
+            for k in range(4): 
+                y[k].append(sum(x for x in data[3][i][k] if x != -1) / sum(1 for x in data[3][i][k] if x != -1))
+
+        plt.figure()
+        for i in range(len(y)): 
+            plt.plot(x_ticks[s], y[i], color[i], label = alg_name[i]) 
+            plt.xlabel(x_label[s])
+        plt.ylim(0)
+        plt.xticks(x_ticks[s])
+        plt.ylim(0, 1.05)
+        plt.ylabel('Reachability')
+        plt.title('Reachability vs. Swarm settings')
+        plt.grid(True)
+        plt.legend()
+        plot_path = os.path.join(folder_plots[s], ("Reachability"))
+        plt.savefig(plot_path)
+
 
 #---------------Run functions---------------------
 
@@ -499,3 +615,5 @@ def plot_L3(name_data):
 #plot_L1(True, True)
 plot_L2(5, "Storage_L2.npy")
 #plot_L3("Storage_L3.npy")
+#plot_L2(5, "Storage_L2.npy")
+#plot_L3_2("Storage_L3_2.npy")
