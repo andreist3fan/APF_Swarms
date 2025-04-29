@@ -13,10 +13,9 @@ from Communication.communication_distance import min_communication_distance
 # seed for reproducibility for placement of agents and obstacles.
 
 # Seeds to test improvements: 74967
-
+# 878804799
 # 963476
-seed =  random.randint(1, int(1e6)) # 963476 #
-print(f"Seed used for simulation: {seed}")
+seed =  random.randint(0, int(1e9))
 np.random.seed(seed=seed)
 random.seed(a=seed)
 
@@ -106,8 +105,8 @@ while not setup.target and running:
             #Check whether agent hit an obstacle
             i.obs_check(env)
 
-            if(len(non_target)<=2):
-                print(f"agent is at {i.x}, {i.y}")
+            # if(len(non_target)<=2):
+            #     print(f"agent is at {i.x}, {i.y}")
 
         # Consequences if agent reached target
         if i.target: 
@@ -230,6 +229,7 @@ if setup.visual:
     pg.quit()
 
 #User output 
+print(f"Seed used for simulation: {seed}")
 print("Path length:")
 print(str(setup.path_length) + " steps")
 print("Computational complexity:")

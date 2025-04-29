@@ -14,10 +14,11 @@ def pos_update(agent, environment, setup):
     # Step 2: Define potential field equation
     def potential_field(x, y):
         target_potential = - setup.alpha_t * np.exp(-setup.mu_t * ((setup.target_x - x)**2 + (setup.target_y - y)**2))
-
-        if (setup.target_x - x)**2 + (setup.target_y - y)**2 <= setup.goal_extended_pull_distance**2:
-            target_potential *= setup.goal_extended_pull_factor
-        
+        dist_to_target = euclidean_distance(agent.x, agent.y, setup.target_x, setup.target_y)
+        if len(agent.communicated_data)>0:
+            if dist_to_target <= setup.goal_extended_pull_distance:
+                target_potential *= (1+ setup.goal_extended_pull_distance/dist_to_target) * setup.goal_extended_pull_factor
+            
         obstacle_potentials = [setup.alpha_o * np.exp(-setup.mu_o *((obstacle[0] - x)**2 + (obstacle[1] - y)**2)) for obstacle in obstacles_in_range]
         s =  sum(obstacle_potentials)
         s += target_potential
@@ -34,7 +35,7 @@ def pos_update(agent, environment, setup):
             #print(flat)
             #print(communicated_potentials)
             s += (sum(communicated_potentials))
-
+        #print(s)
         return s
 
     # Step 3: Determine the gradient of the potential field

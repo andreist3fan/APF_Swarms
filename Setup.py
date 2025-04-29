@@ -79,7 +79,7 @@ class Setup:
         self.min_neighbourhood_distance = 4
         # should likely be similar
         self.goal_extended_pull_distance = 4
-        self.goal_extended_pull_factor = 3
+        self.goal_extended_pull_factor = 5
 
         #------------Simulation--------------------------------
 
