@@ -36,12 +36,13 @@ def pool_communication_data(agents:[Agent], setup:Setup):
         if len(agent.communicated_data)>0:
             all_comm = np.vstack(agent.communicated_data)
 
-            # Compute pairwise distances using broadcasting
-            all_comm = np.array(all_comm)  # Ensure it's a NumPy array
-            distances = np.sqrt(((all_comm[:, None, :] - all_comm[None, :, :]) ** 2).sum(axis=-1))
+            all_comm = all_comm[np.lexsort((all_comm[:, 1], all_comm[:, 0]))]
 
-            # Apply the minimum neighborhood distance condition
-            mask = (distances > setup.min_neighbourhood_distance).all(axis=1)
+            # Reduce points based on min_neighbourhood_distance
+            reduced_points = []
+            for point in all_comm:
+                if not reduced_points or np.linalg.norm(point - reduced_points[-1]) >= setup.min_neighbourhood_distance:
+                    reduced_points.append(point)
 
-            # Filter the reduced points
-            agent.communicated_data = all_comm[mask].tolist()
+            # Update the agent's communicated data with the reduced points
+            agent.communicated_data = reduced_points

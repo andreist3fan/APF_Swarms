@@ -72,11 +72,14 @@ class Setup:
         self.mu_o = 1.5
         self.alpha_a = 5  
         self.mu_a = 0.2
-        self.alpha_c = 5
-        self.mu_c = 0.001
+        self.alpha_c = 3
+        self.mu_c = 0.1
         self.agent_influence_radius = 4.5
 
-        self.min_neighbourhood_distance = 1
+        self.min_neighbourhood_distance = 4
+        # should likely be similar
+        self.goal_extended_pull_distance = 4
+        self.goal_extended_pull_factor = 3
 
         #------------Simulation--------------------------------
 

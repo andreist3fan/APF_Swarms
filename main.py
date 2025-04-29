@@ -7,14 +7,28 @@ import pygame as pg
 import time 
 import math
 import random
+import numpy as np
 from Communication.communication_distance import min_communication_distance
+
+# seed for reproducibility for placement of agents and obstacles.
+
+# Seeds to test improvements: 74967
+
+# 963476
+seed =  random.randint(1, int(1e6)) # 963476 #
+print(f"Seed used for simulation: {seed}")
+np.random.seed(seed=seed)
+random.seed(a=seed)
+
 #---------Change setup settings if not standard settings----------
 # 0: CAPF
 # 1: BAPF
 # 2: CR-BAPF*
 # 3: RAPF
 # 4: A*
-algorithm = 0
+
+# 100: CAPF with Canyon approach and tweaks
+algorithm = 100
 setup = Setup(algorithm)
 setup.obstacle_number = 110
 
@@ -117,7 +131,7 @@ while not setup.target and running:
             #print(f"Target is reached. Minimum communication distance:{min_d}")
             # insert into Setup
             setup.min_communication_distance = min_d
-            print(f"Target is reached. Minimum communication distance:{min_d}")
+            # print(f"Target is reached. Minimum communication distance:{min_d}")
  
         # Consequences if agent in trouble (hit obstacle, local minimum)
         if i.hit: 
