@@ -32,9 +32,6 @@ class Setup:
         self.smart_swarm = False #If one agent reaches a local minimum, that point is added to the obstacle list of the environment
         self.nr_agents = 5
 
-        #Communication
-        self.communication_distance = 100 # SAMPLE VALUE, TODO:Change
-
         #Reachability/Stuck agents
         self.time_limit = 10 #If simulation takes longer, reachability is set to 0
         self.delete_stuck = True #If an agent gets stuck, ignore it in the further process (assumes that there is no way to unstuck it)
@@ -72,13 +69,26 @@ class Setup:
         self.mu_o = 1.5
         self.alpha_a = 5  
         self.mu_a = 0.2
-        self.alpha_c = 3
-        self.mu_c = 0.1
         self.agent_influence_radius = 4.5
 
+        #------------Communication----------------------------
+        # Potential field parameters for communicated path points
+        self.alpha_c = 3 
+        self.mu_c = 0.1
+
+
+        # communication distance between agents (for pooling data)
+        self.communication_distance = 100 #TODO:Change this to a more realistic value
+
+        # minimum distance between path points of agents at the target
+        # (for pooling data)
         self.min_neighbourhood_distance = 4
-        # should likely be similar
+        
+        # the distance at which the target potential is amplified (for canyon approach)
+        #  - should likely be similar to min_neighbourhood_distance
         self.goal_extended_pull_distance = 4
+
+        # the factor by which the target potential is amplified (for canyon approach)
         self.goal_extended_pull_factor = 5
 
         #------------Simulation--------------------------------

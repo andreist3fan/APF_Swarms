@@ -15,7 +15,12 @@ def pos_update(agent, environment, setup):
     def potential_field(x, y):
         target_potential = - setup.alpha_t * np.exp(-setup.mu_t * ((setup.target_x - x)**2 + (setup.target_y - y)**2))
         dist_to_target = euclidean_distance(agent.x, agent.y, setup.target_x, setup.target_y)
+        
+        # If the agent has received communicated data and is following the canyon strategy
         if len(agent.communicated_data)>0:
+            # If it is in the canyon and within the range of the target
+            # (Issues occured where the gradient is zero, so we need more pull from the target)
+            # amplify the target potential
             if dist_to_target <= setup.goal_extended_pull_distance:
                 target_potential *= (1+ setup.goal_extended_pull_distance/dist_to_target) * setup.goal_extended_pull_factor
             
@@ -32,7 +37,7 @@ def pos_update(agent, environment, setup):
                 communicated_potentials.append(-setup.alpha_c * np.exp(-setup.mu_c *((pt[0] - x)**2 + (pt[1] - y)**2)))
             s += (sum(communicated_potentials))
         #print(s)
-        
+
         return s
 
     # Step 3: Determine the gradient of the potential field
