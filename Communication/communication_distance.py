@@ -60,7 +60,8 @@ def check_loop(agents, graph):
 
 def dfs(agent, visited, graph):
     """
-    The classic DFS algorithm to check if there is a loop in the graph
+    The classic DFS (depth-first search) algorithm to check if there is a 
+    loop in the graph
     :param agent: current agent
     :param visited: set of visited agents
     :param graph: adjacency map of the graph
@@ -117,11 +118,13 @@ def mst_limited_cost(agents: [Agent], limit: float):
 
     mst_graph = {}
     assigned_clusters = {}
+    # Assign each agent to a cluster at the beginning
     for index, agent in enumerate(agents):
         mst_graph[agent] = []
         assigned_clusters[agent] = index
     mst_edges = []
 
+    # Sort the edges ascending by weight
     edges = sorted(edges, key=lambda edge: edge[2])
 
     for edge in edges:
@@ -134,6 +137,8 @@ def mst_limited_cost(agents: [Agent], limit: float):
             for agent in agents:
                 if assigned_clusters[agent] == k:
                     assigned_clusters[agent] = assigned_clusters[edge[0]]
+        # If the last edge added to the MST is greater than the limit, remove it
+        # and break the loop -> This means that the MST is complete
         if mst_edges[-1][2] > limit:
             mst_edges.pop()
             break

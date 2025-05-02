@@ -18,6 +18,9 @@ def pool_communication_data(agents:[Agent], setup:Setup):
     # get the edges of the minimum spanning tree within the communication distance
     # i.e the clusters of agents that can communicate with each other
     mst_edges, clusters = mst_limited_cost(agents, setup.communication_distance)
+    
+    # reverse the order of keys and values in the clusters dictionary
+    # to get the clusters of agents
     reverse_clusters = {}
     for index in clusters.values():
         reverse_clusters[index] = []
@@ -25,6 +28,7 @@ def pool_communication_data(agents:[Agent], setup:Setup):
     for agent in agents:
         reverse_clusters[clusters[agent]].append(agent)
 
+    # for each agent, if it has reached the target, add the communicated data to the cluster
     for agent in agents:
         if agent.target:
             cluster = reverse_clusters[clusters[agent]]
@@ -32,13 +36,18 @@ def pool_communication_data(agents:[Agent], setup:Setup):
                 if agent != other_agent:
                     other_agent.communicated_data.append(agent.pos_lst)
 
+    # for all agents, if they have communicated data, reduce the points based on the min_neighbourhood_distance
+    # We do that greedily, by checking the distance between the points ordered by coordinates
+    # and ignoring the points that are too close to the previous one
+    # This is a simple approach and can be improved by using a more sophisticated algorithm
+    # like Ramer-Douglas-Peucker (https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm)
     for agent in agents:
         if len(agent.communicated_data)>0:
             all_comm = np.vstack(agent.communicated_data)
 
             all_comm = all_comm[np.lexsort((all_comm[:, 1], all_comm[:, 0]))]
 
-            # Reduce points based on min_neighbourhood_distance
+            # based on min_neighbourhood_distance
             reduced_points = []
             for point in all_comm:
                 if not reduced_points or np.linalg.norm(point - reduced_points[-1]) >= setup.min_neighbourhood_distance:

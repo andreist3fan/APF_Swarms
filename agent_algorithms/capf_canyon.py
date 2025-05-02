@@ -23,19 +23,16 @@ def pos_update(agent, environment, setup):
         s =  sum(obstacle_potentials)
         s += target_potential
 
+        # If the agent has communicated data, add the communicated potentials
+        # to the potential field
         if len(agent.communicated_data)>0:
             comm = agent.communicated_data
             communicated_potentials = []
-
-
             for pt in comm:
                 communicated_potentials.append(-setup.alpha_c * np.exp(-setup.mu_c *((pt[0] - x)**2 + (pt[1] - y)**2)))
-            #print(np.max(communicated_potentials))
-            #print(target_potential)
-            #print(flat)
-            #print(communicated_potentials)
             s += (sum(communicated_potentials))
         #print(s)
+        
         return s
 
     # Step 3: Determine the gradient of the potential field
