@@ -6,6 +6,7 @@ from agent_algorithms import rapf
 from agent_algorithms import a_star 
 from agent_algorithms import multi_agent_rapf
 from agent_algorithms import L4_rapf
+from agent_algorithms import capf_canyon
 import random 
 import math 
 from scipy.stats import truncnorm
@@ -15,7 +16,10 @@ class Agent:
 
     #Fixed True: location at spawning center
     #Fixed False: location random scattered
-        
+        #------------Communication--------------------------------
+        self.communicated_data = []         #List of all communicated data
+
+
         #------------Characteristics------------------------------
 
         self.algorithm = setup.algorithm
@@ -110,26 +114,28 @@ class Agent:
     def update_position(self, environment, setup, agent_positions = None): 
         if self.algorithm == 0: 
             self.x, self.y = capf.pos_update(self, environment, setup)
-        if self.algorithm == 1: 
+        elif self.algorithm == 1: 
             self.x, self.y = bapf.pos_update(self, environment, setup)
-        if self.algorithm == 2: 
+        elif self.algorithm == 2: 
             self.x, self.y = cr_bapf_star.pos_update(self, environment, setup)
-        if self.algorithm == 3: 
+        elif self.algorithm == 3: 
             self.x, self.y = rapf.pos_update(self, environment, setup)
-        if self.algorithm == 4:
+        elif self.algorithm == 4:
             if not self.astar_init:
                 a_star.initialize_path(self, environment, setup)
                 self.astar_init = True
             self.x, self.y = a_star.pos_update(self, environment, setup)
-        if self.algorithm == 5:
+        elif self.algorithm == 5:
             self.x, self.y = multi_agent_rapf.pos_update(self, environment, setup, agent_positions, 1)
-        if self.algorithm == 6:
+        elif self.algorithm == 6:
             self.x, self.y = multi_agent_rapf.pos_update(self, environment, setup, agent_positions, 2)
-        if self.algorithm == 7:
+        elif self.algorithm == 7:
             self.x, self.y = multi_agent_rapf.pos_update(self, environment, setup, agent_positions, 3)
-        if self.algorithm == 8:
+        elif self.algorithm == 8:
             self.x, self.y = L4_rapf.pos_update(self, environment, setup, agent_positions, 3)
-        
+        elif self.algorithm == 100:
+            self.x, self.y = capf_canyon.pos_update(self, environment, setup)
+
         #Append new location to the history list 
         self.pos_lst.append((self.x, self.y))
 
