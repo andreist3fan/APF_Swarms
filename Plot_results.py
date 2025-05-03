@@ -616,7 +616,7 @@ def plot_L3_2(name_data):
 #---------------Run functions---------------------
 
 
-plot_L1(True, True)
-plot_L2(5, "Storage_L2.npy")
+#plot_L1(True, True)
+#plot_L2(5, "Storage_L2.npy")
 #plot_L3("Storage_L3.npy")
-#plot_L3_2("Storage_L3_2.npy")
+plot_L3_2("Storage_L3_2.npy")
