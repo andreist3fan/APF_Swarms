@@ -118,7 +118,7 @@ def run_sim(setup):
 
 if __name__ == "__main__":
     obs_nums = [75, 125, 175, 225, 275]
-    trials = 500
+    trials = 1000
     comm_dists = {}
     for obs_num in obs_nums:
         comm_dists[obs_num] = []
