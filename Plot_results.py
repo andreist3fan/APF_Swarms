@@ -5,14 +5,14 @@ import Analysis_settings_levels as asl
 
 #Folders results 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-folder_path_swarm_L1 = os.path.join(current_dir, "Plots_Results\\L1_Plots_Summary\\L1_Plots_swarm_size")
-folder_path_scattering_L1 = os.path.join(current_dir, "Plots_Results\\L1_Plots_Summary\\L1_Plots_scattering")
-folder_path_single_L2 = os.path.join(current_dir, "Plots_Results\\L2_Plots_Summary\\L2_Plots_single_agent")
-folder_path_swarm_low_L2 = os.path.join(current_dir, "Plots_Results\\L2_Plots_Summary\\L2_Plots_swarm_low_scattering")
-folder_path_swarm_high_L2 = os.path.join(current_dir, "Plots_Results\\L2_Plots_Summary\\L2_Plots_swarm_high_scattering")
-folder_path_L3 = os.path.join(current_dir, "Plots_Results\\L3_Plots_Summary")
-folder_path_L3_2_swarm = os.path.join(current_dir, "Plots_Results\\L3_2_Plots_Summary\\Swarm")
-folder_path_L3_2_scattering = os.path.join(current_dir, "Plots_Results\\L3_2_Plots_Summary\\Scattering")
+folder_path_swarm_L1 = os.path.join(current_dir, "Plots_Results\\Version_2\\L1_Plots_Summary\\L1_Plots_swarm_size")
+folder_path_scattering_L1 = os.path.join(current_dir, "Plots_Results\\Version_2\\L1_Plots_Summary\\L1_Plots_scattering")
+folder_path_single_L2 = os.path.join(current_dir, "Plots_Results\\Version_2\\L2_Plots_Summary\\L2_Plots_single_agent")
+folder_path_swarm_low_L2 = os.path.join(current_dir, "Plots_Results\\Version_2\\L2_Plots_Summary\\L2_Plots_swarm_low_scattering")
+folder_path_swarm_high_L2 = os.path.join(current_dir, "Plots_Results\\Version_2\\L2_Plots_Summary\\L2_Plots_swarm_high_scattering")
+folder_path_L3 = os.path.join(current_dir, "Plots_Results\\Version_2\\L3_Plots_Summary")
+folder_path_L3_2_swarm = os.path.join(current_dir, "Plots_Results\\Version_2\\L3_2_Plots_Summary\\Swarm")
+folder_path_L3_2_scattering = os.path.join(current_dir, "Plots_Results\\Version_2\\L3_2_Plots_Summary\\Scattering")
 
 #Folder to array storage 
 folder_storage = os.path.join(current_dir, "Arrays_Storage")
@@ -77,9 +77,9 @@ def plot_L1(swarm, scattering):
             y3.append(sum(x for x in values[j][0][2][i] if x != -1 and x != 0) / sum(1 for x in values[j][0][2][i] if x != -1 and x != 0)*0.4)
 
         plt.figure()
-        plt.plot(x_ticks[j], y1, color="green", label = "obs_count = "+str(asl.L1_obstacle_number[0]))
-        plt.plot(x_ticks[j], y2, color="blue", label = "obs_count = "+str(asl.L1_obstacle_number[1]))
-        plt.plot(x_ticks[j], y3, color="red", label = "obs_count = "+str(asl.L1_obstacle_number[2]))
+        plt.plot(x_ticks[j], y1, marker='x', linestyle='-', color="green", label = "obs_count = "+str(asl.L1_obstacle_number[0]))
+        plt.plot(x_ticks[j], y2, marker='x', linestyle='-', color="blue", label = "obs_count = "+str(asl.L1_obstacle_number[1]))
+        plt.plot(x_ticks[j], y3, marker='x', linestyle='-', color="red", label = "obs_count = "+str(asl.L1_obstacle_number[2]))
         plt.xlabel(name[j])
         plt.ylim(0)
         plt.xticks(x_ticks[j])
@@ -100,7 +100,7 @@ def plot_L1(swarm, scattering):
             y1_err.append(np.std([x for x in values[j][0][0][i] if x != 0]))
 
         plt.figure()
-        plt.plot(x_ticks[j], y1, color="green")
+        plt.plot(x_ticks[j], y1, marker='x', linestyle='-', color="green")
         plt.errorbar(x_ticks[j], y1, yerr = y1_err)
         plt.xlabel(name[j])
         plt.ylim(0)
@@ -109,6 +109,14 @@ def plot_L1(swarm, scattering):
         #plt.title('Path length vs. '+str(name[j]))
         plt.grid(True)
         plot_path = os.path.join(folder[j], ("PathLength (Error Bars)"))
+        plt.savefig(plot_path)
+
+        # Box plot Path length 
+
+        plt.figure()
+        plt.boxplot(y1)
+        plt.ylabel("Path length [m]")
+        plot_path = os.path.join(folder[j], ("PathLength (Box plot)"))
         plt.savefig(plot_path)
 
         # Effective path length 
@@ -121,9 +129,9 @@ def plot_L1(swarm, scattering):
             y3.append(sum(x for x in values[j][1][2][i] if x != -1 and x != 0) / sum(1 for x in values[j][1][2][i] if x != -1 and x != 0))
 
         plt.figure()
-        plt.plot(x_ticks[j], y1, color="green", label = "obs_count = "+str(asl.L1_obstacle_number[0]))
-        plt.plot(x_ticks[j], y2, color="blue", label = "obs_count = "+str(asl.L1_obstacle_number[1]))
-        plt.plot(x_ticks[j], y3, color="red", label = "obs_count = "+str(asl.L1_obstacle_number[2]))
+        plt.plot(x_ticks[j], y1, marker='x', linestyle='-', color="green", label = "obs_count = "+str(asl.L1_obstacle_number[0]))
+        plt.plot(x_ticks[j], y2, marker='x', linestyle='-', color="blue", label = "obs_count = "+str(asl.L1_obstacle_number[1]))
+        plt.plot(x_ticks[j], y3, marker='x', linestyle='-', color="red", label = "obs_count = "+str(asl.L1_obstacle_number[2]))
         plt.xlabel(name[j])
         plt.xticks(x_ticks[j])
         plt.ylim(1)
@@ -144,7 +152,7 @@ def plot_L1(swarm, scattering):
             y1_err.append(np.std([x for x in values[j][1][0][i] if x != 0]))
 
         plt.figure()
-        plt.plot(x_ticks[j], y1, color="green")
+        plt.plot(x_ticks[j], y1, marker='x', linestyle='-', color="green")
         plt.errorbar(x_ticks[j], y1, yerr = y1_err)
         plt.xlabel(name[j])
         plt.xticks(x_ticks[j])
@@ -165,9 +173,9 @@ def plot_L1(swarm, scattering):
             y3.append(sum(x for x in values[j][2][2][i] if x != -1 and x != 0) / sum(1 for x in values[j][2][2][i] if x != -1 and x != 0))
 
         plt.figure()
-        plt.plot(x_ticks[j], y1, color="green", label = "obs_count = "+str(asl.L1_obstacle_number[0]))
-        plt.plot(x_ticks[j], y2, color="blue", label = "obs_count = "+str(asl.L1_obstacle_number[1]))
-        plt.plot(x_ticks[j], y3, color="red", label = "obs_count = "+str(asl.L1_obstacle_number[2]))
+        plt.plot(x_ticks[j], y1, marker='x', linestyle='-', color="green", label = "obs_count = "+str(asl.L1_obstacle_number[0]))
+        plt.plot(x_ticks[j], y2, marker='x', linestyle='-', color="blue", label = "obs_count = "+str(asl.L1_obstacle_number[1]))
+        plt.plot(x_ticks[j], y3, marker='x', linestyle='-', color="red", label = "obs_count = "+str(asl.L1_obstacle_number[2]))
         plt.xlabel(name[j])
         plt.xticks(x_ticks[j])
         plt.ylim(0)
@@ -209,9 +217,9 @@ def plot_L1(swarm, scattering):
             y3.append(sum(x for x in values[j][3][2][i] if x != -1) / sum(1 for x in values[j][3][2][i] if x != -1))
 
         plt.figure()
-        plt.plot(x_ticks[j], y1, color="green", label = "obs_count = "+str(asl.L1_obstacle_number[0]))
-        plt.plot(x_ticks[j], y2, color="blue", label = "obs_count = "+str(asl.L1_obstacle_number[1]))
-        plt.plot(x_ticks[j], y3, color="red", label = "obs_count = "+str(asl.L1_obstacle_number[2]))
+        plt.plot(x_ticks[j], y1, marker='x', linestyle='-', color="green", label = "obs_count = "+str(asl.L1_obstacle_number[0]))
+        plt.plot(x_ticks[j], y2, marker='x', linestyle='-', color="blue", label = "obs_count = "+str(asl.L1_obstacle_number[1]))
+        plt.plot(x_ticks[j], y3, marker='x', linestyle='-', color="red", label = "obs_count = "+str(asl.L1_obstacle_number[2]))
         plt.xlabel(name[j])
         plt.xticks(x_ticks[j])
         plt.ylim(0, 1.05)
@@ -222,6 +230,89 @@ def plot_L1(swarm, scattering):
         plot_path = os.path.join(folder[j], ("Reachability"))
         plt.savefig(plot_path)
     print("L1 Graphs created")
+
+def plot_L1_boxplt():
+
+    swarm_values = np.load(os.path.join(folder_storage, "Storage_swarm_size_L1.npy"))
+    scattering_values = np.load(os.path.join(folder_storage, "Storage_scattering_L1.npy"))
+    
+    # Swarm setting boxplots
+
+    for s in range(2): 
+        for o in range(3):
+
+            data_swarm = []
+            x_ticks_swarm = asl.L1_swarm_sizes
+
+            for i in range(len(x_ticks_swarm)): 
+                if s == 0: 
+                    sw = swarm_values[0][o][i]
+                    sw_filtered = [x for x in sw if x != 0]
+                    #print(min(sw_filtered))
+                    data_swarm.append(sw_filtered)
+                    setting = "Path Length"
+                if s == 1: 
+                    sw =swarm_values[2][o][i]
+                    sw_filtered = [x for x in sw if x != -1]
+                    data_swarm.append(sw_filtered)
+                    setting = "Computational Complexity"
+
+            
+            data_swarm = np.array(data_swarm,  dtype=object)
+
+            plt.figure()
+            plt.boxplot(data_swarm.T, positions=x_ticks_swarm, widths=0.8)
+            if s == 0: 
+                plt.ylabel('Path length [m]')
+            if s == 1: 
+                plt.ylabel('Computational Complexity [s]')
+            plt.xlabel("Swarm Size")
+            name = "Boxplot-swarm size ("+setting+str(", Obs = ")+str(asl.L1_obstacle_number[o])+")"
+            plot_path = os.path.join(folder_path_swarm_L1, name)
+            plt.savefig(plot_path)
+
+    # Scattering values boxplots
+
+    for s in range(2): 
+        for o in range(3):
+
+            data_swarm = []
+            x_ticks_scat = asl.L1_scattering
+
+            for i in range(len(x_ticks_scat)): 
+                if s == 0: 
+                    sw = scattering_values[0][o][i]
+                    sw_filtered = [x for x in sw if x != 0]
+                    data_swarm.append(sw_filtered)
+                    setting = "Path Length"
+                if s == 1: 
+                    sw =scattering_values[2][o][i]
+                    sw_filtered = [x for x in sw if x != -1]
+                    data_swarm.append(sw_filtered)
+                    setting = "Computational Complexity"
+
+            
+            data_swarm = np.array(data_swarm,  dtype=object)
+
+            plt.figure()
+            plt.boxplot(data_swarm.T, positions=x_ticks_scat, widths=0.8)
+            if s == 0: 
+                plt.ylabel('Path length [m]')
+            if s == 1: 
+                plt.ylabel('Computational Complexity [s]')
+            plt.xlabel("Starting radius [m]")
+            name = "Boxplot-starting radius ("+setting+str(", Obs = ")+str(asl.L1_obstacle_number[o])+")"
+            plot_path = os.path.join(folder_path_scattering_L1, name)
+            plt.savefig(plot_path)
+
+
+            
+
+            
+            
+
+
+
 
 def plot_L2(nr_alg, name_data): 
 
@@ -251,7 +342,7 @@ def plot_L2(nr_alg, name_data):
         plt.figure()
         
         for i in range(len(y)): 
-            plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+            plt.plot(x_ticks, y[i], color[i], marker='x', linestyle='-', label = alg_name[i]) 
         plt.xlabel("Obstacle count")
         plt.ylim(0)
         plt.xticks(x_ticks)
@@ -275,7 +366,7 @@ def plot_L2(nr_alg, name_data):
                 
         plt.figure()
         for i in range(len(y)): 
-            plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+            plt.plot(x_ticks, y[i], color[i], marker='x', linestyle='-', label = alg_name[i]) 
         plt.xlabel("Obstacle count")
         plt.ylim(0)
         plt.xticks(x_ticks)
@@ -341,7 +432,7 @@ def plot_L2(nr_alg, name_data):
 
         plt.figure()
         for i in range(len(y)): 
-            plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+            plt.plot(x_ticks, y[i], marker='x', linestyle='-', color = color[i], label = alg_name[i]) 
         plt.xlabel("Obstacle count")
         plt.ylim(0)
         plt.xticks(x_ticks)
@@ -366,7 +457,7 @@ def plot_L2(nr_alg, name_data):
 
         plt.figure()
         for i in range(len(y)): 
-            plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+            plt.plot(x_ticks, y[i], color[i], marker='x', linestyle='-', label = alg_name[i]) 
         plt.xlabel("Obstacle count")
         plt.ylim(0)
         plt.xticks(x_ticks)
@@ -409,7 +500,7 @@ def plot_L3(name_data):
     plt.figure()
     
     for i in range(len(y)): 
-        plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+        plt.plot(x_ticks, y[i], color[i], marker='x', linestyle='-', label = alg_name[i]) 
     plt.xlabel("Swarm setting (Size/Scattering)")
     plt.ylim(0)
     plt.xticks(x_ticks)
@@ -434,7 +525,7 @@ def plot_L3(name_data):
             
     plt.figure()
     for i in range(len(y)): 
-        plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+        plt.plot(x_ticks, y[i], color[i], marker='x', linestyle='-', label = alg_name[i]) 
     plt.xlabel("Swarm setting (Swarm size / Starting radius [m])")
     plt.ylim(0)
     plt.xticks(x_ticks)
@@ -459,7 +550,7 @@ def plot_L3(name_data):
         
     plt.figure()
     for i in range(len(y)): 
-        plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+        plt.plot(x_ticks, y[i], color[i], marker='x', linestyle='-', label = alg_name[i]) 
     plt.xlabel("Swarm setting (Swarm size / Starting radius [m])")
     plt.ylim(0)
     plt.xticks(x_ticks)
@@ -484,7 +575,7 @@ def plot_L3(name_data):
 
     plt.figure()
     for i in range(len(y)): 
-        plt.plot(x_ticks, y[i], color[i], label = alg_name[i]) 
+        plt.plot(x_ticks, y[i], color[i], marker='x', linestyle='-', label = alg_name[i]) 
         plt.xlabel("Swarm setting (Swarm size / Starting radius [m])")
     plt.ylim(0)
     plt.xticks(x_ticks)
@@ -498,6 +589,7 @@ def plot_L3(name_data):
     print("L3 Graphs created")
 
 def plot_L3_2(name_data): 
+    y_complete = False 
     data = np.load(os.path.join(folder_storage, name_data))
 
     x_ticks = [asl.L3_2_swarm_analysis, asl.L3_2_scat_analysis]
@@ -525,9 +617,12 @@ def plot_L3_2(name_data):
         plt.figure()
         
         for i in range(len(y)): 
-            plt.plot(x_ticks[s], y[i], color[i], label = alg_name[i]) 
+            plt.plot(x_ticks[s], y[i], color[i], marker='x', linestyle='-', label = alg_name[i]) 
         plt.xlabel(x_label[s])
-        plt.ylim(0)
+        if y_complete:
+            plt.ylim(0)
+        else: 
+            plt.ylim(25)
         plt.xticks(x_ticks[s])
         plt.ylabel('Path length [m]')
         #plt.title('Path length vs. Swarm setting')
@@ -549,9 +644,12 @@ def plot_L3_2(name_data):
                 
         plt.figure()
         for i in range(len(y)): 
-            plt.plot(x_ticks[s], y[i], color[i], label = alg_name[i]) 
+            plt.plot(x_ticks[s], y[i], color[i], marker='x', linestyle='-', label = alg_name[i]) 
         plt.xlabel(x_label[s])
-        plt.ylim(0)
+        if y_complete:
+            plt.ylim(0)
+        else: 
+            plt.ylim(1.1)
         plt.xticks(x_ticks[s])
         plt.ylim(1)
         plt.ylabel('Effective Path length [m]')
@@ -574,9 +672,9 @@ def plot_L3_2(name_data):
             
         plt.figure()
         for i in range(len(y)): 
-            plt.plot(x_ticks[s], y[i], color[i], label = alg_name[i]) 
+            plt.plot(x_ticks[s], y[i], color[i], marker='x', linestyle='-', label = alg_name[i]) 
         plt.xlabel(x_label[s])
-        plt.ylim(0)
+
         plt.xticks(x_ticks[s])
         plt.ylim(0)
         plt.ylabel('Computational Complexity [s]')
@@ -599,11 +697,13 @@ def plot_L3_2(name_data):
 
         plt.figure()
         for i in range(len(y)): 
-            plt.plot(x_ticks[s], y[i], color[i], label = alg_name[i]) 
+            plt.plot(x_ticks[s], y[i], color[i], marker='x', linestyle='-', label = alg_name[i]) 
             plt.xlabel(x_label[s])
-        plt.ylim(0)
+        if y_complete: 
+            plt.ylim(0, 1.05)
+        else: 
+            plt.ylim(0.9, 1.05)
         plt.xticks(x_ticks[s])
-        plt.ylim(0, 1.05)
         plt.ylabel('Reachability')
         #plt.title('Reachability vs. Swarm settings')
         plt.grid(True)
@@ -619,4 +719,5 @@ def plot_L3_2(name_data):
 #plot_L1(True, True)
 #plot_L2(5, "Storage_L2.npy")
 #plot_L3("Storage_L3.npy")
-plot_L3_2("Storage_L3_2.npy")
+#plot_L3_2("Storage_L3_2.npy")
+plot_L1_boxplt()

@@ -208,6 +208,8 @@ def create_empty_storage_L3_2():
     storage_L3 = np.full((4, swarm_int, collision_int, 1000), -1.0)
     name = 'Storage_L3_2.npy'
 
+    #L3_2[performance parameter][swarm setting][collision method][runs]
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
     folder_path = os.path.join(current_dir, "Arrays_Storage")
     file_path = os.path.join(folder_path, name)
