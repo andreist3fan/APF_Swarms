@@ -125,9 +125,8 @@ if __name__ == "__main__":
 
     logging.basicConfig(filename="level_4_simulations.log", level=logging.INFO)
 
-    algorithm = 8
+    algorithm = 1
     setup = Setup(algorithm)
-    setup.obstacle_number = 200
 
     setup.nr_agents = 5
     setup.start_radius = 3
@@ -185,7 +184,7 @@ if __name__ == "__main__":
     plt.ylabel("Average minimum communication distance")
     plt.savefig("avg_min_comm_dist.png")
 
-    with open("results.csv", "w", newline="") as csvfile:
+    with open("results_BAPF.csv", "w", newline="") as csvfile:
 
         writer = csv.writer(csvfile)
         header = ""
