@@ -1,3 +1,14 @@
+"""
+This is the main file for running the Level 4 simulations from our paper
+"Multi-agent Path Planning using Artificial Potential Fields in Cluttered Environments".
+
+This file contains the main function that runs the simulations and stores the results in a CSV file.
+Furthermore, it generates histograms and plots for the minimum communication distance
+and the average minimum communication distance for different obstacle densities.
+
+"""
+
+
 from Setup import Setup
 import Environment as e
 import Agent as a
@@ -12,16 +23,19 @@ import matplotlib.pyplot as plt
 import csv
 
 
+
 logger = logging.getLogger(__name__)
-# ---------Change setup settings if not standard settings----------
-# 0: CAPF
-# 1: BAPF
-# 2: CR-BAPF*
-# 3: RAPF
-# 4: A*
 
 
 def run_sim(setup):
+    """
+    Run the simulation for a given setup.
+    Args:
+        setup (Setup): The setup object containing the parameters for the simulation.
+    
+    """
+
+
     # Create environment and obstacles according to setup
     env = e.Environment(setup)
     logger.info("Environment created")
@@ -72,19 +86,29 @@ def run_sim(setup):
                 # Performance matrix
                 setup.target = True
 
+
+                # If a swarm is employed but only one agent hasn't crashed, the run is
+                # not taken into account for minimum communication distance
+                # (Since the communication distance is zero in this case)
+
                 if len(agents) == 1:
                     logger.info("Target is reached. No other agents left.")
                     return
+                
+                # Compute various metrics (Stub from previous levels)
                 setup.computational_complexity = round((end_time - start_time), 5)
                 setup.path_length = len(i.pos_lst)
-                # setup.eff_path_length = setup.path_length / i.initial_distance_target_steps
                 setup.min_distance_target = ev.safety(i, env)
 
+                
+                
                 # Compute minimum communication distance such that all agents know that
                 # this one has reached the target
                 min_d = min_communication_distance(agents + agents_stuck)
                 # insert into Setup
                 setup.min_communication_distance = min_d
+
+                # Log data
                 logger.info(
                     f"Target is reached. Minimum communication distance:{min_d}"
                 )
@@ -117,23 +141,38 @@ def run_sim(setup):
 
 
 if __name__ == "__main__":
+    """
+    Main function to run the simulations and store the results.
+    """
+
+    # Set up the simulation parameters
+
+    # Number of obstacles
     obs_nums = [75, 125, 175, 225, 275]
+    
+    # Number of Monte Carlo trials
     trials = 1000
+
+    # Create a dictionary to store the minimum communication distances for each obstacle number
     comm_dists = {}
     for obs_num in obs_nums:
         comm_dists[obs_num] = []
 
+    # Set up the logger
     logging.basicConfig(filename="level_4_simulations.log", level=logging.INFO)
 
+    # Use the RAPF-T algorithm (8) or BAPF (1)
     algorithm = 8
-    setup = Setup(algorithm)
-    setup.obstacle_number = 200
 
+    # Set up the simulation
+    setup = Setup(algorithm)
+
+    # Use default simulation parameters
     setup.nr_agents = 5
     setup.start_radius = 3
 
-    setup.visual = False  # Pygame to show run
-    setup.name = "Main"  # Name of the image of the simulation screenchot that is stored at the end
+    setup.visual = False  # Do not display runs as we are running many trials
+    setup.name = "Level_4"  
 
     # Run simulation
     for obs_num in obs_nums:
@@ -141,8 +180,12 @@ if __name__ == "__main__":
         setup.obstacle_number = obs_num
         ct = 0
         while ct < trials:
+            # Reset setup for each trial
             setup.min_communication_distance = -1
             run_sim(setup)
+
+            # Check if the simulation was successful
+            # If not, rerun the simulation
             if setup.min_communication_distance != -1:
                 logger.info(
                     f"Finished simulation #{ct+1}/{trials} with {obs_num} obstacles."
@@ -150,7 +193,7 @@ if __name__ == "__main__":
                 ct += 1
                 comm_dists[obs_num].append(setup.min_communication_distance)
             logger.info(f"Trial finished.")
-
+            # Reset setup for next trial
             setup.target = False
             setup.computational_complexity = 0
             setup.path_length = 0
@@ -158,6 +201,7 @@ if __name__ == "__main__":
             setup.nr_stuck_agents = 0
             setup.nr_hit_agents = 0
 
+    # Plot a histogram for each obstacle number
     for obs_num in obs_nums:
         plt.clf()
         plt.hist(
@@ -175,16 +219,19 @@ if __name__ == "__main__":
 
     plt.clf()
 
+    # Plot the average minimum communication distance for each obstacle number
     plt.plot(
         obs_nums,
         [sum(comm_dists[obs_num]) / len(comm_dists[obs_num]) for obs_num in obs_nums],
-        marker="o",
+        marker="x",
     )
     plt.title("Average minimum communication distance")
     plt.xlabel("Number of obstacles")
     plt.ylabel("Average minimum communication distance")
     plt.savefig("avg_min_comm_dist.png")
 
+
+    # Save run results to a CSV file
     with open("results.csv", "w", newline="") as csvfile:
 
         writer = csv.writer(csvfile)
@@ -201,18 +248,3 @@ if __name__ == "__main__":
                     row.append("")
             writer.writerow(row)
         print("Results saved to results.csv")
-
-# User output
-# print("Path length:")
-# print(str(setup.path_length) + " steps")
-# print("Computational complexity:")
-# print(str(setup.computational_complexity) + "s")
-# if setup.visual:
-#     print("Warning: The computational complexity is influenced by visualising the run.")
-# print("Minimum clearance: "+ str(ev.safety(i, env)))
-# print("Number of stuck agents:")
-# print(str(setup.nr_stuck_agents)+" out of "+str(setup.nr_agents))
-# print("Number of agents that hit an obstacle: ")
-# print(str(setup.nr_hit_agents)+" out of "+str(setup.nr_agents))
-# print("Number of left agents: ")
-# print(len(agents))
