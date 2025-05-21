@@ -12,7 +12,7 @@ import time
 
 #----------------Level 3: Adjust settings--------------
 
-mc_runs = 1000
+mc_runs = 289
 #file = 'Storage_L3.npy'
 #swarm_set = asl.L3_swarm_size
 #scat_set = asl.L3_scattering
