@@ -1,3 +1,5 @@
+# Monte Carlo run for Level 3 
+
 from Setup import Setup 
 import Environment as e 
 import Agent as a 
@@ -12,12 +14,9 @@ import time
 
 #----------------Level 3: Adjust settings--------------
 
-mc_runs = 289
-#file = 'Storage_L3.npy'
-#swarm_set = asl.L3_swarm_size
-#scat_set = asl.L3_scattering
+mc_runs = 1000                      # Number of Monte Carlo runs 
 
-file = 'Storage_L3_2.npy'
+file = 'Storage_L3_2.npy'           # Storage of simulation results 
 swarm_set = asl.L3_2_swarm_size
 scat_set = asl.L3_2_scattering
 

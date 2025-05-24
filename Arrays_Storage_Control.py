@@ -1,3 +1,5 @@
+# Setups and handels storing the results of the Monte Carlo runs 
+
 import numpy as np
 import os 
 import matplotlib.pyplot as plt 
@@ -15,6 +17,8 @@ import Analysis_settings_levels as asl
 # Swarm_size:  0(1) | 1(2) | 2(3) | 3(5) | 4(10) | 5(15) | 6(20) | 7(25)
 
 # Scattering: 0(2) | 1(3) | 2(5) | 3(7.5) | 4(10)
+
+# Create storage for Level 1 
 
 def create_empty_storage_L1(): 
 
@@ -35,7 +39,7 @@ def create_empty_storage_L1():
         else: 
             print(str(names[i])+" already exists.")
 
-# Add data to storage files 
+# Add data to storage file level 1 
 
 def add_data_L1(file_name, performance_parameter_ind, obstacle_density_ind, swarm_or_scattering_ind, data): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -60,6 +64,8 @@ def add_data_L1(file_name, performance_parameter_ind, obstacle_density_ind, swar
     else: 
         print("Setting is full.")
 
+# Print overview of Level 1 results (effect of starting radius)
+
 def overview_scat_L1(): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     folder_path = os.path.join(current_dir, "Arrays_Storage")
@@ -70,6 +76,8 @@ def overview_scat_L1():
     print("Obstacle setting 0: "+str(sum(1 for x in scattering[0,0,0] if x != -1)))
     print("Obstacle setting 1: "+str(sum(1 for x in scattering[0,1,0] if x != -1)))
     print("Obstacle setting 2: "+str(sum(1 for x in scattering[0,2,0] if x != -1)))
+
+# Print overview of Level 1 results (effect of swarm size)
 
 def overview_swarm_size_L1(): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -94,6 +102,8 @@ def overview_swarm_size_L1():
 
 # Algorithm: 0(CAPF) | 1 (BAPF) | 2(CR-BAPF*) | 3(RAPF) | 4(A*)
 
+# Create storage for level 2
+
 def create_empty_storage_L2(): 
 
     #Create performance parameter 
@@ -108,7 +118,7 @@ def create_empty_storage_L2():
     else: 
         print(str(name)+" already exists.")
 
-# Add data to storage files 
+# Function that investigates error with outliers in computational complexity due to background programs of computing device 
 
 def clean_obs_dens(storage_file): 
     data = re = np.load(file_path)
@@ -122,6 +132,7 @@ def clean_obs_dens(storage_file):
     np.save(storage_file, data)
     print("Updated with deleted obstacle density")
 
+# Add data to storage files for level 2 
 
 def add_data_L2(performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, algorithm, data): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -146,23 +157,8 @@ def add_data_L2(performance_parameter_ind, obstacle_density_ind, swarm_setting_i
         np.save(file_path, re)
     else: 
         print("Setting is full.")
-    
-    '''
-    # Step 2: Modify the data
-    start = np.argmax(re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, algorithm] == -1)
-    print(start)
 
-    open_spaces = 1000 - start
-
-    if len(data) > open_spaces: 
-        print(f"That setting has more than 1,000 runs. Only {open_spaces} more data points added.")
-        data = data[:open_spaces]  # Correct slicing
-
-    # Update array with new data
-    re[performance_parameter_ind, obstacle_density_ind, swarm_setting_ind, algorithm, start:(start+len(data))] = data
-
-    np.save(file_path, re)
-    '''
+# Print overview of Level 2 results 
 
 def overview_L2(): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -185,6 +181,8 @@ def overview_L2():
 
 # Collision: 0 (None) | 1 (Bumper method) | 2 (Obstacle method) | 3 (Teardrop method) 
 
+# Create storage file for level 3 (Version 1)
+
 def create_empty_storage_L3(): 
 
     #Create performance parameter 
@@ -201,14 +199,14 @@ def create_empty_storage_L3():
     else: 
         print(str(name)+" already exists.")
 
+# Create storafe file for level 3 (Version 2)
+
 def create_empty_storage_L3_2(): 
     #Create performance parameter 
     swarm_int = len(asl.L3_2_swarm_size)
     collision_int = len(asl.L3_algorithm)
     storage_L3 = np.full((4, swarm_int, collision_int, 1000), -1.0)
     name = 'Storage_L3_2.npy'
-
-    #L3_2[performance parameter][swarm setting][collision method][runs]
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     folder_path = os.path.join(current_dir, "Arrays_Storage")
@@ -219,8 +217,7 @@ def create_empty_storage_L3_2():
         print(str(name)+" already exists.")
 
 
-
-#[performance parameter][swarm][collision][run]
+# Add data to storage file for level 3 
 
 def add_data_L3(performance_parameter_ind, swarm_setting_ind, collision, data, file): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -246,6 +243,7 @@ def add_data_L3(performance_parameter_ind, swarm_setting_ind, collision, data, f
     else: 
         print("Setting is full.")
 
+# Give overview of level 3 simulation (Version 1)
 
 def overview_L3(): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -256,6 +254,8 @@ def overview_L3():
     print("Amount of runs for L3: ")
  
     print("Number runs: "+str(sum(1 for x in data[0,0,0] if x != -1)))
+
+# Give overview of level 3 simulation (Version 2)
 
 def overview_L3_2(): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -270,7 +270,7 @@ def overview_L3_2():
 
 #------------------Level universal functions-------------------
 
-# Create average of run 
+# Create average of all runs for one setting 
 
 def avg(run): 
     amount = np.argmax(run, -1)
@@ -280,31 +280,16 @@ def avg(run):
     x = x/(amount)
     return x    
 
-# Analyse two variables 
-
-#def line_graph(x_arrays, y_arrays, legends): 
-
-    
 #-------------------Run functions---------------------------------------------
+
+# Creates storage for levels, if they do not exist yet 
+
 create_empty_storage_L1()
 create_empty_storage_L2()
 create_empty_storage_L3()
 create_empty_storage_L3_2()
 
-print("")
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-folder_path = os.path.join(current_dir, "Arrays_Storage")
-#file_path = os.path.join(folder_path, 'Storage_scattering_L1.npy')
-#file_path = os.path.join(folder_path, 'Storage_swarm_size_L1.npy')
-file_path = os.path.join(folder_path, 'Storage_L2.npy')
-
-re = np.load(file_path)
-
-# Level 1: [performance parameter][obstacle_density][scattering][run]
-# Level 2: [performance parameter][obstacle_density][swarm][algorithm][run]
-
-#---------------------------------------------------------------
+# Print status of every simulation level
 
 overview_scat_L1()
 overview_swarm_size_L1()
@@ -312,23 +297,5 @@ overview_L2()
 overview_L3()
 overview_L3_2()
 
-#clean_L2()
-
-#print(re[0][0][0][0])
-#for index, value in np.ndenumerate(re):
-#    if value != -1:
-#        print(f"Index: {index}, Value: {value}")
-#print(np.std(re[0][0][1]))
-
-#plt.figure()
-#plt.hist(re[0][0][2], bins=500)
-#plt.savefig("Histogram data")
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-folder_path = os.path.join(current_dir, "Arrays_Storage")
-data = np.load(os.path.join(folder_path, "Storage_L3.npy"))
-
-#L2_data = os.path.join(folder_path, "Storage_L2.npy")
-#clean_obs_dens(L2_data)
 
 

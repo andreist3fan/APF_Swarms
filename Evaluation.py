@@ -1,3 +1,5 @@
+# Analyses runs for one setting / draws run 
+
 import pygame as pg 
 import os 
 import math

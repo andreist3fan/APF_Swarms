@@ -1,3 +1,5 @@
+# Class for single agents in the swarm 
+
 from agent_algorithms import capf 
 from agent_algorithms import bapf
 from agent_algorithms import cr_bapf
@@ -23,10 +25,10 @@ class Agent:
         # For A* algorithm, since we precompute the path
         self.step_no = None
         self.path = None
-        #Current position
-        self.x = 0                        #Current position
+
+        self.x = 0                          #Current position
         self.y = 0
-        self.radius = 0.2 #Agents cant spawn closer to each other than twice the radius
+        self.radius = 0.2                   #Agents cant spawn closer to each other than twice the radius
         self.pos_lst = []                   #List representing path
 
         self.initial_distance_target = 0 
@@ -59,8 +61,7 @@ class Agent:
             while close_to_other_agent or close_to_obstacle or close_to_target:
 
                 #Create new position until one with distance to other objects is found 
-                angle = random.uniform(0, 2 * math.pi) #for random distribution 
-
+                angle = random.uniform(0, 2 * math.pi) 
                 std_dev = (setup.start_radius) / 2
                 a, b = (-setup.start_radius) / std_dev, (setup.start_radius) / std_dev
                 dist_center = truncnorm.rvs(a, b, loc=0, scale=std_dev)
@@ -72,11 +73,6 @@ class Agent:
                 close_to_target = False
                 close_to_other_agent = False
                 close_to_obstacle = False
-
-                #Check distance to target
-                #distance_to_target = math.sqrt((new_x-setup.target_x)**2+(new_y-setup.target_y)**2)
-                #if distance_to_target < min_dist_target:
-                #    close_to_obstacle = True
 
                 #Check distance to other agents
                 if pos_other_agents:
@@ -97,9 +93,8 @@ class Agent:
             self.x = new_x
             self.y = new_y
 
-        self.astar_init = False # for A*, if the grid was initialized or not
-        #True if target is reached
-        self.target = False 
+        self.astar_init = False                 # for A*, if the grid was initialized or not
+        self.target = False                     #True if target is reached
         self.pos_lst.append((self.x, self.y))
         self.initial_distance_target = math.sqrt((self.x-setup.target_x)**2+(self.y-setup.target_y)**2)
 

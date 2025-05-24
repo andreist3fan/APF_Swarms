@@ -1,3 +1,5 @@
+# Plotting and storing results of storage files of the Monte Carlo simulations 
+
 import os 
 import numpy as np 
 import matplotlib.pyplot as plt
@@ -5,14 +7,14 @@ import Analysis_settings_levels as asl
 
 #Folders results 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-folder_path_swarm_L1 = os.path.join(current_dir, "Plots_Results\\Version_2\\L1_Plots_Summary\\L1_Plots_swarm_size")
-folder_path_scattering_L1 = os.path.join(current_dir, "Plots_Results\\Version_2\\L1_Plots_Summary\\L1_Plots_scattering")
-folder_path_single_L2 = os.path.join(current_dir, "Plots_Results\\Version_2\\L2_Plots_Summary\\L2_Plots_single_agent")
-folder_path_swarm_low_L2 = os.path.join(current_dir, "Plots_Results\\Version_2\\L2_Plots_Summary\\L2_Plots_swarm_low_scattering")
-folder_path_swarm_high_L2 = os.path.join(current_dir, "Plots_Results\\Version_2\\L2_Plots_Summary\\L2_Plots_swarm_high_scattering")
-folder_path_L3 = os.path.join(current_dir, "Plots_Results\\Version_2\\L3_Plots_Summary")
-folder_path_L3_2_swarm = os.path.join(current_dir, "Plots_Results\\Version_2\\L3_2_Plots_Summary\\Swarm")
-folder_path_L3_2_scattering = os.path.join(current_dir, "Plots_Results\\Version_2\\L3_2_Plots_Summary\\Scattering")
+folder_path_swarm_L1 = os.path.join(current_dir, "Results\\L1_Plots_Summary\\L1_Plots_swarm_size")
+folder_path_scattering_L1 = os.path.join(current_dir, "Results\\L1_Plots_Summary\\L1_Plots_scattering")
+folder_path_single_L2 = os.path.join(current_dir, "Results\\L2_Plots_Summary\\L2_Plots_single_agent")
+folder_path_swarm_low_L2 = os.path.join(current_dir, "Results\\L2_Plots_Summary\\L2_Plots_swarm_low_scattering")
+folder_path_swarm_high_L2 = os.path.join(current_dir, "Results\\L2_Plots_Summary\\L2_Plots_swarm_high_scattering")
+folder_path_L3 = os.path.join(current_dir, "Results\\L3_Plots_Summary")
+folder_path_L3_2_swarm = os.path.join(current_dir, "Results\\L3_2_Plots_Summary\\Swarm")
+folder_path_L3_2_scattering = os.path.join(current_dir, "Results\\L3_2_Plots_Summary\\Scattering")
 
 #Folder to array storage 
 folder_storage = os.path.join(current_dir, "Arrays_Storage")
@@ -44,6 +46,9 @@ def delete_outliers(array, gap, ignore):
 #Graphs for Level 1 (Swarm size)
 
 def plot_L1(swarm, scattering): 
+
+    # Swarm: True -> Analyse results of level 1 of analysis of effect of swarm size
+    # Scattering: True -> Analyse results of level 1 of analysis of effect of starting radius
 
     swarm_values = np.load(os.path.join(folder_storage, "Storage_swarm_size_L1.npy"))
     scattering_values = np.load(os.path.join(folder_storage, "Storage_scattering_L1.npy"))
@@ -231,6 +236,8 @@ def plot_L1(swarm, scattering):
         plt.savefig(plot_path)
     print("L1 Graphs created")
 
+# Boxplot graphs for level 1 
+
 def plot_L1_boxplt():
 
     swarm_values = np.load(os.path.join(folder_storage, "Storage_swarm_size_L1.npy"))
@@ -306,16 +313,12 @@ def plot_L1_boxplt():
             plot_path = os.path.join(folder_path_scattering_L1, name)
             plt.savefig(plot_path)
 
-
-            
-
-            
-            
-
-
-
+# Graphs for level 2 
 
 def plot_L2(nr_alg, name_data): 
+
+    # nr_alg: amount of algorithms run 
+    # name_data: storage file name 
 
     data = np.load(os.path.join(folder_storage, name_data))
 
@@ -392,22 +395,11 @@ def plot_L2(nr_alg, name_data):
             print("-----------------------------------------------------")
             for k in range(nr_alg): 
                 print("Algorithm: "+str(k)+"----------------------------------")
-                #print("Unfiltered data:")
-                #print(data[2][i][j][k])
-                #print("Maximum data: ")
-                #print(max(data[2][i][j][k]))
                 filtered_data = delete_outliers(data[2][i][j][k], 5, -1)
-                #print("Filtered data:")
-                #print(filtered_data)
-                #print("Maximum filtered:")
-                #print(max(filtered_data))
                 reached = []
                 for x in data[2][i][j][k]:
                     if x != -1 and x != 0: 
                         reached.append(x)
-                #print("Average: "+str(sum(reached)/len(reached)))
-                #print("Reached: ")
-                #print(reached)
                 y[k].append(sum(x for x in filtered_data if x != -1 and x != 0) / sum(1 for x in filtered_data if x != -1 and x != 0))
                 if i == 3: 
                     print("Unfiltered data:")
@@ -428,9 +420,6 @@ def plot_L2(nr_alg, name_data):
                     plt.ylabel("Count")
                     #plt.title("Computational Complexity with largest value dropped (A*)")
                     plt.show()
-
-
-
         plt.figure()
         for i in range(len(y)): 
             plt.plot(x_ticks, y[i], marker='x', linestyle='-', color = color[i], label = alg_name[i]) 
@@ -471,7 +460,12 @@ def plot_L2(nr_alg, name_data):
         plt.savefig(plot_path)
     print("L2 Graphs created")
 
+# Graphs for level 3 (Version 1)
+
 def plot_L3(name_data): 
+
+    # name_data: name of storage file 
+
     data = np.load(os.path.join(folder_storage, name_data))
     
     x_ticks = []
@@ -589,7 +583,12 @@ def plot_L3(name_data):
     plt.savefig(plot_path)
     print("L3 Graphs created")
 
+# Graphs for level 3 (Version 2)
+
 def plot_L3_2(name_data): 
+
+    # name_data: name of storage file 
+
     y_complete = False 
     data = np.load(os.path.join(folder_storage, name_data))
 
@@ -713,12 +712,10 @@ def plot_L3_2(name_data):
         plt.savefig(plot_path)
     print("L3_2 Graphs created")
 
-
 #---------------Run functions---------------------
-
 
 #plot_L1(True, True)
 #plot_L2(5, "Storage_L2.npy")
 #plot_L3("Storage_L3.npy")
 #plot_L3_2("Storage_L3_2.npy")
-plot_L1_boxplt()
+#plot_L1_boxplt()

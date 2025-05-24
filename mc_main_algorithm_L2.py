@@ -1,3 +1,5 @@
+# Monte Carlo simulation for level 2
+
 from Setup import Setup 
 import Environment as e 
 import Agent as a 
@@ -13,7 +15,7 @@ import time
 #----------------Level 2: Adjust settings--------------
 
 obs_num = 3                         # Index of density of list in asl (!not the actual value) -> 0, 1, 2, 3, 4
-mc_runs = 1000
+mc_runs = 1000                      # Number of runs that will be added to the storage 
 
 save_problematic_runs = False 
 create_visuals = False              # Create folder for analysis 

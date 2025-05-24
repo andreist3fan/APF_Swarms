@@ -1,3 +1,5 @@
+# Class that defines environment of simulation 
+
 import random
 import math 
 import numpy as np
@@ -27,21 +29,6 @@ class Environment:
 
         #Create grid for A* algorithm
         if setup.algorithm == 4:
-            """
-            #Create grid for A* algorithm
-            self.grid =  np.zeros((setup.area_size * setup.grid_fineness, setup.area_size * setup.grid_fineness))
-
-            # Mark all cells in the range of the obstacles as occupied
-            for i in range (setup.area_size * setup.grid_fineness):
-                for j in range (setup.area_size * setup.grid_fineness):
-                    for obstacle in self.obstacles:
-                        distance = ((i/setup.grid_fineness - obstacle[0])
-                                    ** 2 + (j/setup.grid_fineness - obstacle[1]) ** 2) ** 0.5
-                        # Mark the cell as occupied if it is within the inner radius of an obstacle
-                        if distance < setup.obst_radius_inner:
-                            self.grid[i][j] = -1
-                            break
-            """
             # Create grid for A* algorithm
             grid_size = setup.area_size * setup.grid_fineness
             grid = np.zeros((grid_size, grid_size))

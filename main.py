@@ -1,3 +1,5 @@
+# main for a single run to visualise a certain setting simulation 
+
 from Setup import Setup 
 import Environment as e 
 import Agent as a 
@@ -19,8 +21,8 @@ setup.obstacle_number = 200
 setup.nr_agents = 5
 setup.start_radius = 3
 
-setup.visual = True     #Pygame to show run
-setup.name = "Main"           #Name of the image of the simulation screenchot that is stored at the end 
+setup.visual = True     # Pygame to show run
+setup.name = "Main"     # Name of the image of the simulation screenchot that is stored at the end 
 
 #--------------Pygame settings------------------------------------
 

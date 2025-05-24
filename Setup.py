@@ -1,4 +1,6 @@
 
+# Class that stores settings for a Monte Carlo run (used to initialise for instance agent settings, store results of single run etc.)
+
 #!!!
 #Please dont change the values of the parameters in this file since multiple main functions assume these default values 
 #To run a setup with a different setting, change the values in an object, not the class itself 

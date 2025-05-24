@@ -1,3 +1,5 @@
+# Monte Carlo runs for Level 1 (Effect of starting radius)
+
 from Setup import Setup 
 import Environment as e 
 import Agent as a 
@@ -11,8 +13,8 @@ import Arrays_Storage_Control as storage
 
 #----------------Level 1: Adjust settings--------------
 
-obs_num = 0                      #Index of density of list in asl (!not the actual value) -> 0, 1, 2
-mc_runs = 3 
+obs_num = 0                      # Index of density of list in asl (!not the actual value) -> 0, 1, 2
+mc_runs = 1000                   # Number of Monte Carlo runs  
 
 save_problematic_runs = False 
 create_visuals = False            #Create folder for analysis 
