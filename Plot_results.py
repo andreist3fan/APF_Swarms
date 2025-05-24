@@ -247,14 +247,14 @@ def plot_L1_boxplt():
             for i in range(len(x_ticks_swarm)): 
                 if s == 0: 
                     sw = swarm_values[0][o][i]
-                    sw_filtered = [x for x in sw if x != 0]
+                    sw_filtered = [x for x in sw if x != 0 and x != -1]
                     print("Minimum")
                     print(min(sw_filtered))
                     data_swarm.append(sw_filtered)
                     setting = "Path Length"
                 if s == 1: 
                     sw =swarm_values[2][o][i]
-                    sw_filtered = [x for x in sw if x != -1]
+                    sw_filtered = [x for x in sw if x != -1 and x != 0]
                     data_swarm.append(sw_filtered)
                     setting = "Computational Complexity"
 
@@ -283,12 +283,12 @@ def plot_L1_boxplt():
             for i in range(len(x_ticks_scat)): 
                 if s == 0: 
                     sw = scattering_values[0][o][i]
-                    sw_filtered = [x for x in sw if x != 0]
+                    sw_filtered = [x for x in sw if x != 0 and x != -1]
                     data_swarm.append(sw_filtered)
                     setting = "Path Length"
                 if s == 1: 
                     sw =scattering_values[2][o][i]
-                    sw_filtered = [x for x in sw if x != -1]
+                    sw_filtered = [x for x in sw if x != -1 and x != 0]
                     data_swarm.append(sw_filtered)
                     setting = "Computational Complexity"
 
