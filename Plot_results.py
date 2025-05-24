@@ -248,7 +248,8 @@ def plot_L1_boxplt():
                 if s == 0: 
                     sw = swarm_values[0][o][i]
                     sw_filtered = [x for x in sw if x != 0]
-                    #print(min(sw_filtered))
+                    print("Minimum")
+                    print(min(sw_filtered))
                     data_swarm.append(sw_filtered)
                     setting = "Path Length"
                 if s == 1: 
