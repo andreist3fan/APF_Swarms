@@ -1,3 +1,12 @@
+"""
+This file implements the Robust Artificial Potential Field (RAPF) algorithm with inter-agent collision avoidance for an agent to navigate towards a target while avoiding obstacles.
+
+The potential field is calculated from the target, (artificial) obstacle positions and other agents. Bacteria points are generated and evaluated to find the best point. 
+The new agent position is then returned. When the agent is stuck, an artificial obstacle is placed.
+
+"""
+
+
 import numpy as np
 
 def pos_update(agent, environment, setup, agent_positions, implementation): 

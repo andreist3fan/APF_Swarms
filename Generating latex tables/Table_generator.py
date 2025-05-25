@@ -1,22 +1,20 @@
 import os 
 import numpy as np 
-import matplotlib.pyplot as plt
-import Analysis_settings_levels as asl
  
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 folder_storage = os.path.join(current_dir, "Arrays_Storage")
-swarm_values = np.load(os.path.join(folder_storage, "Storage_swarm_size_L1.npy"))
-scattering_values = np.load(os.path.join(folder_storage, "Storage_scattering_L1.npy"))
+swarm_values = np.load("Storage_swarm_size_L1.npy")
+scattering_values = np.load("Storage_scattering_L1.npy")
 
 
 def generate_latex_table_swarm(array):
     path = [[], [], []] # For each obstacle density
 
     for i in range(8): # For each swarm size (there are 8 in total)
-        path[0].append(sum(x for x in array[0][0][i] if x != -1 and x != 0) / sum(1 for x in array[0][0][i] if x != -1 and x != 0))
-        path[1].append(sum(x for x in array[0][1][i] if x != -1 and x != 0) / sum(1 for x in array[0][1][i] if x != -1 and x != 0))
-        path[2].append(sum(x for x in array[0][2][i] if x != -1 and x != 0) / sum(1 for x in array[0][2][i] if x != -1 and x != 0))
+        path[0].append(sum(0.4*x for x in array[0][0][i] if x != -1 and x != 0) / sum(1 for x in array[0][0][i] if x != -1 and x != 0))
+        path[1].append(sum(0.4*x for x in array[0][1][i] if x != -1 and x != 0) / sum(1 for x in array[0][1][i] if x != -1 and x != 0))
+        path[2].append(sum(0.4*x for x in array[0][2][i] if x != -1 and x != 0) / sum(1 for x in array[0][2][i] if x != -1 and x != 0))
 
     eff_path = [[], [], []] # For each obstacle density
 
@@ -89,9 +87,9 @@ def generate_latex_table_scattering(array):
     path = [[], [], []] # For each obstacle density
 
     for i in range(5): # For each start radius (there are 5 in total)
-        path[0].append(sum(x for x in array[0][0][i] if x != -1 and x != 0) / sum(1 for x in array[0][0][i] if x != -1 and x != 0))
-        path[1].append(sum(x for x in array[0][1][i] if x != -1 and x != 0) / sum(1 for x in array[0][1][i] if x != -1 and x != 0))
-        path[2].append(sum(x for x in array[0][2][i] if x != -1 and x != 0) / sum(1 for x in array[0][2][i] if x != -1 and x != 0))
+        path[0].append(sum(0.4*x for x in array[0][0][i] if x != -1 and x != 0) / sum(1 for x in array[0][0][i] if x != -1 and x != 0))
+        path[1].append(sum(0.4*x for x in array[0][1][i] if x != -1 and x != 0) / sum(1 for x in array[0][1][i] if x != -1 and x != 0))
+        path[2].append(sum(0.4*x for x in array[0][2][i] if x != -1 and x != 0) / sum(1 for x in array[0][2][i] if x != -1 and x != 0))
 
     eff_path = [[], [], []] # For each obstacle density
 
@@ -162,7 +160,7 @@ def generate_latex_table_scattering(array):
     return latex_str
 
 
-latex_code = generate_latex_table_swarm(swarm_values)
+#latex_code = generate_latex_table_swarm(swarm_values)
 latex_code = generate_latex_table_scattering(scattering_values)
 # Print LaTeX table
 print(latex_code)

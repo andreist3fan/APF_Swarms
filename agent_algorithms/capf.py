@@ -1,7 +1,9 @@
 """
-This file implements the Continuous Artificial Potential Field (CAPF) algorithm for an agent to navigate towards a target while avoiding obstacles.
+This file implements the Classical Artificial Potential Field (CAPF) algorithm for an agent to navigate towards a target while avoiding obstacles.
 
 It uses a potential field approach where the agent is attracted to the target and repelled by obstacles within a specified range.
+
+The potential field is calculated from the target and obstacle positions. The gradient is calculated to find the steepest descend.
 
 """
 import numpy as np

@@ -1,3 +1,10 @@
+"""
+This file implements the Changing Radii Artificial Potential Field (CR-BAPF) algorithm for an agent to navigate towards a target while avoiding obstacles.
+
+The potential field is calculated from the target and obstacle positions. Bacteria points are generated and evaluated to find the best point. The new agent position is then returned.
+
+"""
+
 import numpy as np
 
 def pos_update(agent, environment, setup): 
