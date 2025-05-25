@@ -1,3 +1,10 @@
+"""
+This is a simple pygame example where the player can move around a play area, to serve as the starting point for run visualization
+for agents.
+
+For the results, please see main.py, which uses this code as a base.
+"""
+
 import pygame
 import random
 

@@ -1,3 +1,14 @@
+"""
+This file implements a rudimentary A* pathfinding algorithm for an agent in a grid-based environment.
+It includes functions to update the agent's position, compute distances, validate positions, and find neighbors.
+
+The A* algorithm is used to compute a path from the agent's current position to a target position, avoiding obstacles in the grid.
+The heuristic used is the Euclidean distance in this case.
+
+Furthermore, while the actual grid is continuous, this code assumes a discretized grid where each cell is represented by an integer coordinate.
+This parameter can be tuned by adjusting the `grid_fineness` in the setup.
+"""
+
 import heapq
 import copy
 import numpy as np
