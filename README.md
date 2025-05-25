@@ -1,1 +1,1 @@
-A README can be found in the pdf on the main branch. 
+A README can be found in the form of a PDF on the main branch [here](README.pdf). 
